@@ -1,6 +1,6 @@
-declare type LCH = [number, number, number]
+export type LCH = [number, number, number]
 
-declare type HexPalette = {
+export type HexPalette = {
   name: string
   tones: string[]
   hues: {
@@ -9,7 +9,7 @@ declare type HexPalette = {
   }[]
 }
 
-declare type Palette = {
+export type Palette = {
   name: string
   hues: string[]
   tones: string[]

@@ -25,6 +25,7 @@ const GlobalStyles = createGlobalStyle`
     --c-input-bg: ${COLORS.background};
     --c-input-bg-hover: ${COLORS.focus};
     --c-input-bg-focus: ${COLORS.focus};
+    --c-bg: ${COLORS.default};
     --c-textOnAccent: ${COLORS.textOnAccent};
 
     --c-hover: ${COLORS.background};
@@ -108,6 +109,7 @@ const GlobalStyles = createGlobalStyle`
     font-family: 'Inter', sans-serif;
     font-size: 16px;
     color: var(--c-text-primary);
+    background: var(---c-bg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: var(--c-gray1);
@@ -115,6 +117,7 @@ const GlobalStyles = createGlobalStyle`
 
   html, body, #root {
     height: 100%;
+    min-height: 100%;
   }
 
   /* ::-webkit-scrollbar-track {} */
