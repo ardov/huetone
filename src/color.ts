@@ -20,6 +20,9 @@ export const clampLch = (lch: LCH): LCH => {
     .map((n, i) => (n > maximums[i] ? maximums[i] : n)) as LCH
 }
 
+// @ts-ignore
+export const displayable = (lch: LCH): boolean => !chroma.lch(...lch).clipped()
+
 export const wcagContrast = (color1: string, color2: string): number =>
   chroma.contrast(color1, color2)
 

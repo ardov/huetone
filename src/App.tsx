@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { ColorEditor } from './components/ColorEditor'
+import { Scale } from './components/ColorGraph'
 import { PaletteSwatches } from './components/PaletteSwatches'
 import { parsePalette, setColor } from './palette'
 import { PRESETS } from './presets'
@@ -30,7 +31,60 @@ export default function App() {
           }
         />
       </PaletteSection>
-      <ChartsSection>456</ChartsSection>
+      <ChartsSection>
+        <Column>
+          <Scale
+            axis="l"
+            colors={palette.colors[selected[0]]}
+            onColorChange={(i, lch) => {
+              setSelected([selected[0], i])
+              setPalette(setColor(palette, lch, selected[0], i))
+            }}
+          />
+          <Scale
+            axis="c"
+            colors={palette.colors[selected[0]]}
+            onColorChange={(i, lch) => {
+              setSelected([selected[0], i])
+              setPalette(setColor(palette, lch, selected[0], i))
+            }}
+          />
+          <Scale
+            axis="h"
+            colors={palette.colors[selected[0]]}
+            onColorChange={(i, lch) => {
+              setSelected([selected[0], i])
+              setPalette(setColor(palette, lch, selected[0], i))
+            }}
+          />
+        </Column>
+        <Column>
+          <Scale
+            axis="l"
+            colors={palette.colors.map(hue => hue[selected[1]])}
+            onColorChange={(i, lch) => {
+              setSelected([i, selected[1]])
+              setPalette(setColor(palette, lch, i, selected[1]))
+            }}
+          />
+          <Scale
+            axis="c"
+            colors={palette.colors.map(hue => hue[selected[1]])}
+            onColorChange={(i, lch) => {
+              setSelected([i, selected[1]])
+              setPalette(setColor(palette, lch, i, selected[1]))
+            }}
+          />
+          <Scale
+            axis="h"
+            colors={palette.colors.map(hue => hue[selected[1]])}
+            onColorChange={(i, lch) => {
+              setSelected([i, selected[1]])
+              setPalette(setColor(palette, lch, i, selected[1]))
+            }}
+          />
+        </Column>
+      </ChartsSection>
     </Wrapper>
   )
 }
@@ -47,6 +101,14 @@ const PaletteSection = styled.section`
   background: #eee;
 `
 const ChartsSection = styled.section`
+  display: grid;
+  padding: 16px;
+  grid-template-columns: repeat(2, auto);
   flex-grow: 1;
   background: #333;
+`
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `

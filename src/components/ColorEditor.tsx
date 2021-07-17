@@ -1,15 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import {
-  getMostContrast,
-  MAX_C,
-  MAX_H,
-  MAX_L,
-  toHex,
-  toLch,
-  valid,
-  wcagContrast,
-} from '../color'
+import { MAX_C, MAX_H, MAX_L, toHex, toLch, valid } from '../color'
 import { LCH } from '../types'
 
 type ColorEditorProps = {
@@ -90,11 +81,6 @@ const Wrapper = styled.div`
   display: flex;
 `
 
-const Input = styled.input`
-  width: 64px;
-  padding: 0;
-  background: #eee;
-`
 const ChanelInput = styled.input`
   width: 64px;
   padding: 0;
