@@ -129,7 +129,7 @@ export default function App() {
       </PaletteSection>
       <ChartsSection>
         <Column>
-          <Scale
+          {/* <Scale
             channel="l"
             colors={palette.colors[selected[0]]}
             onColorChange={(i, lch) => {
@@ -152,7 +152,7 @@ export default function App() {
               setSelected([selected[0], i])
               editPalette(setColor(palette, lch, selected[0], i))
             }}
-          />
+          /> */}
         </Column>
         <Column>
           <Scale

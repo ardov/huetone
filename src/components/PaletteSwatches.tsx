@@ -222,21 +222,26 @@ const Swatch: FC<SwatchProps> = props => {
   const { color, isSelected, onSelect, contrast } = props
   const contrastRatio = +contrast.toFixed(1)
   return (
-    <SwatchWrapper color={color} isSelected={isSelected} onClick={onSelect}>
+    <SwatchWrapper
+      style={{
+        backgroundColor: color,
+        color: getMostContrast(color, ['black', 'white']),
+      }}
+      isSelected={isSelected}
+      onClick={onSelect}
+    >
       <span>{contrastRatio}</span>
     </SwatchWrapper>
   )
 }
 
-const SwatchWrapper = styled.button<{ color: string; isSelected: boolean }>`
+const SwatchWrapper = styled.button<{ isSelected: boolean }>`
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   width: ${SWATCH_WIDTH};
   height: ${SWATCH_HEIGHT};
-  background-color: ${p => p.color};
-  color: ${p => getMostContrast(p.color, ['black', 'white'])};
   border: ${p =>
     p.isSelected
       ? '6px solid var(--c-bg, white)'

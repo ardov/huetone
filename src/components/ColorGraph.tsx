@@ -1,10 +1,8 @@
 import './styles.css'
-import { useEffect, useMemo, useRef } from 'react'
 import { getMostContrast, MAX_C, MAX_H, MAX_L, toHex } from '../color'
 import { Channel, LCH } from '../types'
 import styled from 'styled-components'
-import debounce from 'lodash/debounce'
-import { drawChart } from './Chart/draw'
+import { Canvas } from './Chart/Canvas2'
 
 const channelIndexes = { l: 0, c: 1, h: 2 }
 const channelNames = {
@@ -80,7 +78,11 @@ export function Scale({
                 if (channel === 'h') onColorChange(i, [l, c, value])
               }}
               onDoubleClick={() => alert('123')}
-              color={toHex(lch)}
+              style={{
+                // @ts-ignore
+                '--bg': toHex(lch),
+              }}
+              // color={toHex(lch)}
               canvasHeight={height}
               left={sectionWidth * i + sectionWidth / 2}
             />
@@ -102,11 +104,11 @@ const Value = styled.div<{ color: string }>`
 `
 
 const Knob = styled.input<{
-  color: string
+  // color: string
   canvasHeight: number
   left: number
 }>`
-  --bg: ${p => p.color};
+  /* --bg: ${p => p.color}; */
   height: 1px;
   width: ${p => p.canvasHeight + 16}px;
   position: absolute;
@@ -115,41 +117,3 @@ const Knob = styled.input<{
   transform: translateX(0.5px) rotate(-90deg);
   transform-origin: bottom left;
 `
-
-function Canvas(props: {
-  width: number
-  height: number
-  channel: Channel
-  colors: LCH[]
-}) {
-  const { width, height, channel, colors } = props
-  const canvasRef = useRef<HTMLCanvasElement | null>(null)
-
-  const debouncedRepaint = useMemo(
-    () =>
-      debounce(() => {
-        console.log('render canvas')
-        const canvas = canvasRef.current
-        const ctx = canvas?.getContext('2d')
-        const intWidth = Math.ceil(width)
-        const intHeight = Math.ceil(height)
-        const pixels = drawChart({
-          width: intWidth,
-          height: intHeight,
-          colors: colors,
-          channel: channel,
-        })
-        const imageData = new ImageData(pixels, intWidth, intHeight)
-        ctx?.putImageData(imageData, 0, 0)
-      }, 300),
-    [channel, colors, height, width]
-  )
-
-  useEffect(() => {
-    debouncedRepaint()
-    return () => {
-      debouncedRepaint.cancel()
-    }
-  }, [channel, colors, height, width, debouncedRepaint])
-  return <canvas ref={canvasRef} width={width} height={height} />
-}

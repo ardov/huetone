@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "chroma-js": "^2.1.2",
+    "comlink": "^4.3.1",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -63,6 +64,7 @@
     "stylelint-config-recommended": "^5.0.0",
     "stylelint-config-styled-components": "^0.1.1",
     "stylelint-processor-styled-components": "^1.10.0",
-    "use-local-storage-state": "^10.0.0"
+    "use-local-storage-state": "^10.0.0",
+    "worker-loader": "^3.0.8"
   }
 }
