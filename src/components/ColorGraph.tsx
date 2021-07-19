@@ -1,20 +1,21 @@
 import './styles.css'
-import { useEffect, useRef } from 'react'
-import { displayable, MAX_C, MAX_H, MAX_L, toHex } from '../color'
-import { LCH } from '../types'
+import { useEffect, useMemo, useRef } from 'react'
+import { getMostContrast, MAX_C, MAX_H, MAX_L, toHex } from '../color'
+import { Channel, LCH } from '../types'
 import styled from 'styled-components'
+import debounce from 'lodash/debounce'
+import { drawChart } from './Chart/draw'
 
-type Axis = 'l' | 'c' | 'h'
-
-const scales = {
-  l: [MAX_L, 0] as [number, number],
-  c: [MAX_C, 0] as [number, number],
-  h: [MAX_H, 0] as [number, number],
+const channelIndexes = { l: 0, c: 1, h: 2 }
+const channelNames = {
+  l: 'Lightness',
+  c: 'Chroma a.k.a. saturation',
+  h: 'Hue',
 }
 
 type ScaleProps = {
   colors: LCH[]
-  axis: Axis
+  channel: Channel
   height?: number
   width?: number
   onColorChange: (idx: number, value: LCH) => void
@@ -22,9 +23,9 @@ type ScaleProps = {
 
 export function Scale({
   colors,
-  axis = 'l',
-  height = 120,
-  width = 360,
+  channel = 'l',
+  height = 150,
+  width = 400,
   onColorChange,
 }: ScaleProps) {
   if (!colors?.length) return null
@@ -35,21 +36,16 @@ export function Scale({
         width: width,
         display: 'flex',
         flexDirection: 'column',
-        marginTop: 8,
       }}
     >
+      {channelNames[channel]}
       <div style={{ display: 'flex' }}>
-        {colors.map(lch => (
-          <div
-            style={{
-              background: toHex(lch),
-              height: 10,
-              flexGrow: 1,
-            }}
-          />
+        {colors.map((lch, i) => (
+          <Value key={i} color={toHex(lch)}>
+            {+lch[channelIndexes[channel]].toFixed(1)}
+          </Value>
         ))}
       </div>
-
       <div
         style={{
           display: 'flex',
@@ -60,37 +56,28 @@ export function Scale({
         }}
       >
         <Canvas
-          width={sectionWidth / 2}
+          width={width}
           height={height}
-          axis={axis}
-          color1={colors[0]}
-          color2={colors[0]}
+          channel={channel}
+          colors={colors}
         />
-        {colors.map((color, i) => (
-          <Canvas
-            width={i + 1 < colors.length ? sectionWidth : sectionWidth / 2}
-            height={height}
-            axis={axis}
-            color1={color}
-            color2={i + 1 < colors.length ? colors[i + 1] : color}
-          />
-        ))}
 
         {colors.map((lch, i) => {
           return (
             <Knob
               key={i}
               type="range"
-              // orient="vertical"
               min={0}
-              max={axis === 'l' ? MAX_L : axis === 'c' ? MAX_C : MAX_H}
-              value={axis === 'l' ? lch[0] : axis === 'c' ? lch[1] : lch[2]}
+              max={channel === 'l' ? MAX_L : channel === 'c' ? MAX_C : MAX_H}
+              value={
+                channel === 'l' ? lch[0] : channel === 'c' ? lch[1] : lch[2]
+              }
               onChange={e => {
                 const [l, c, h] = lch
                 const value = +e.target.value
-                if (axis === 'l') onColorChange(i, [value, c, h])
-                if (axis === 'c') onColorChange(i, [l, value, h])
-                if (axis === 'h') onColorChange(i, [l, c, value])
+                if (channel === 'l') onColorChange(i, [value, c, h])
+                if (channel === 'c') onColorChange(i, [l, value, h])
+                if (channel === 'h') onColorChange(i, [l, c, value])
               }}
               onDoubleClick={() => alert('123')}
               color={toHex(lch)}
@@ -103,6 +90,16 @@ export function Scale({
     </div>
   )
 }
+
+const Value = styled.div<{ color: string }>`
+  background-color: ${p => p.color};
+  color: ${p => getMostContrast(p.color, ['black', 'white'])};
+  text-align: center;
+  font-size: 12px;
+  padding: 4px 0;
+  min-width: 0;
+  flex: 1 0;
+`
 
 const Knob = styled.input<{
   color: string
@@ -122,62 +119,37 @@ const Knob = styled.input<{
 function Canvas(props: {
   width: number
   height: number
-  axis: Axis
-  color1: LCH
-  color2: LCH
+  channel: Channel
+  colors: LCH[]
 }) {
-  const { width, height, axis, color1, color2 } = props
+  const { width, height, channel, colors } = props
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
-  const paint = () => {
-    const canvas = canvasRef.current
-    const ctx = canvas?.getContext('2d')
-    const intWidth = Math.ceil(width)
-    const intHeight = Math.ceil(height)
-    const size = intWidth * intHeight * 4
-    const pixels = new Uint8ClampedArray(size)
+  const debouncedRepaint = useMemo(
+    () =>
+      debounce(() => {
+        console.log('render canvas')
+        const canvas = canvasRef.current
+        const ctx = canvas?.getContext('2d')
+        const intWidth = Math.ceil(width)
+        const intHeight = Math.ceil(height)
+        const pixels = drawChart({
+          width: intWidth,
+          height: intHeight,
+          colors: colors,
+          channel: channel,
+        })
+        const imageData = new ImageData(pixels, intWidth, intHeight)
+        ctx?.putImageData(imageData, 0, 0)
+      }, 300),
+    [channel, colors, height, width]
+  )
 
-    for (let x = 0; x < intWidth; x++) {
-      for (let y = 0; y < intHeight; y++) {
-        const l =
-          axis === 'l'
-            ? scaleValue(y, [0, intHeight], scales.l)
-            : scaleValue(x, [0, intWidth], [color1[0], color2[0]])
-        const c =
-          axis === 'c'
-            ? scaleValue(y, [0, intHeight], scales.c)
-            : scaleValue(x, [0, intWidth], [color1[1], color2[1]])
-        const h =
-          axis === 'h'
-            ? scaleValue(y, [0, intHeight], scales.h)
-            : scaleValue(x, [0, intWidth], [color1[2], color2[2]])
-
-        const [r, g, b] = displayable([l, c, h])
-          ? [255, 255, 255]
-          : [210, 210, 210]
-
-        const displacement = y * intWidth * 4 + x * 4
-        pixels[displacement] = r
-        pixels[displacement + 1] = g
-        pixels[displacement + 2] = b
-        pixels[displacement + 3] = 255
-      }
+  useEffect(() => {
+    debouncedRepaint()
+    return () => {
+      debouncedRepaint.cancel()
     }
-
-    const imageData = new ImageData(pixels, intWidth, intHeight)
-    ctx?.putImageData(imageData, 0, 0)
-  }
-
-  useEffect(paint, [axis, color1, color2, height, width])
+  }, [channel, colors, height, width, debouncedRepaint])
   return <canvas ref={canvasRef} width={width} height={height} />
-}
-
-function scaleValue(
-  value: number,
-  from: [number, number],
-  to: [number, number]
-) {
-  var scale = (to[1] - to[0]) / (from[1] - from[0])
-  var capped = Math.min(from[1], Math.max(from[0], value)) - from[0]
-  return capped * scale + to[0]
 }

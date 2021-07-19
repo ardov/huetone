@@ -1,5 +1,7 @@
 export type LCH = [number, number, number]
 
+export type Channel = 'l' | 'c' | 'h'
+
 export type HexPalette = {
   name: string
   tones: string[]

@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, Fragment, useEffect } from 'react'
 import styled from 'styled-components'
 import { clampLch, getMostContrast, toHex, wcagContrast } from '../color'
 import {
@@ -17,6 +17,7 @@ const SWATCH_HEIGHT = '48px'
 type PaletteSwatchesProps = {
   palette: Palette
   selected: [number, number]
+  contrastTo: string
   onSelect: (selected: [number, number]) => void
   onPaletteChange: (palette: Palette) => void
 }
@@ -24,6 +25,7 @@ type PaletteSwatchesProps = {
 export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
   palette,
   selected,
+  contrastTo,
   onSelect,
   onPaletteChange,
 }) => {
@@ -33,7 +35,6 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
   const { hues, tones, colors } = palette
   const [selectedHue, selectedTone] = selected
   const hexColors = colors.map(arr => arr.map(toHex))
-  const selectedColorHex = hexColors[selectedHue][selectedTone]
   const selectedColorLch = colors[selectedHue][selectedTone]
 
   useEffect(() => {
@@ -45,9 +46,9 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
           if (lPress || cPress || hPress) {
             // MODIFY COLOR
             let [l, c, h] = selectedColorLch
-            if (lPress) l++
-            if (cPress) c++
-            if (hPress) h++
+            if (lPress) l += 0.5
+            if (cPress) c += 0.5
+            if (hPress) h += 0.5
             onPaletteChange(
               setColor(palette, clampLch([l, c, h]), selectedHue, selectedTone)
             )
@@ -75,9 +76,9 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
           if (lPress || cPress || hPress) {
             // MODIFY COLOR
             let [l, c, h] = selectedColorLch
-            if (lPress) l--
-            if (cPress) c--
-            if (hPress) h--
+            if (lPress) l -= 0.5
+            if (cPress) c -= 0.5
+            if (hPress) h -= 0.5
             onPaletteChange(
               setColor(palette, clampLch([l, c, h]), selectedHue, selectedTone)
             )
@@ -156,8 +157,9 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
       <div />
       {tones.map((toneName, tone) => (
         <ToneInput
-          key={toneName}
+          key={tone}
           value={toneName}
+          onKeyDown={e => e.stopPropagation()}
           onChange={e =>
             onPaletteChange(renameTone(palette, tone, e.target.value))
           }
@@ -166,10 +168,11 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
 
       {/* HUES */}
       {hexColors.map((hueColors, hue) => (
-        <>
+        <Fragment key={hue}>
           <HueInput
             key={hue}
             value={hues[hue]}
+            onKeyDown={e => e.stopPropagation()}
             onChange={e =>
               onPaletteChange(renameHue(palette, hue, e.target.value))
             }
@@ -178,12 +181,12 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
             <Swatch
               key={color + tone}
               color={color}
-              selectedColor={selectedColorHex}
+              contrast={wcagContrast(color, contrastTo)}
               isSelected={hue === selectedHue && tone === selectedTone}
               onSelect={() => onSelect([hue, tone])}
             />
           ))}
-        </>
+        </Fragment>
       ))}
     </Wrapper>
   )
@@ -210,14 +213,14 @@ const ToneInput = styled(HueInput)`
 
 type SwatchProps = {
   color: string
-  selectedColor: string
+  contrast: number
   isSelected: boolean
   onSelect: () => void
 }
 
 const Swatch: FC<SwatchProps> = props => {
-  const { color, isSelected, onSelect, selectedColor } = props
-  const contrastRatio = +wcagContrast(color, selectedColor).toFixed(1)
+  const { color, isSelected, onSelect, contrast } = props
+  const contrastRatio = +contrast.toFixed(1)
   return (
     <SwatchWrapper color={color} isSelected={isSelected} onClick={onSelect}>
       <span>{contrastRatio}</span>

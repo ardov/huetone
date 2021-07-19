@@ -1,6 +1,6 @@
 import { reorder } from './utils'
 import { HexPalette, Palette, LCH } from './types'
-import { toLch } from './color'
+import { clampToRgb, toHex, toLch } from './color'
 
 const DEFAULT_LCH: LCH = [0, 0, 0]
 
@@ -10,6 +10,17 @@ export function parsePalette(raw: HexPalette): Palette {
     hues: raw.hues.map(hue => hue.name),
     tones: [...raw.tones],
     colors: raw.hues.map(hue => hue.colors.map(toLch)),
+  }
+}
+
+export function paletteToHex(palette: Palette): HexPalette {
+  return {
+    name: palette.name,
+    hues: palette.hues.map((hue, i) => ({
+      name: hue,
+      colors: palette.colors[i].map(toHex),
+    })),
+    tones: [...palette.tones],
   }
 }
 
@@ -107,5 +118,12 @@ export function setColor(
         ? shades.map((lch, toneId) => (toneId === tone ? color : lch))
         : shades
     ),
+  }
+}
+
+export function clampColorsToRgb(palette: Palette): Palette {
+  return {
+    ...palette,
+    colors: palette.colors.map(shades => shades.map(clampToRgb)),
   }
 }

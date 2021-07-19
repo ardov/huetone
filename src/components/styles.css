@@ -20,8 +20,9 @@ input[type='range']::-webkit-slider-thumb {
   width: 16px;
   height: 16px;
   background: var(--bg, #ffffff);
-  border: 2px white solid;
+  border: 1px solid white;
   border-radius: 13px;
+  box-shadow: -3px 0 4px 0 rgba(0, 0, 0, 0.2);
   cursor: pointer;
   -webkit-appearance: none;
 }

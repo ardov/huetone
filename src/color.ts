@@ -20,6 +20,13 @@ export const clampLch = (lch: LCH): LCH => {
     .map((n, i) => (n > maximums[i] ? maximums[i] : n)) as LCH
 }
 
+export const clampToRgb = (lch: LCH): LCH => {
+  const color = chroma.lch(...lch)
+  // @ts-ignore
+  if (color.clipped()) return toLch(color.hex())
+  return lch
+}
+
 // @ts-ignore
 export const displayable = (lch: LCH): boolean => !chroma.lch(...lch).clipped()
 
