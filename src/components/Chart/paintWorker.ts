@@ -16,7 +16,6 @@ type DrawChartProps = {
 }
 
 function drawChart({ width, height, colors, channel }: DrawChartProps) {
-  console.log('RUN WORKER')
   let pixels = new Uint8ClampedArray(width * height * 4)
 
   const channelValues = {
@@ -93,9 +92,6 @@ const scaleValue = (
   return to[0] + change
 }
 
-const obj = {
-  drawChart,
-}
-
+const obj = { drawChart }
 export type WorkerObj = typeof obj
 Comlink.expose(obj)

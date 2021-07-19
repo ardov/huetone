@@ -2,7 +2,7 @@ import './styles.css'
 import { getMostContrast, MAX_C, MAX_H, MAX_L, toHex } from '../color'
 import { Channel, LCH } from '../types'
 import styled from 'styled-components'
-import { Canvas } from './Chart/Canvas2'
+import { Canvas } from './Chart/Canvas'
 
 const channelIndexes = { l: 0, c: 1, h: 2 }
 const channelNames = {

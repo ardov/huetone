@@ -21,9 +21,9 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
 
   return (
     <Wrapper>
-      <label>
-        <span>L</span>
-        <ChanelInput
+      <ChannelInputWrapper>
+        <ChannelLabel>L</ChannelLabel>
+        <ChannelInput
           type="number"
           min={0}
           max={MAX_L}
@@ -32,10 +32,10 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
           onKeyDown={e => e.stopPropagation()}
           onChange={e => onChange([+e.target.value, c, h])}
         />
-      </label>
-      <label>
-        <span>C</span>
-        <ChanelInput
+      </ChannelInputWrapper>
+      <ChannelInputWrapper>
+        <ChannelLabel>C</ChannelLabel>
+        <ChannelInput
           type="number"
           min={0}
           max={MAX_C}
@@ -44,10 +44,10 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
           onKeyDown={e => e.stopPropagation()}
           onChange={e => onChange([l, +e.target.value, h])}
         />
-      </label>
-      <label>
-        <span>H</span>
-        <ChanelInput
+      </ChannelInputWrapper>
+      <ChannelInputWrapper>
+        <ChannelLabel>H</ChannelLabel>
+        <ChannelInput
           type="number"
           min={0}
           max={MAX_H}
@@ -56,8 +56,8 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
           onKeyDown={e => e.stopPropagation()}
           onChange={e => onChange([l, c, +e.target.value])}
         />
-      </label>
-      <input
+      </ChannelInputWrapper>
+      <HexInput
         value={colorInput}
         onKeyDown={e => e.stopPropagation()}
         onFocus={() => setIsFocused(true)}
@@ -79,12 +79,36 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
 
 const Wrapper = styled.div`
   display: flex;
+  gap: 4px;
 `
-
-const ChanelInput = styled.input`
-  width: 64px;
-  padding: 0;
+const Input = styled.input`
+  border: 1px solid #c1c1c1;
+  border-radius: 6px;
+  color: var(--c-text-primary);
+  padding: 4px 8px;
   background: #eee;
+  transition: 100ms;
+
+  :focus {
+    border-color: var(--c-accent);
+    outline: none;
+    background: #fff;
+  }
+`
+const ChannelInputWrapper = styled.label`
+  position: relative;
+  isolation: isolate;
+`
+const ChannelLabel = styled.span`
+  position: absolute;
+  top: 1px;
+  left: 0;
+  padding: 4px 0 4px 8px;
+  color: var(--c-text-hint);
+`
+const ChannelInput = styled(Input)`
+  width: 80px;
+  padding: 4px 4px 4px 24px;
   -moz-appearance: textfield;
 
   ::-webkit-outer-spin-button,
@@ -92,4 +116,8 @@ const ChanelInput = styled.input`
     -webkit-appearance: none;
     margin: 0;
   }
+`
+
+const HexInput = styled(Input)`
+  width: 88px;
 `

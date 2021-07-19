@@ -2,8 +2,6 @@ import { reorder } from './utils'
 import { HexPalette, Palette, LCH } from './types'
 import { clampToRgb, toHex, toLch } from './color'
 
-const DEFAULT_LCH: LCH = [0, 0, 0]
-
 export function parsePalette(raw: HexPalette): Palette {
   return {
     name: raw.name,
@@ -24,22 +22,26 @@ export function paletteToHex(palette: Palette): HexPalette {
   }
 }
 
-export function addHue(palette: Palette, hueName: string = 'New hue'): Palette {
+export function addHue(palette: Palette, hueName: string = 'Gray'): Palette {
+  const length = palette.tones.length
+  const hueSequence: LCH[] = Array(length)
+    .fill(0)
+    .map((_, i) => [(100 / (length + 1)) * (length - i), 0, 0])
   return {
     ...palette,
     hues: [...palette.hues, hueName],
-    colors: [...palette.colors, Array(palette.tones.length).fill(DEFAULT_LCH)],
+    colors: [...palette.colors, hueSequence],
   }
 }
 
 export function addTone(
   palette: Palette,
-  toneName: string = 'New tone'
+  toneName: string = (palette.tones.length + 1) * 100 + ''
 ): Palette {
   return {
     ...palette,
     tones: [...palette.tones, toneName],
-    colors: palette.colors.map(tones => [...tones, DEFAULT_LCH]),
+    colors: palette.colors.map(tones => [...tones, tones[tones.length - 1]]),
   }
 }
 

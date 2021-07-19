@@ -73,12 +73,6 @@ export default function App() {
           onSelect={setSelected}
           onPaletteChange={editPalette}
         />
-        <ColorEditor
-          color={selectedColor}
-          onChange={color =>
-            editPalette(setColor(palette, color, selected[0], selected[1]))
-          }
-        />
         <ControlRow>
           <button
             onClick={() =>
@@ -128,58 +122,66 @@ export default function App() {
         </ControlRow>
       </PaletteSection>
       <ChartsSection>
-        <Column>
-          <Scale
-            channel="l"
-            colors={palette.colors[selected[0]]}
-            onColorChange={(i, lch) => {
-              setSelected([selected[0], i])
-              editPalette(setColor(palette, lch, selected[0], i))
-            }}
-          />
-          <Scale
-            channel="c"
-            colors={palette.colors[selected[0]]}
-            onColorChange={(i, lch) => {
-              setSelected([selected[0], i])
-              editPalette(setColor(palette, lch, selected[0], i))
-            }}
-          />
-          <Scale
-            channel="h"
-            colors={palette.colors[selected[0]]}
-            onColorChange={(i, lch) => {
-              setSelected([selected[0], i])
-              editPalette(setColor(palette, lch, selected[0], i))
-            }}
-          />
-        </Column>
-        <Column>
-          <Scale
-            channel="l"
-            colors={palette.colors.map(hue => hue[selected[1]])}
-            onColorChange={(i, lch) => {
-              setSelected([i, selected[1]])
-              editPalette(setColor(palette, lch, i, selected[1]))
-            }}
-          />
-          <Scale
-            channel="c"
-            colors={palette.colors.map(hue => hue[selected[1]])}
-            onColorChange={(i, lch) => {
-              setSelected([i, selected[1]])
-              editPalette(setColor(palette, lch, i, selected[1]))
-            }}
-          />
-          <Scale
-            channel="h"
-            colors={palette.colors.map(hue => hue[selected[1]])}
-            onColorChange={(i, lch) => {
-              setSelected([i, selected[1]])
-              editPalette(setColor(palette, lch, i, selected[1]))
-            }}
-          />
-        </Column>
+        <ColorEditor
+          color={selectedColor}
+          onChange={color =>
+            editPalette(setColor(palette, color, selected[0], selected[1]))
+          }
+        />
+        <Charts>
+          <Column>
+            <Scale
+              channel="l"
+              colors={palette.colors[selected[0]]}
+              onColorChange={(i, lch) => {
+                setSelected([selected[0], i])
+                editPalette(setColor(palette, lch, selected[0], i))
+              }}
+            />
+            <Scale
+              channel="c"
+              colors={palette.colors[selected[0]]}
+              onColorChange={(i, lch) => {
+                setSelected([selected[0], i])
+                editPalette(setColor(palette, lch, selected[0], i))
+              }}
+            />
+            <Scale
+              channel="h"
+              colors={palette.colors[selected[0]]}
+              onColorChange={(i, lch) => {
+                setSelected([selected[0], i])
+                editPalette(setColor(palette, lch, selected[0], i))
+              }}
+            />
+          </Column>
+          <Column>
+            <Scale
+              channel="l"
+              colors={palette.colors.map(hue => hue[selected[1]])}
+              onColorChange={(i, lch) => {
+                setSelected([i, selected[1]])
+                editPalette(setColor(palette, lch, i, selected[1]))
+              }}
+            />
+            <Scale
+              channel="c"
+              colors={palette.colors.map(hue => hue[selected[1]])}
+              onColorChange={(i, lch) => {
+                setSelected([i, selected[1]])
+                editPalette(setColor(palette, lch, i, selected[1]))
+              }}
+            />
+            <Scale
+              channel="h"
+              colors={palette.colors.map(hue => hue[selected[1]])}
+              onColorChange={(i, lch) => {
+                setSelected([i, selected[1]])
+                editPalette(setColor(palette, lch, i, selected[1]))
+              }}
+            />
+          </Column>
+        </Charts>
       </ChartsSection>
     </Wrapper>
   )
@@ -202,13 +204,18 @@ const PaletteSection = styled.section`
   padding: 16px;
   background: #fff;
 `
+const Charts = styled.section`
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+`
 const ChartsSection = styled.section`
   overflow: auto;
-  display: grid;
-  padding: 16px;
-  grid-template-columns: repeat(2, auto);
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  padding: 16px 24px;
   flex-grow: 1;
-  background: #bbb;
+  background: #aaa;
 `
 const Column = styled.div`
   display: flex;
