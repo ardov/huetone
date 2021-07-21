@@ -45,14 +45,12 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
     function handler(e: KeyboardEvent) {
       // Copy color
       if (e.metaKey && e.key === 'c') {
-        e.preventDefault()
         setCopiedColor([...selectedColorLch] as LCH)
         return
       }
 
       // Paste color
       if (e.metaKey && e.key === 'v') {
-        e.preventDefault()
         onPaletteChange(
           setColor(palette, copiedColor, selectedHue, selectedTone)
         )
