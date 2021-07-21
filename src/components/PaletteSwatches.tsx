@@ -1,14 +1,16 @@
-import React, { FC, Fragment, useEffect } from 'react'
+import React, { FC, Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { clampLch, getMostContrast, toHex, wcagContrast } from '../color'
 import {
+  duplicateHue,
+  duplicateTone,
   renameHue,
   renameTone,
   reorderHues,
   reorderTones,
   setColor,
 } from '../palette'
-import { Palette } from '../types'
+import { LCH, Palette } from '../types'
 import { useKeyPress } from '../useKeyPress'
 
 const SWATCH_WIDTH = '48px'
@@ -32,105 +34,120 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
   const lPress = useKeyPress('l')
   const cPress = useKeyPress('c')
   const hPress = useKeyPress('h')
+  const [copiedColor, setCopiedColor] = useState<LCH>([0, 0, 0])
   const { hues, tones, colors } = palette
   const [selectedHue, selectedTone] = selected
   const hexColors = colors.map(arr => arr.map(toHex))
   const selectedColorLch = colors[selectedHue][selectedTone]
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      switch (e.key) {
-        case 'ArrowUp':
-          e.preventDefault()
+    function handler(e: KeyboardEvent) {
+      // Copy color
+      if (e.metaKey && e.key === 'c') {
+        e.preventDefault()
+        setCopiedColor([...selectedColorLch] as LCH)
+        return
+      }
+      // Paste color
+      if (e.metaKey && e.key === 'v') {
+        e.preventDefault()
+        onPaletteChange(
+          setColor(palette, copiedColor, selectedHue, selectedTone)
+        )
+        return
+      }
 
-          if (lPress || cPress || hPress) {
-            // MODIFY COLOR
-            let [l, c, h] = selectedColorLch
-            if (lPress) l += 0.5
-            if (cPress) c += 0.5
-            if (hPress) h += 0.5
-            onPaletteChange(
-              setColor(palette, clampLch([l, c, h]), selectedHue, selectedTone)
-            )
-            break
-          }
+      // Modify color
+      if (lPress || cPress || hPress) {
+        e.preventDefault()
+        let [l, c, h] = selectedColorLch
+        if (e.key === 'ArrowUp') {
+          if (lPress) l += 0.5
+          if (cPress) c += 0.5
+          if (hPress) h += 0.5
+        }
+        if (e.key === 'ArrowDown') {
+          if (lPress) l -= 0.5
+          if (cPress) c -= 0.5
+          if (hPress) h -= 0.5
+        }
+        onPaletteChange(
+          setColor(palette, clampLch([l, c, h]), selectedHue, selectedTone)
+        )
+        return
+      }
 
-          if (selectedHue > 0) {
-            // MOVE HUE UP
-            if (e.metaKey) {
-              onPaletteChange(
-                reorderHues(palette, selectedHue, selectedHue - 1)
-              )
-              onSelect([selectedHue - 1, selectedTone])
-              break
-            }
+      // Move row or column
+      if (e.metaKey && !e.shiftKey) {
+        e.preventDefault()
+        if (e.key === 'ArrowUp' && selectedHue > 0) {
+          onPaletteChange(reorderHues(palette, selectedHue, selectedHue - 1))
+          onSelect([selectedHue - 1, selectedTone])
+          return
+        }
+        if (e.key === 'ArrowDown' && selectedHue < hues.length - 1) {
+          onPaletteChange(reorderHues(palette, selectedHue, selectedHue + 1))
+          onSelect([selectedHue + 1, selectedTone])
+          return
+        }
+        if (e.key === 'ArrowLeft' && selectedTone > 0) {
+          onPaletteChange(reorderTones(palette, selectedTone, selectedTone - 1))
+          onSelect([selectedHue, selectedTone - 1])
+          return
+        }
+        if (e.key === 'ArrowRight' && selectedTone < tones.length - 1) {
+          onPaletteChange(reorderTones(palette, selectedTone, selectedTone + 1))
+          onSelect([selectedHue, selectedTone + 1])
+          return
+        }
+      }
 
-            // SELECT COLOR ABOVE
-            onSelect([selectedHue - 1, selectedTone])
-          }
-          break
+      // Duplicate row or column
+      if (e.metaKey && e.shiftKey) {
+        e.preventDefault()
+        if (e.key === 'ArrowUp') {
+          onPaletteChange(duplicateHue(palette, selectedHue, selectedHue))
+          return
+        }
+        if (e.key === 'ArrowDown') {
+          onPaletteChange(duplicateHue(palette, selectedHue, selectedHue + 1))
+          onSelect([selectedHue + 1, selectedTone])
+          return
+        }
+        if (e.key === 'ArrowLeft') {
+          onPaletteChange(duplicateTone(palette, selectedTone, selectedTone))
+          onSelect([selectedHue, selectedTone])
+          return
+        }
+        if (e.key === 'ArrowRight') {
+          onPaletteChange(
+            duplicateTone(palette, selectedTone, selectedTone + 1)
+          )
+          onSelect([selectedHue, selectedTone + 1])
+          return
+        }
+      }
 
-        case 'ArrowDown':
-          e.preventDefault()
-
-          if (lPress || cPress || hPress) {
-            // MODIFY COLOR
-            let [l, c, h] = selectedColorLch
-            if (lPress) l -= 0.5
-            if (cPress) c -= 0.5
-            if (hPress) h -= 0.5
-            onPaletteChange(
-              setColor(palette, clampLch([l, c, h]), selectedHue, selectedTone)
-            )
-            break
-          }
-
-          if (selectedHue < hues.length - 1) {
-            if (e.metaKey) {
-              // MOVE HUE DOWN
-              onPaletteChange(
-                reorderHues(palette, selectedHue, selectedHue + 1)
-              )
-              onSelect([selectedHue + 1, selectedTone])
-              break
-            }
-
-            // SELECT COLOR BELOW
-            onSelect([selectedHue + 1, selectedTone])
-          }
-          break
-        case 'ArrowLeft':
-          e.preventDefault()
-          if (selectedTone > 0) {
-            if (e.metaKey) {
-              // MOVE TONE LEFT
-              onPaletteChange(
-                reorderTones(palette, selectedTone, selectedTone - 1)
-              )
-              onSelect([selectedHue, selectedTone - 1])
-            } else {
-              // SELECT COLOR ON THE LEFT
-              onSelect([selectedHue, selectedTone - 1])
-            }
-          }
-          break
-        case 'ArrowRight':
-          e.preventDefault()
-          if (selectedTone < tones.length - 1) {
-            if (e.metaKey) {
-              // MOVE TONE LEFT
-              onPaletteChange(
-                reorderTones(palette, selectedTone, selectedTone + 1)
-              )
-              onSelect([selectedHue, selectedTone + 1])
-            } else {
-              // SELECT COLOR ON THE LEFT
-              onSelect([selectedHue, selectedTone + 1])
-            }
-          }
-          break
-        default:
-          break
+      // Select color
+      if (e.key === 'ArrowUp' && selectedHue > 0) {
+        e.preventDefault()
+        onSelect([selectedHue - 1, selectedTone])
+        return
+      }
+      if (e.key === 'ArrowDown' && selectedHue < hues.length - 1) {
+        e.preventDefault()
+        onSelect([selectedHue + 1, selectedTone])
+        return
+      }
+      if (e.key === 'ArrowLeft' && selectedTone > 0) {
+        e.preventDefault()
+        onSelect([selectedHue, selectedTone - 1])
+        return
+      }
+      if (e.key === 'ArrowRight' && selectedTone < tones.length - 1) {
+        e.preventDefault()
+        onSelect([selectedHue, selectedTone + 1])
+        return
       }
     }
     window.addEventListener('keydown', handler)
@@ -220,7 +237,7 @@ type SwatchProps = {
 
 const Swatch: FC<SwatchProps> = props => {
   const { color, isSelected, onSelect, contrast } = props
-  const contrastRatio = +contrast.toFixed(1)
+  const contrastRatio = Math.floor(contrast * 10) / 10
   return (
     <SwatchWrapper
       style={{

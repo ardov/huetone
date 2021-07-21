@@ -107,7 +107,7 @@ const ChannelLabel = styled.span`
   color: var(--c-text-hint);
 `
 const ChannelInput = styled(Input)`
-  width: 80px;
+  width: 88px;
   padding: 4px 4px 4px 24px;
   -moz-appearance: textfield;
 

@@ -45,6 +45,40 @@ export function addTone(
   }
 }
 
+export function duplicateTone(
+  palette: Palette,
+  toneId: number,
+  insertId: number
+): Palette {
+  const tones = [...palette.tones]
+  tones.splice(insertId, 0, tones[toneId])
+  return {
+    ...palette,
+    tones,
+    colors: palette.colors.map(tones => {
+      const colors = [...tones]
+      colors.splice(insertId, 0, colors[toneId])
+      return colors
+    }),
+  }
+}
+
+export function duplicateHue(
+  palette: Palette,
+  hueId: number,
+  insertId: number
+): Palette {
+  const hues = [...palette.hues]
+  hues.splice(insertId, 0, hues[hueId])
+  const colors = [...palette.colors]
+  colors.splice(insertId, 0, colors[hueId])
+  return {
+    ...palette,
+    hues,
+    colors,
+  }
+}
+
 export function removeHue(palette: Palette, idx: number): Palette {
   return {
     ...palette,
