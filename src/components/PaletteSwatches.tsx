@@ -156,6 +156,7 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
     }
   }, [
     cPress,
+    copiedColor,
     hPress,
     hues.length,
     lPress,
