@@ -12,6 +12,8 @@ import {
   removeHue,
   removeTone,
   setColor,
+  setHueHue,
+  setToneLuminance,
 } from './palette'
 import { PRESETS } from './presets'
 import { Palette } from './types'
@@ -82,11 +84,31 @@ export default function App() {
             }
           >
             {contrastMode === 'selected'
-              ? 'Show contrast to white'
+              ? 'Show contrast to white [w]'
               : 'Show contrast to selected'}
           </button>
           <button onClick={() => editPalette(clampColorsToRgb)}>
             Make colors displayable
+          </button>
+        </ControlRow>
+        <ControlRow>
+          <button
+            onClick={() =>
+              editPalette(p =>
+                setToneLuminance(p, selectedColor[0], selected[1])
+              )
+            }
+          >
+            Apply current luminance to column
+          </button>
+        </ControlRow>
+        <ControlRow>
+          <button
+            onClick={() =>
+              editPalette(p => setHueHue(p, selectedColor[2], selected[0]))
+            }
+          >
+            Apply current hue to row
           </button>
         </ControlRow>
         <ControlRow>

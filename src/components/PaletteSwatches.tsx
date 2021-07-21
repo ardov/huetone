@@ -31,6 +31,7 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
   onSelect,
   onPaletteChange,
 }) => {
+  const wPress = useKeyPress('w')
   const lPress = useKeyPress('l')
   const cPress = useKeyPress('c')
   const hPress = useKeyPress('h')
@@ -48,6 +49,7 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
         setCopiedColor([...selectedColorLch] as LCH)
         return
       }
+
       // Paste color
       if (e.metaKey && e.key === 'v') {
         e.preventDefault()
@@ -199,7 +201,7 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
             <Swatch
               key={color + tone}
               color={color}
-              contrast={wcagContrast(color, contrastTo)}
+              contrast={wcagContrast(color, wPress ? 'white' : contrastTo)}
               isSelected={hue === selectedHue && tone === selectedTone}
               onSelect={() => onSelect([hue, tone])}
             />

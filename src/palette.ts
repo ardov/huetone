@@ -149,10 +149,38 @@ export function setColor(
 ): Palette {
   return {
     ...palette,
-    colors: palette.colors.map((shades, hueId) =>
+    colors: palette.colors.map((tones, hueId) =>
       hue === hueId
-        ? shades.map((lch, toneId) => (toneId === tone ? color : lch))
-        : shades
+        ? tones.map((lch, toneId) => (toneId === tone ? color : lch))
+        : tones
+    ),
+  }
+}
+
+export function setToneLuminance(
+  palette: Palette,
+  luminance: number,
+  tone: number
+): Palette {
+  return {
+    ...palette,
+    colors: palette.colors.map(colors =>
+      colors.map((lch, toneId) =>
+        toneId === tone ? [luminance, lch[1], lch[2]] : lch
+      )
+    ),
+  }
+}
+
+export function setHueHue(
+  palette: Palette,
+  hueValue: number,
+  hueId: number
+): Palette {
+  return {
+    ...palette,
+    colors: palette.colors.map((colors, id) =>
+      id === hueId ? colors.map(([l, c]) => [l, c, hueValue]) : colors
     ),
   }
 }
