@@ -140,7 +140,7 @@ export default function App() {
           </button>
         </ControlRow>
         <ControlRow>
-          <ExportButton palette={palette} />
+          <ExportButton palette={palette} onChange={editPalette} />
         </ControlRow>
       </PaletteSection>
       <ChartsSection>

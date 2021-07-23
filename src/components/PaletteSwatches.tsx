@@ -1,6 +1,13 @@
 import React, { FC, Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { clampLch, getMostContrast, toHex, wcagContrast } from '../color'
+import {
+  clampLch,
+  getMostContrast,
+  toHex,
+  toLch,
+  valid,
+  wcagContrast,
+} from '../color'
 import {
   duplicateHue,
   duplicateTone,
@@ -45,15 +52,19 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
     function handler(e: KeyboardEvent) {
       // Copy color
       if (e.metaKey && e.key === 'c') {
+        navigator.clipboard.writeText(toHex(selectedColorLch))
         setCopiedColor([...selectedColorLch] as LCH)
         return
       }
 
       // Paste color
       if (e.metaKey && e.key === 'v') {
-        onPaletteChange(
-          setColor(palette, copiedColor, selectedHue, selectedTone)
-        )
+        navigator.clipboard.readText().then(hex => {
+          if (valid(hex))
+            onPaletteChange(
+              setColor(palette, toLch(hex), selectedHue, selectedTone)
+            )
+        })
         return
       }
 
@@ -199,7 +210,7 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
             <Swatch
               key={color + tone}
               color={color}
-              contrast={wcagContrast(color, wPress ? 'white' : contrastTo)}
+              contrast={wcagContrast(wPress ? 'white' : contrastTo, color)}
               isSelected={hue === selectedHue && tone === selectedTone}
               onSelect={() => onSelect([hue, tone])}
             />
