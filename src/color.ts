@@ -1,4 +1,5 @@
 import chroma from 'chroma-js'
+import { apcaContrast as rawApcaConterast } from './APCAcontrast'
 import { LCH } from './types'
 
 export const MAX_L = 100
@@ -30,8 +31,16 @@ export const clampToRgb = (lch: LCH): LCH => {
 // @ts-ignore
 export const displayable = (lch: LCH): boolean => !chroma.lch(...lch).clipped()
 
-export const wcagContrast = (color1: string, color2: string): number =>
-  chroma.contrast(color1, color2)
+export const wcagContrast = (backgroundHex: string, textHex: string): number =>
+  chroma.contrast(backgroundHex, textHex)
+
+export const apcaContrast = (backgroundHex: string, textHex: string): number =>
+  rawApcaConterast(chroma(backgroundHex).rgb(), chroma(textHex).rgb())
+
+export const deltaEContrast = (
+  backgroundHex: string,
+  textHex: string
+): number => chroma.deltaE(backgroundHex, textHex)
 
 export const getMostContrast = (color: string, colorList: string[]): string => {
   const contrastRatios = colorList.map(c => wcagContrast(color, c))
