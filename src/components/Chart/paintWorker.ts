@@ -58,10 +58,11 @@ const paddedScale = (stops: number[], width: number) => {
   const columnWidth = width / stops.length
   const padStart = columnWidth / 2
   const padEnd = columnWidth / 2
+  const scale = linearScale(stops, width - padEnd - padStart)
   return (value: number) => {
     if (value <= padStart) return stops[0]
     if (value >= width - padEnd) return stops[stops.length - 1]
-    return linearScale(stops, width - padEnd - padStart)(value - padStart)
+    return scale(value - padStart)
   }
 }
 

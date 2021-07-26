@@ -20,22 +20,13 @@ export function Canvas(props: {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   const debouncedRepaint = useMemo(() => {
-    console.log('useMemo')
-
     return debounce(async (colors: LCH[]) => {
       const canvas = canvasRef.current
       const ctx = canvas?.getContext('2d')
-      const intWidth = Math.ceil(width)
-      const intHeight = Math.ceil(height)
-      const pixels = await drawChart({
-        width: intWidth,
-        height: intHeight,
-        colors: colors,
-        channel: channel,
-      })
-      const imageData = new ImageData(pixels, intWidth, intHeight)
+      const pixels = await drawChart({ width, height, colors, channel })
+      const imageData = new ImageData(pixels, width, height)
       ctx?.putImageData(imageData, 0, 0)
-    }, 300)
+    }, 200)
   }, [channel, height, width])
 
   useEffect(() => {
