@@ -7,25 +7,35 @@ import {
   toLch,
   valid,
   wcagContrast,
+  apcaContrast,
 } from '../color'
 import {
+  addHue,
+  addTone,
   duplicateHue,
   duplicateTone,
+  removeHue,
+  removeTone,
   renameHue,
   renameTone,
   reorderHues,
   reorderTones,
   setColor,
 } from '../palette'
-import { LCH, Palette } from '../types'
+import { LCH, OverlayMode, Palette } from '../types'
 import { useKeyPress } from '../useKeyPress'
 
 const SWATCH_WIDTH = '48px'
 const SWATCH_HEIGHT = '48px'
+const contrast = {
+  WCAG: wcagContrast,
+  APCA: apcaContrast,
+}
 
 type PaletteSwatchesProps = {
   palette: Palette
   selected: [number, number]
+  overlayMode: OverlayMode
   contrastTo: string
   onSelect: (selected: [number, number]) => void
   onPaletteChange: (palette: Palette) => void
@@ -34,11 +44,11 @@ type PaletteSwatchesProps = {
 export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
   palette,
   selected,
+  overlayMode,
   contrastTo,
   onSelect,
   onPaletteChange,
 }) => {
-  const wPress = useKeyPress('w')
   const lPress = useKeyPress('l')
   const cPress = useKeyPress('c')
   const hPress = useKeyPress('h')
@@ -194,6 +204,12 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
           }
         />
       ))}
+      <SmallButton
+        title="Add tone"
+        onClick={() => onPaletteChange(addTone(palette))}
+      >
+        +
+      </SmallButton>
 
       {/* HUES */}
       {hexColors.map((hueColors, hue) => (
@@ -210,12 +226,35 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
             <Swatch
               key={color + tone}
               color={color}
-              contrast={wcagContrast(wPress ? 'white' : contrastTo, color)}
+              contrast={contrast[overlayMode](contrastTo, color)}
               isSelected={hue === selectedHue && tone === selectedTone}
               onSelect={() => onSelect([hue, tone])}
             />
           ))}
+          <SmallButton
+            title="Delete this row"
+            onClick={() => onPaletteChange(removeHue(palette, hue))}
+          >
+            ×
+          </SmallButton>
         </Fragment>
+      ))}
+
+      {/* COLUMN BUTTONS */}
+      <SmallButton
+        title="Add row"
+        onClick={() => onPaletteChange(addHue(palette))}
+      >
+        +
+      </SmallButton>
+      {tones.map((toneName, tone) => (
+        <SmallButton
+          key={tone}
+          title="Delete this column"
+          onClick={() => onPaletteChange(removeTone(palette, tone))}
+        >
+          ×
+        </SmallButton>
       ))}
     </Wrapper>
   )
@@ -223,10 +262,9 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
 
 const Wrapper = styled.div<{ columns: number; rows: number }>`
   display: grid;
-  grid-template-columns: 80px repeat(
-      ${p => p.columns},
-      minmax(34px, max-content)
-    );
+  grid-template-columns:
+    80px repeat(${p => p.columns}, minmax(34px, max-content))
+    16px;
 `
 
 const HueInput = styled.input`
@@ -277,4 +315,22 @@ const SwatchWrapper = styled.button<{ isSelected: boolean }>`
       : '0px solid var(--c-bg, white)'};
   border-radius: 0;
   transition: 100ms ease-in-out;
+`
+
+const SmallButton = styled.button`
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  line-height: 16px;
+  opacity: 0;
+  transition: 200ms ease-in-out;
+
+  :hover {
+    background: var(--c-input-bg-hover);
+  }
+
+  ${Wrapper}:hover & {
+    opacity: 1;
+  }
 `

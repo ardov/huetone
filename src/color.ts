@@ -35,7 +35,7 @@ export const wcagContrast = (backgroundHex: string, textHex: string): number =>
   chroma.contrast(backgroundHex, textHex)
 
 export const apcaContrast = (backgroundHex: string, textHex: string): number =>
-  rawApcaConterast(chroma(backgroundHex).rgb(), chroma(textHex).rgb())
+  Math.abs(rawApcaConterast(chroma(backgroundHex).rgb(), chroma(textHex).rgb()))
 
 export const deltaEContrast = (
   backgroundHex: string,
@@ -43,7 +43,7 @@ export const deltaEContrast = (
 ): number => chroma.deltaE(backgroundHex, textHex)
 
 export const getMostContrast = (color: string, colorList: string[]): string => {
-  const contrastRatios = colorList.map(c => wcagContrast(color, c))
+  const contrastRatios = colorList.map(c => apcaContrast(color, c))
   const maxContrast = Math.max(...contrastRatios)
   const i = contrastRatios.indexOf(maxContrast)
   return colorList[i]

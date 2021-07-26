@@ -5,20 +5,17 @@ import { ColorEditor } from './components/ColorEditor'
 import { Scale } from './components/ColorGraph'
 import { PaletteSwatches } from './components/PaletteSwatches'
 import {
-  addHue,
-  addTone,
   clampColorsToRgb,
   parsePalette,
-  removeHue,
-  removeTone,
   setColor,
   setHueHue,
   setToneLuminance,
 } from './palette'
 import { PRESETS } from './presets'
-import { Palette } from './types'
+import { OverlayMode, Palette } from './types'
 import { createLocalStorageStateHook } from 'use-local-storage-state'
 import { ExportButton } from './components/ExportButton'
+import { ColorInfo } from './components/ColorInfo'
 
 const paletteList = PRESETS.map(parsePalette)
 
@@ -29,12 +26,12 @@ const useLocalPalette = createLocalStorageStateHook<Palette>(
 
 export default function App() {
   const [localPalette, setLocalPatette] = useLocalPalette()
-  // const [currentPalette, setCurrentPalette] = useLocalPalette()
   const [paletteIdx, setPaletteIdx] = useState<number>(localPalette ? 0 : 1)
   const [selected, setSelected] = useState<[number, number]>([0, 0])
   const [contrastMode, setContrastMode] = useState<'selected' | string>(
     'selected'
   )
+  const [overlayMode, setOverlayMode] = useState<OverlayMode>('APCA')
   const palette = paletteIdx === 0 ? localPalette : paletteList[paletteIdx - 1]
   const selectedColor = palette.colors[selected[0]][selected[1]]
   const contrastTo =
@@ -52,47 +49,51 @@ export default function App() {
   return (
     <Wrapper>
       <PaletteSection>
-        <select
-          name="palettes"
-          value={paletteIdx}
-          onChange={e => {
-            const value = +e.target.value
-            setSelected([0, 0])
-            setPaletteIdx(value)
-          }}
-        >
-          <option value={0}>Local palette</option>
-          {paletteList.map((p, i) => (
-            <option key={p.name} value={i + 1}>
-              {p.name}
-            </option>
-          ))}
-        </select>
+        <ControlRow>
+          <Select
+            name="palettes"
+            value={paletteIdx}
+            onChange={e => {
+              const value = +e.target.value
+              setSelected([0, 0])
+              setPaletteIdx(value)
+            }}
+          >
+            <option value={0}>Local palette</option>
+            {paletteList.map((p, i) => (
+              <option key={p.name} value={i + 1}>
+                {p.name}
+              </option>
+            ))}
+          </Select>
+          <Select
+            name="overlay"
+            value={overlayMode}
+            onChange={e => setOverlayMode(e.target.value as OverlayMode)}
+          >
+            <option value={'WCAG'}>WCAG contrast</option>
+            <option value={'APCA'}>APCA contrast</option>
+          </Select>
+          <Select
+            name="color"
+            value={contrastMode}
+            onChange={e => setContrastMode(e.target.value)}
+          >
+            <option value={'selected'}>to selected</option>
+            <option value={'white'}>to white</option>
+          </Select>
+        </ControlRow>
         <PaletteSwatches
           palette={palette}
           selected={selected}
+          overlayMode={overlayMode}
           contrastTo={contrastTo}
           onSelect={setSelected}
           onPaletteChange={editPalette}
         />
+
         <ControlRow>
-          <button
-            onClick={() =>
-              setContrastMode(
-                contrastMode === 'selected' ? 'white' : 'selected'
-              )
-            }
-          >
-            {contrastMode === 'selected'
-              ? 'Show contrast to white [w]'
-              : 'Show contrast to selected'}
-          </button>
-          <button onClick={() => editPalette(clampColorsToRgb)}>
-            Make colors displayable
-          </button>
-        </ControlRow>
-        <ControlRow>
-          <button
+          <Button
             onClick={() =>
               editPalette(p =>
                 setToneLuminance(p, selectedColor[0], selected[1])
@@ -100,56 +101,41 @@ export default function App() {
             }
           >
             Apply current luminance to column
-          </button>
-        </ControlRow>
-        <ControlRow>
-          <button
+          </Button>
+          <Button
             onClick={() =>
               editPalette(p => setHueHue(p, selectedColor[2], selected[0]))
             }
           >
             Apply current hue to row
-          </button>
+          </Button>
         </ControlRow>
-        <ControlRow>
-          <button
-            onClick={() => {
-              editPalette(p => removeTone(p, selected[1]))
-              if (selected[1] === palette.tones.length - 1)
-                setSelected(s => [s[0], s[1] - 1])
-            }}
-          >
-            ❌ Delete {palette.tones[selected[1]]}
-          </button>
-          <button onClick={() => editPalette(p => addTone(p))}>
-            ➕ Add tone column
-          </button>
-        </ControlRow>
-        <ControlRow>
-          <button
-            onClick={() => {
-              editPalette(p => removeHue(p, selected[0]))
-              if (selected[0] === palette.hues.length - 1)
-                setSelected(s => [s[0] - 1, s[1]])
-            }}
-          >
-            ❌ Delete {palette.hues[selected[0]]}
-          </button>
-          <button onClick={() => editPalette(p => addHue(p))}>
-            ➕ Add hue row
-          </button>
-        </ControlRow>
-        <ControlRow>
-          <ExportButton palette={palette} onChange={editPalette} />
-        </ControlRow>
-      </PaletteSection>
-      <ChartsSection>
-        <ColorEditor
+        <ControlRow></ControlRow>
+
+        <ColorInfo
           color={selectedColor}
           onChange={color =>
             editPalette(setColor(palette, color, selected[0], selected[1]))
           }
         />
+
+        <ControlRow>
+          <ExportButton palette={palette} onChange={editPalette} />
+        </ControlRow>
+      </PaletteSection>
+
+      <ChartsSection>
+        <ControlRow>
+          <ColorEditor
+            color={selectedColor}
+            onChange={color =>
+              editPalette(setColor(palette, color, selected[0], selected[1]))
+            }
+          />
+          <Button onClick={() => editPalette(clampColorsToRgb)}>
+            Make colors displayable
+          </Button>
+        </ControlRow>
         <Charts>
           <Column>
             <Scale
@@ -238,9 +224,36 @@ const ChartsSection = styled.section`
   padding: 16px 24px;
   flex-grow: 1;
   background: #aaa;
+  overflow: auto;
 `
 const Column = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+`
+const Select = styled.select`
+  color: #727272;
+  border: 1px solid #c6c6c6;
+  border-radius: var(--radius-m);
+  background-color: #f8f8f8;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 4px 8px;
+
+  :hover {
+    color: black;
+  }
+`
+const Button = styled.button`
+  color: #727272;
+  border: 1px solid #c6c6c6;
+  border-radius: var(--radius-m);
+  background-color: #f8f8f8;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 4px 8px;
+
+  :hover {
+    color: black;
+  }
 `

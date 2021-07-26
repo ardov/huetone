@@ -32,7 +32,7 @@ const GlobalStyles = createGlobalStyle`
     --c-focus: ${COLORS.focus};
 
     /* SHAPE */
-    --radius-m: 8px;
+    --radius-m: 6px;
     --radius-l: 24px;
   }
 
@@ -107,7 +107,7 @@ const GlobalStyles = createGlobalStyle`
 
   html {
     font-family: 'Inter', sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     color: var(--c-text-primary);
     background: var(---c-bg);
     -webkit-font-smoothing: antialiased;

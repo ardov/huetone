@@ -17,3 +17,5 @@ export type Palette = {
   tones: string[]
   colors: LCH[][]
 }
+
+export type OverlayMode = 'WCAG' | 'APCA'
