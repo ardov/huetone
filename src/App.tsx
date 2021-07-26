@@ -112,12 +112,7 @@ export default function App() {
         </ControlRow>
         <ControlRow></ControlRow>
 
-        <ColorInfo
-          color={selectedColor}
-          onChange={color =>
-            editPalette(setColor(palette, color, selected[0], selected[1]))
-          }
-        />
+        <ColorInfo palette={palette} selected={selected} />
 
         <ControlRow>
           <ExportButton palette={palette} onChange={editPalette} />
