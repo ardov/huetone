@@ -66,22 +66,20 @@ export default function App() {
               </option>
             ))}
           </Select>
-          <Select
-            name="overlay"
-            value={overlayMode}
-            onChange={e => setOverlayMode(e.target.value as OverlayMode)}
+          <Button
+            onClick={() =>
+              setOverlayMode(m => (m === 'APCA' ? 'WCAG' : 'APCA'))
+            }
           >
-            <option value={'WCAG'}>WCAG contrast</option>
-            <option value={'APCA'}>APCA contrast</option>
-          </Select>
-          <Select
-            name="color"
-            value={contrastMode}
-            onChange={e => setContrastMode(e.target.value)}
+            {overlayMode} contrast
+          </Button>
+          <Button
+            onClick={() =>
+              setContrastMode(m => (m === 'selected' ? 'white' : 'selected'))
+            }
           >
-            <option value={'selected'}>to selected</option>
-            <option value={'white'}>to white</option>
-          </Select>
+            vs. {contrastMode}
+          </Button>
         </ControlRow>
         <PaletteSwatches
           palette={palette}
@@ -199,6 +197,7 @@ const ControlRow = styled.main`
   gap: 8px;
 `
 const PaletteSection = styled.section`
+  width: min-content;
   overflow: auto;
   min-width: 400px;
   display: flex;
@@ -228,21 +227,7 @@ const Column = styled.div`
   gap: 16px;
 `
 const Select = styled.select`
-  color: #555a64;
-  border: 1px solid #c2c5cd;
-  border-radius: var(--radius-m);
-  background-color: #f3f5f9;
-  font-size: 14px;
-  line-height: 20px;
-  padding: 4px 8px;
-  transition: 150ms ease-in-out;
-
-  :hover {
-    color: #171a22;
-    border: 1px solid #a6abb5;
-  }
-`
-const Button = styled.button`
+  cursor: pointer;
   color: #6a707a;
   border: 1px solid #c2c5cd;
   border-radius: var(--radius-m);
@@ -250,10 +235,40 @@ const Button = styled.button`
   font-size: 14px;
   line-height: 20px;
   padding: 4px 8px;
+  box-shadow: 0 2px 4px 0 rgb(23 26 34 / 10%);
   transition: 150ms ease-in-out;
 
   :hover {
     color: #171a22;
     border: 1px solid #a6abb5;
+  }
+
+  :active {
+    box-shadow: 0 0 0 0 rgb(23 26 34 / 10%);
+    transform: translateY(1px);
+    transition: 100ms ease-in-out;
+  }
+`
+const Button = styled.button`
+  cursor: pointer;
+  color: #6a707a;
+  border: 1px solid #c2c5cd;
+  border-radius: var(--radius-m);
+  background-color: #f3f5f9;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 4px 8px;
+  box-shadow: 0 2px 4px 0 rgb(23 26 34 / 10%);
+  transition: 150ms ease-in-out;
+
+  :hover {
+    color: #171a22;
+    border: 1px solid #a6abb5;
+  }
+
+  :active {
+    box-shadow: 0 0 0 0 rgb(23 26 34 / 10%);
+    transform: translateY(1px);
+    transition: 100ms ease-in-out;
   }
 `

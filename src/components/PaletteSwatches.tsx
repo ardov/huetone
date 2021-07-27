@@ -260,7 +260,7 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
 
 const Wrapper = styled.div<{ columns: number; rows: number }>`
   display: grid;
-  grid-template-columns: 64px repeat(${p => p.columns}, minmax(32px, 48px)) 16px;
+  grid-template-columns: 64px repeat(${p => p.columns}, 48px) 16px;
   grid-template-rows: 24px repeat(${p => p.rows}, 48px) 16px;
 `
 
