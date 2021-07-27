@@ -14,12 +14,13 @@ export const ContrastBadgeAPCA: FC<{ background: string; color: string }> = ({
   else if (cr >= 30) rating = 'Only non-reading text'
   else if (cr >= 15) rating = 'Only non-text'
   else rating = 'Fail'
+  const displayCr = Math.floor(cr * 10) / 10
 
   return (
     <Wrapper>
       <Preview style={{ background, color }}>APCA</Preview>
       <Info style={{ color: cr < 30 ? 'red' : cr >= 60 ? 'green' : 'black' }}>
-        <strong>{+cr.toFixed(1)}</strong> – {rating}
+        <strong>{displayCr}</strong> – {rating}
       </Info>
     </Wrapper>
   )
@@ -31,15 +32,16 @@ export const ContrastBadgeWCAG: FC<{ background: string; color: string }> = ({
   const cr = wcagContrast(background, color)
   let rating = ''
   if (cr >= 7) rating = 'AAA'
-  else if (cr >= 4.5) rating = 'AA for normal and AAA for large text'
-  else if (cr >= 3) rating = 'AA for large text or UI components'
+  else if (cr >= 4.5) rating = 'AA (normal), AAA (large)'
+  else if (cr >= 3) rating = 'AA (large & UI components)'
   else rating = 'Fail'
+  const displayCr = Math.floor(cr * 10) / 10
 
   return (
     <Wrapper>
       <Preview style={{ background, color }}>WCAG</Preview>
       <Info style={{ color: cr < 3 ? 'red' : cr >= 4.5 ? 'green' : 'black' }}>
-        <strong>{+cr.toFixed(1)}</strong> – {rating}
+        <strong>{displayCr}</strong> – {rating}
       </Info>
     </Wrapper>
   )
@@ -63,7 +65,6 @@ const Info = styled.span`
   font-size: 14px;
   padding: 8px;
 `
-
 export const HexInput = styled.input`
   border: 1px solid #c1c1c1;
   border-radius: 6px;

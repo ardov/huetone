@@ -25,8 +25,6 @@ import {
 import { LCH, OverlayMode, Palette } from '../types'
 import { useKeyPress } from '../useKeyPress'
 
-const SWATCH_WIDTH = '48px'
-const SWATCH_HEIGHT = '48px'
 const contrast = {
   WCAG: wcagContrast,
   APCA: apcaContrast,
@@ -262,9 +260,8 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
 
 const Wrapper = styled.div<{ columns: number; rows: number }>`
   display: grid;
-  grid-template-columns:
-    80px repeat(${p => p.columns}, minmax(34px, max-content))
-    16px;
+  grid-template-columns: 64px repeat(${p => p.columns}, minmax(32px, 48px)) 16px;
+  grid-template-rows: 24px repeat(${p => p.rows}, 48px) 16px;
 `
 
 const HueInput = styled.input`
@@ -273,7 +270,6 @@ const HueInput = styled.input`
   background: transparent;
 `
 const ToneInput = styled(HueInput)`
-  width: ${SWATCH_WIDTH};
   text-align: center;
   padding: 4px 0;
 `
@@ -307,8 +303,6 @@ const SwatchWrapper = styled.button<{ isSelected: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${SWATCH_WIDTH};
-  height: ${SWATCH_HEIGHT};
   border: ${p =>
     p.isSelected
       ? '6px solid var(--c-bg, white)'

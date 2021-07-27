@@ -209,6 +209,7 @@ const PaletteSection = styled.section`
 `
 const Charts = styled.section`
   display: grid;
+  gap: 8px;
   grid-template-columns: repeat(2, auto);
 `
 const ChartsSection = styled.section`
@@ -227,28 +228,32 @@ const Column = styled.div`
   gap: 16px;
 `
 const Select = styled.select`
-  color: #727272;
-  border: 1px solid #c6c6c6;
+  color: #555a64;
+  border: 1px solid #c2c5cd;
   border-radius: var(--radius-m);
-  background-color: #f8f8f8;
+  background-color: #f3f5f9;
   font-size: 14px;
   line-height: 20px;
   padding: 4px 8px;
+  transition: 150ms ease-in-out;
 
   :hover {
-    color: black;
+    color: #171a22;
+    border: 1px solid #a6abb5;
   }
 `
 const Button = styled.button`
-  color: #727272;
-  border: 1px solid #c6c6c6;
+  color: #6a707a;
+  border: 1px solid #c2c5cd;
   border-radius: var(--radius-m);
-  background-color: #f8f8f8;
+  background-color: #f3f5f9;
   font-size: 14px;
   line-height: 20px;
   padding: 4px 8px;
+  transition: 150ms ease-in-out;
 
   :hover {
-    color: black;
+    color: #171a22;
+    border: 1px solid #a6abb5;
   }
 `

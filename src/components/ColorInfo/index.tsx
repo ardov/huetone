@@ -11,14 +11,30 @@ type ColorInfoProps = {
 }
 
 export const ColorInfo: FC<ColorInfoProps> = ({ palette, selected }) => {
-  const [hueId, toneId] = selected
-  const { colors, tones } = palette
+  return (
+    <ContrastStack>
+      <ContrastGroup palette={palette} selected={selected} color={'50'} />
+      <ContrastGroup palette={palette} selected={selected} color={'white'} />
+      <ContrastGroup palette={palette} selected={selected} color={'black'} />
+    </ContrastStack>
+  )
+}
+const ContrastStack = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`
+
+const ContrastGroup: FC<ColorInfoProps & { color: string }> = props => {
+  const [hueId, toneId] = props.selected
+  const { colors, tones, hues } = props.palette
   const selectedLch = colors[hueId][toneId]
   const hex = toHex(selectedLch)
-  const [colorInput, setColorInput] = useState(tones[0])
+  const [colorInput, setColorInput] = useState(props.color)
   const [additionalColor, setAdditionalColor] = useState(
     toHex(colors[hueId][0])
   )
+  const name = hues[hueId] + '-' + tones[toneId]
 
   useEffect(() => {
     const i = tones.indexOf(colorInput)
@@ -28,12 +44,11 @@ export const ColorInfo: FC<ColorInfoProps> = ({ palette, selected }) => {
       setAdditionalColor(colorInput)
     }
   }, [colorInput, colors, hueId, tones])
-
   return (
     <Wrapper>
       <Heading>
         <h4>
-          Contrast vs.{' '}
+          {name} vs.{' '}
           <HexInput
             value={colorInput}
             onKeyDown={e => e.stopPropagation()}
@@ -47,28 +62,12 @@ export const ColorInfo: FC<ColorInfoProps> = ({ palette, selected }) => {
       <ContrastBadgeAPCA background={additionalColor} color={hex} />
       <ContrastBadgeAPCA background={hex} color={additionalColor} />
       <ContrastBadgeWCAG background={additionalColor} color={hex} />
-
-      <Heading>
-        <h4>Contrast vs. white</h4>
-      </Heading>
-      <ContrastBadgeAPCA background={'white'} color={hex} />
-      <ContrastBadgeAPCA background={hex} color={'white'} />
-      <ContrastBadgeWCAG background={'white'} color={hex} />
-
-      <Heading>
-        <h4>Contrast vs. black</h4>
-      </Heading>
-      <ContrastBadgeAPCA background={hex} color={'black'} />
-      <ContrastBadgeAPCA background={'black'} color={hex} />
-
-      <ContrastBadgeWCAG background={'black'} color={hex} />
     </Wrapper>
   )
 }
 
 const Wrapper = styled.div`
   display: grid;
-  max-width: 480px;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 `
