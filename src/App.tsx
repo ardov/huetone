@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { toHex } from './color'
 import { ColorEditor } from './components/ColorEditor'
@@ -6,6 +6,7 @@ import { Scale } from './components/ColorGraph'
 import { PaletteSwatches } from './components/PaletteSwatches'
 import {
   clampColorsToRgb,
+  paletteToHex,
   parsePalette,
   setColor,
   setHueHue,
@@ -17,6 +18,7 @@ import { createLocalStorageStateHook } from 'use-local-storage-state'
 import { ExportButton } from './components/ExportButton'
 import { ColorInfo } from './components/ColorInfo'
 import { ExampleUI } from './components/ExampleUI'
+import LZString from 'lz-string'
 
 const paletteList = PRESETS.map(parsePalette)
 
@@ -46,6 +48,31 @@ export default function App() {
     }
     setPaletteIdx(0)
   }
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const compressed = params.get('palette')
+    if (!compressed) return
+    const json = LZString.decompressFromEncodedURIComponent(compressed)
+    if (!json) return
+    try {
+      const hexPalette = JSON.parse(json)
+      setLocalPatette(parsePalette(hexPalette))
+    } catch (e) {}
+  }, [setLocalPatette])
+
+  useEffect(() => {
+    const href = window.location.href
+    const [base, search] = href.split('?')
+    const params = new URLSearchParams(search)
+    const hexPalette = paletteToHex(palette)
+    const compressed = LZString.compressToEncodedURIComponent(
+      JSON.stringify(hexPalette)
+    )
+    params.set('palette', compressed)
+    let location = [base, params.toString()].join('?')
+    window.history.pushState('page2', 'Title', location)
+  }, [palette])
 
   return (
     <Wrapper>
