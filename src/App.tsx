@@ -16,6 +16,7 @@ import { OverlayMode, Palette } from './types'
 import { createLocalStorageStateHook } from 'use-local-storage-state'
 import { ExportButton } from './components/ExportButton'
 import { ColorInfo } from './components/ColorInfo'
+import { ExampleUI } from './components/ExampleUI'
 
 const paletteList = PRESETS.map(parsePalette)
 
@@ -183,6 +184,8 @@ export default function App() {
             />
           </Column>
         </Charts>
+
+        <ExampleUI palette={palette} />
       </ChartsSection>
     </Wrapper>
   )
