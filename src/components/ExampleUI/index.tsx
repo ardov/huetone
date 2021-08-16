@@ -67,28 +67,25 @@ export const ButtonComp: FC<ButtonProps> = ({
       '--c-text-hover': 'white',
       '--c-text-active': 'white',
       '--c-text-shadow': 'none', //'0 1px 1px ' + colors[5],
-      '--c-focus': colors[baseTone] + '4c',
+      '--c-focus': alpha(colors[baseTone], 0.3),
     },
     secondary: {
-      '--c-bg': colors[0],
-      '--c-bg-hover': colors[1],
-      '--c-bg-active': colors[2],
-      // '--c-bg': colors[baseTone] + '1a',
-      // '--c-bg-hover': colors[baseTone] + '26',
-      // '--c-bg-active': colors[baseTone] + '33',
-      '--c-border': colors[2],
-      '--c-border-hover': colors[2],
-      '--c-border-active': colors[2],
+      '--c-bg': alpha(colors[baseTone], 0.1),
+      '--c-bg-hover': alpha(colors[baseTone], 0.15),
+      '--c-bg-active': alpha(colors[baseTone], 0.2),
+      '--c-border': alpha(colors[baseTone], 0.5),
+      '--c-border-hover': alpha(colors[baseTone], 0.5),
+      '--c-border-active': alpha(colors[baseTone], 0.5),
       '--c-text': colors[5],
       '--c-text-hover': colors[6],
       '--c-text-active': colors[7],
       '--c-text-shadow': 'none',
-      '--c-focus': colors[baseTone] + '4C',
+      '--c-focus': alpha(colors[baseTone], 0.3),
     },
     tetriary: {
-      '--c-bg': colors[baseTone] + '00',
-      '--c-bg-hover': colors[baseTone] + '26',
-      '--c-bg-active': colors[baseTone] + '33',
+      '--c-bg': alpha(colors[baseTone], 0),
+      '--c-bg-hover': alpha(colors[baseTone], 0.15),
+      '--c-bg-active': alpha(colors[baseTone], 0.2),
       '--c-border': 'transparent',
       '--c-border-hover': 'transparent',
       '--c-border-active': 'transparent',
@@ -96,7 +93,7 @@ export const ButtonComp: FC<ButtonProps> = ({
       '--c-text-hover': colors[6],
       '--c-text-active': colors[7],
       '--c-text-shadow': 'none',
-      '--c-focus': colors[baseTone] + '4C',
+      '--c-focus': alpha(colors[baseTone], 0.3),
     },
   }
   return (
@@ -122,6 +119,7 @@ export const ButtonBase = styled.button`
   padding: 3px 8px;
   gap: 8px;
   transition: 100ms ease-in-out;
+  box-shadow: 0 0 0 0 var(--c-focus);
 
   font-size: 14px;
   line-height: 20px;
@@ -139,12 +137,13 @@ export const ButtonBase = styled.button`
     border-color: var(--c-border-active);
     color: var(--c-text-active);
     transform: translateY(1px);
-    transition: 150ms ease-in-out;
+    transition: 100ms ease-in-out;
   }
 
   :focus {
     /* outline: 2px solid var(--c-bg); */
     /* outline-offset: 2px; */
+    transition: 150ms ease-in-out;
     outline: none;
     box-shadow: 0 0 0 3px var(--c-focus);
   }
@@ -154,3 +153,10 @@ export const ButtonBase = styled.button`
     box-shadow: none;
   }
 `
+
+const alpha = (hex: string, a?: number) => {
+  if (a === undefined || a >= 1) return hex
+  if (a <= 0) return 'transparent'
+  const opacity = Math.floor(255 * a).toString(16)
+  return hex + opacity
+}
