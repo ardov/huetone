@@ -1,3 +1,4 @@
+import chroma from 'chroma-js'
 import React, { FC, Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import {
@@ -50,6 +51,7 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
   const lPress = useKeyPress('l')
   const cPress = useKeyPress('c')
   const hPress = useKeyPress('h')
+  const bPress = useKeyPress('b')
   const [copiedColor, setCopiedColor] = useState<LCH>([0, 0, 0])
   const { hues, tones, colors } = palette
   const [selectedHue, selectedTone] = selected
@@ -223,7 +225,7 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
           {hueColors.map((color, tone) => (
             <Swatch
               key={color + tone}
-              color={color}
+              color={!bPress ? color : chroma(color).desaturate(10).hex()}
               contrast={contrast[overlayMode](contrastTo, color)}
               isSelected={hue === selectedHue && tone === selectedTone}
               onSelect={() => onSelect([hue, tone])}
