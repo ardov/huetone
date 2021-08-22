@@ -27,7 +27,7 @@ function drawChart({ width, height, colors, channel }: DrawChartProps) {
   const horizontalScales = {
     l: paddedScale(channelValues.l, width),
     c: paddedScale(channelValues.c, width),
-    h: paddedScale(channelValues.h, width),
+    h: paddedScale(channelValues.h, width), //, MAX_H),
   }
 
   for (let x = 0; x < width; x++) {
@@ -39,10 +39,9 @@ function drawChart({ width, height, colors, channel }: DrawChartProps) {
 
     for (let y = 0; y < height; y++) {
       value[channel] = scaleValue(y, [0, height], domains[channel])
-
       const { r, g, b, a } = displayable([value.l, value.c, value.h])
         ? { r: 255, g: 255, b: 255, a: 255 }
-        : { r: 230, g: 230, b: 230, a: 255 }
+        : { r: 0, g: 0, b: 0, a: 0 }
 
       const displacement = y * width * 4 + x * 4
       pixels[displacement] = r
@@ -54,11 +53,11 @@ function drawChart({ width, height, colors, channel }: DrawChartProps) {
   return pixels
 }
 
-const paddedScale = (stops: number[], width: number) => {
+const paddedScale = (stops: number[], width: number, max?: number) => {
   const columnWidth = width / stops.length
   const padStart = columnWidth / 2
   const padEnd = columnWidth / 2
-  const scale = linearScale(stops, width - padEnd - padStart)
+  const scale = linearScale(stops, width - padEnd - padStart, max)
   return (value: number) => {
     if (value <= padStart) return stops[0]
     if (value >= width - padEnd) return stops[stops.length - 1]
@@ -66,7 +65,7 @@ const paddedScale = (stops: number[], width: number) => {
   }
 }
 
-const linearScale = (stops: number[], width: number) => {
+const linearScale = (stops: number[], width: number, max?: number) => {
   if (stops.length === 1) return () => stops[0]
   const sections = stops.length - 1
   const sectionWidth = width / sections
@@ -75,11 +74,17 @@ const linearScale = (stops: number[], width: number) => {
     if (value >= width) return stops[stops.length - 1]
     const idxFrom = Math.floor(value / sectionWidth)
     const localValue = value % sectionWidth
-    return scaleValue(
-      localValue,
-      [0, sectionWidth],
-      [stops[idxFrom], stops[idxFrom + 1]]
-    )
+    const from = stops[idxFrom]
+    const to = stops[idxFrom + 1]
+
+    if (!max || Math.abs(from - to) <= max / 2) {
+      return scaleValue(localValue, [0, sectionWidth], [from, to])
+    }
+    if (from > max / 2) {
+      return scaleValue(localValue, [0, sectionWidth], [from, to + max]) & max
+    } else {
+      return scaleValue(localValue, [0, sectionWidth], [from + max, to]) & max
+    }
   }
 }
 
