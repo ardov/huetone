@@ -160,6 +160,7 @@ export default function App() {
         <Charts>
           <Column>
             <Scale
+              selected={selected[1]}
               channel="l"
               colors={palette.colors[selected[0]]}
               onColorChange={(i, lch) => {
@@ -168,6 +169,7 @@ export default function App() {
               }}
             />
             <Scale
+              selected={selected[1]}
               channel="c"
               colors={palette.colors[selected[0]]}
               onColorChange={(i, lch) => {
@@ -176,6 +178,7 @@ export default function App() {
               }}
             />
             <Scale
+              selected={selected[1]}
               channel="h"
               colors={palette.colors[selected[0]]}
               onColorChange={(i, lch) => {
@@ -186,6 +189,7 @@ export default function App() {
           </Column>
           <Column>
             <Scale
+              selected={selected[0]}
               channel="l"
               colors={palette.colors.map(hue => hue[selected[1]])}
               onColorChange={(i, lch) => {
@@ -194,6 +198,7 @@ export default function App() {
               }}
             />
             <Scale
+              selected={selected[0]}
               channel="c"
               colors={palette.colors.map(hue => hue[selected[1]])}
               onColorChange={(i, lch) => {
@@ -202,6 +207,7 @@ export default function App() {
               }}
             />
             <Scale
+              selected={selected[0]}
               channel="h"
               colors={palette.colors.map(hue => hue[selected[1]])}
               onColorChange={(i, lch) => {

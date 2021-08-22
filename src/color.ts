@@ -12,6 +12,8 @@ export const toLch = (hex: string): LCH =>
     .map(n => (isNaN(n) ? 0 : n)) as LCH
 
 export const toHex = (lch: LCH): string => chroma.lch(...lch).hex()
+export const toRgb = (lch: LCH): [number, number, number] =>
+  chroma.lch(...lch).rgb()
 
 export const clampLch = (lch: LCH): LCH => {
   const maximums = [MAX_L, MAX_C, MAX_H]
