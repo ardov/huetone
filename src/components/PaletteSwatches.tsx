@@ -60,34 +60,25 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
 
   useEffect(() => {
     function handler(e: KeyboardEvent) {
-      // Copy color
-      if (e.metaKey && e.key === 'c') {
-        navigator.clipboard.writeText(toHex(selectedColorLch))
-        setCopiedColor([...selectedColorLch] as LCH)
-        return
+      const { key, metaKey, shiftKey } = e
+      if (!filterInput(e)) return
+      const noDefault = (func: () => any) => {
+        e.preventDefault()
+        func()
       }
-
-      // Paste color
-      if (e.metaKey && e.key === 'v') {
-        navigator.clipboard.readText().then(hex => {
-          if (valid(hex))
-            onPaletteChange(
-              setColor(palette, toLch(hex), selectedHue, selectedTone)
-            )
-        })
-        return
-      }
+      if (metaKey && key === 'c') return copyCurrent()
+      if (metaKey && key === 'v') return pasteToCurrent()
 
       // Modify color
       if (lPress || cPress || hPress) {
         e.preventDefault()
         let [l, c, h] = selectedColorLch
-        if (e.key === 'ArrowUp') {
+        if (key === 'ArrowUp') {
           if (lPress) l += 0.5
           if (cPress) c += 0.5
           if (hPress) h += 0.5
         }
-        if (e.key === 'ArrowDown') {
+        if (key === 'ArrowDown') {
           if (lPress) l -= 0.5
           if (cPress) c -= 0.5
           if (hPress) h -= 0.5
@@ -98,77 +89,93 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
         return
       }
 
-      // Move row or column
-      if (e.metaKey && !e.shiftKey) {
-        e.preventDefault()
-        if (e.key === 'ArrowUp' && selectedHue > 0) {
-          onPaletteChange(reorderHues(palette, selectedHue, selectedHue - 1))
-          onSelect([selectedHue - 1, selectedTone])
-          return
-        }
-        if (e.key === 'ArrowDown' && selectedHue < hues.length - 1) {
-          onPaletteChange(reorderHues(palette, selectedHue, selectedHue + 1))
-          onSelect([selectedHue + 1, selectedTone])
-          return
-        }
-        if (e.key === 'ArrowLeft' && selectedTone > 0) {
-          onPaletteChange(reorderTones(palette, selectedTone, selectedTone - 1))
-          onSelect([selectedHue, selectedTone - 1])
-          return
-        }
-        if (e.key === 'ArrowRight' && selectedTone < tones.length - 1) {
-          onPaletteChange(reorderTones(palette, selectedTone, selectedTone + 1))
-          onSelect([selectedHue, selectedTone + 1])
-          return
-        }
+      // Duplicate row or column
+      if (metaKey && shiftKey) {
+        if (key === 'ArrowUp') return noDefault(duplicateUp)
+        if (key === 'ArrowDown') return noDefault(duplicateDown)
+        if (key === 'ArrowLeft') return noDefault(duplicateLeft)
+        if (key === 'ArrowRight') return noDefault(duplicateRight)
       }
 
-      // Duplicate row or column
-      if (e.metaKey && e.shiftKey) {
-        e.preventDefault()
-        if (e.key === 'ArrowUp') {
-          onPaletteChange(duplicateHue(palette, selectedHue, selectedHue))
-          return
-        }
-        if (e.key === 'ArrowDown') {
-          onPaletteChange(duplicateHue(palette, selectedHue, selectedHue + 1))
-          onSelect([selectedHue + 1, selectedTone])
-          return
-        }
-        if (e.key === 'ArrowLeft') {
-          onPaletteChange(duplicateTone(palette, selectedTone, selectedTone))
-          onSelect([selectedHue, selectedTone])
-          return
-        }
-        if (e.key === 'ArrowRight') {
-          onPaletteChange(
-            duplicateTone(palette, selectedTone, selectedTone + 1)
-          )
-          onSelect([selectedHue, selectedTone + 1])
-          return
-        }
+      // Move row or column
+      if (metaKey) {
+        if (key === 'ArrowUp') return noDefault(moveRowUp)
+        if (key === 'ArrowDown') return noDefault(moveRowDown)
+        if (key === 'ArrowLeft') return noDefault(moveColumnLeft)
+        if (key === 'ArrowRight') return noDefault(moveColumnRight)
       }
 
       // Select color
-      if (e.key === 'ArrowUp' && selectedHue > 0) {
-        e.preventDefault()
+      if (key === 'ArrowUp') return noDefault(selectUp)
+      if (key === 'ArrowDown') return noDefault(selectDown)
+      if (key === 'ArrowLeft') return noDefault(selectLeft)
+      if (key === 'ArrowRight') return noDefault(selectRight)
+
+      function copyCurrent() {
+        navigator.clipboard.writeText(toHex(selectedColorLch))
+        setCopiedColor([...selectedColorLch] as LCH)
+      }
+      function pasteToCurrent() {
+        navigator.clipboard.readText().then(hex => {
+          if (valid(hex))
+            onPaletteChange(
+              setColor(palette, toLch(hex), selectedHue, selectedTone)
+            )
+        })
+      }
+
+      function moveRowUp() {
+        if (selectedHue <= 0) return
+        onPaletteChange(reorderHues(palette, selectedHue, selectedHue - 1))
         onSelect([selectedHue - 1, selectedTone])
-        return
       }
-      if (e.key === 'ArrowDown' && selectedHue < hues.length - 1) {
-        e.preventDefault()
+      function moveRowDown() {
+        if (selectedHue >= hues.length - 1) return
+        onPaletteChange(reorderHues(palette, selectedHue, selectedHue + 1))
         onSelect([selectedHue + 1, selectedTone])
-        return
       }
-      if (e.key === 'ArrowLeft' && selectedTone > 0) {
-        e.preventDefault()
+      function moveColumnLeft() {
+        if (selectedTone <= 0) return
+        onPaletteChange(reorderTones(palette, selectedTone, selectedTone - 1))
         onSelect([selectedHue, selectedTone - 1])
-        return
       }
-      if (e.key === 'ArrowRight' && selectedTone < tones.length - 1) {
-        e.preventDefault()
+      function moveColumnRight() {
+        if (selectedTone >= tones.length - 1) return
+        onPaletteChange(reorderTones(palette, selectedTone, selectedTone + 1))
         onSelect([selectedHue, selectedTone + 1])
-        return
+      }
+
+      function duplicateUp() {
+        onPaletteChange(duplicateHue(palette, selectedHue, selectedHue))
+      }
+      function duplicateDown() {
+        onPaletteChange(duplicateHue(palette, selectedHue, selectedHue + 1))
+        onSelect([selectedHue + 1, selectedTone])
+      }
+      function duplicateLeft() {
+        onPaletteChange(duplicateTone(palette, selectedTone, selectedTone))
+        onSelect([selectedHue, selectedTone])
+      }
+      function duplicateRight() {
+        onPaletteChange(duplicateTone(palette, selectedTone, selectedTone + 1))
+        onSelect([selectedHue, selectedTone + 1])
+      }
+
+      function selectUp() {
+        if (selectedHue <= 0) return
+        onSelect([selectedHue - 1, selectedTone])
+      }
+      function selectDown() {
+        if (selectedHue >= hues.length - 1) return
+        onSelect([selectedHue + 1, selectedTone])
+      }
+      function selectLeft() {
+        if (selectedTone <= 0) return
+        onSelect([selectedHue, selectedTone - 1])
+      }
+      function selectRight() {
+        if (selectedTone >= tones.length - 1) return
+        onSelect([selectedHue, selectedTone + 1])
       }
     }
     window.addEventListener('keydown', handler)
@@ -330,3 +337,15 @@ const SmallButton = styled.button`
     opacity: 1;
   }
 `
+
+/** Detects if keyboard input is from editable field */
+function filterInput(event: KeyboardEvent) {
+  const target = event.target
+  if (!target) return true
+  // @ts-ignore
+  const { tagName, isContentEditable, readOnly } = target
+  if (isContentEditable) return false
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName) && !readOnly)
+    return false
+  return true
+}
