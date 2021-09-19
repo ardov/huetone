@@ -4,6 +4,7 @@ import App from './App'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
 import GlobalStyles from './GlobalStyles'
+import './styles.scss'
 
 ReactDOM.render(
   <React.StrictMode>

@@ -1,7 +1,8 @@
 import React, { FC, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { MAX_C, MAX_H, MAX_L, toHex, toLch, valid } from '../color'
+import { displayable, MAX_C, MAX_H, MAX_L, toHex, toLch, valid } from '../color'
 import { LCH } from '../types'
+import { ControlGroup, Input } from './inputs'
 
 type ColorEditorProps = {
   color: LCH
@@ -12,6 +13,7 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
   const [l, c, h] = color
   const [isFocused, setIsFocused] = useState(false)
   const [colorInput, setColorInput] = useState(toHex(color))
+  const isDisplayable = displayable(color)
 
   useEffect(() => {
     if (!isFocused) {
@@ -20,7 +22,7 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
   }, [color, isFocused])
 
   return (
-    <Wrapper>
+    <ControlGroup>
       <ChannelInputWrapper>
         <ChannelLabel>L</ChannelLabel>
         <ChannelInput
@@ -59,6 +61,7 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
       </ChannelInputWrapper>
       <HexInput
         value={colorInput}
+        style={{ color: isDisplayable ? 'inherit' : 'red' }}
         onKeyDown={e => e.stopPropagation()}
         onFocus={() => setIsFocused(true)}
         onBlur={() => {
@@ -73,28 +76,10 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
           }
         }}
       />
-    </Wrapper>
+    </ControlGroup>
   )
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  gap: 4px;
-`
-const Input = styled.input`
-  border: 1px solid #c1c1c1;
-  border-radius: 6px;
-  color: var(--c-text-primary);
-  padding: 4px 8px;
-  background: #eee;
-  transition: 100ms;
-
-  :focus {
-    border-color: var(--c-accent);
-    outline: none;
-    background: #fff;
-  }
-`
 const ChannelInputWrapper = styled.label`
   position: relative;
   isolation: isolate;
@@ -107,8 +92,9 @@ const ChannelLabel = styled.span`
   color: var(--c-text-hint);
 `
 const ChannelInput = styled(Input)`
-  width: 88px;
-  padding: 4px 4px 4px 24px;
+  width: 80px;
+  padding-left: 24px;
+  border-radius: inherit;
   -moz-appearance: textfield;
 
   ::-webkit-outer-spin-button,
@@ -119,5 +105,5 @@ const ChannelInput = styled(Input)`
 `
 
 const HexInput = styled(Input)`
-  width: 88px;
+  width: 80px;
 `

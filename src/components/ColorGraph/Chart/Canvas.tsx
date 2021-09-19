@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import Worker from 'worker-loader!./paintWorker'
 import { WorkerObj } from './paintWorker'
 import * as Comlink from 'comlink'
-import { Channel, LCH } from '../../types'
+import { Channel, LCH } from '../../../types'
 import debounce from 'lodash/debounce'
 import styled from 'styled-components'
 
@@ -25,9 +25,10 @@ export function Canvas(props: {
       console.log('🖼 Repaint canvas')
       const canvas = canvasRef.current
       const ctx = canvas?.getContext('2d')
+      if (!ctx) return
       const pixels = await drawChart({ width, height, colors, channel })
       const imageData = new ImageData(pixels, width, height)
-      ctx?.putImageData(imageData, 0, 0)
+      ctx.putImageData(imageData, 0, 0)
     }, 200)
   }, [channel, height, width])
 
@@ -39,15 +40,19 @@ export function Canvas(props: {
   }, [colors, debouncedRepaint])
   return (
     <Wrapper>
-      <StyledCanvas ref={canvasRef} width={width} height={height} />
+      <StyledCanvas
+        ref={canvasRef}
+        width={width}
+        height={height}
+        style={{ filter: 'var(--canvas-filter)' }}
+      />
     </Wrapper>
   )
 }
 
 const Wrapper = styled.div`
-  --c-1: #dee1e8;
-  --c-2: #f3f5f9;
-  --c-3: #b0b5bf;
+  --c-1: var(--c-bg-card);
+  --c-2: var(--c-divider);
   overflow: hidden;
   border-radius: 0 0 8px 8px;
   background-color: var(--c-2);
@@ -60,5 +65,5 @@ const Wrapper = styled.div`
 `
 
 const StyledCanvas = styled.canvas`
-  filter: drop-shadow(0px 0px 1px var(--c-3));
+  filter: drop-shadow(0px 0px 1px var(--c-1));
 `

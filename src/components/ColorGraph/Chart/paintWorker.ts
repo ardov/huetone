@@ -1,6 +1,6 @@
-import { MAX_C, MAX_H, MAX_L, displayable } from '../../color'
+import { MAX_C, MAX_H, MAX_L, displayable } from '../../../color'
 import * as Comlink from 'comlink'
-import { LCH } from '../../types'
+import { LCH } from '../../../types'
 
 const domains = {
   l: [MAX_L, 0] as [number, number],

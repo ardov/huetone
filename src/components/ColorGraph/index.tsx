@@ -1,6 +1,5 @@
-// import './styles.css'
-import { getMostContrast, MAX_C, MAX_H, MAX_L, toHex } from '../color'
-import { Channel, LCH } from '../types'
+import { getMostContrast, MAX_C, MAX_H, MAX_L, toHex } from '../../color'
+import { Channel, LCH } from '../../types'
 import styled from 'styled-components'
 import { Canvas } from './Chart/Canvas'
 
@@ -84,7 +83,7 @@ export function Scale({
                 if (channel === 'c') onColorChange(i, [l, value, h])
                 if (channel === 'h') onColorChange(i, [l, c, value])
               }}
-              onDoubleClick={() => alert('123')}
+              onClick={() => onColorChange(i, lch)}
               isSelected={i === selected}
               style={{
                 // @ts-ignore
@@ -115,7 +114,7 @@ const Knob = styled.input.attrs({ type: 'range' })<{
   left: number
   isSelected: boolean
 }>`
-  --track: ${p => (p.isSelected ? 'rgba(0, 0, 0, 0.1)' : 'transparent')};
+  --track: ${p => (p.isSelected ? 'var(--c-divider)' : 'transparent')};
   position: absolute;
   width: ${p => p.canvasHeight + 16}px;
   height: 1px;
@@ -152,7 +151,7 @@ const Knob = styled.input.attrs({ type: 'range' })<{
     transform: ${p => (p.isSelected ? 'scale(1)' : 'scale(0.75)')};
     border: ${p => (p.isSelected ? '5px' : '8px')} solid var(--bg, gray);
     border-radius: 13px;
-    box-shadow: -3px 0 4px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0 1px var(--c-divider);
     cursor: grab;
     transition: 100ms ease-in-out;
     -webkit-appearance: none;

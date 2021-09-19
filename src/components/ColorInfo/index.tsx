@@ -3,7 +3,8 @@ import React, { FC, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { toHex } from '../../color'
 import { Palette } from '../../types'
-import { HexInput, ContrastBadgeAPCA, ContrastBadgeWCAG } from './ContrastBadge'
+import { Input } from '../inputs'
+import { ContrastBadgeAPCA, ContrastBadgeWCAG } from './ContrastBadge'
 
 type ColorInfoProps = {
   palette: Palette
@@ -13,7 +14,11 @@ type ColorInfoProps = {
 export const ColorInfo: FC<ColorInfoProps> = ({ palette, selected }) => {
   return (
     <ContrastStack>
-      <ContrastGroup palette={palette} selected={selected} color={'50'} />
+      <ContrastGroup
+        palette={palette}
+        selected={selected}
+        color={palette.tones[0]}
+      />
       <ContrastGroup palette={palette} selected={selected} color={'white'} />
       <ContrastGroup palette={palette} selected={selected} color={'black'} />
     </ContrastStack>
@@ -49,7 +54,7 @@ const ContrastGroup: FC<ColorInfoProps & { color: string }> = props => {
       <Heading>
         <h4>
           {name} vs.{' '}
-          <HexInput
+          <Input
             value={colorInput}
             onKeyDown={e => e.stopPropagation()}
             onChange={e => {

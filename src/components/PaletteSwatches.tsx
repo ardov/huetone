@@ -25,6 +25,7 @@ import {
 } from '../palette'
 import { LCH, OverlayMode, Palette } from '../types'
 import { useKeyPress } from '../useKeyPress'
+import { Button, InvisibleInput } from './inputs'
 
 const contrast = {
   WCAG: wcagContrast,
@@ -221,7 +222,7 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
       {/* HUES */}
       {hexColors.map((hueColors, hue) => (
         <Fragment key={hue}>
-          <HueInput
+          <InvisibleInput
             key={hue}
             value={hues[hue]}
             onKeyDown={e => e.stopPropagation()}
@@ -269,18 +270,12 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
 
 const Wrapper = styled.div<{ columns: number; rows: number }>`
   display: grid;
-  grid-template-columns: 64px repeat(${p => p.columns}, 48px) 16px;
-  grid-template-rows: 24px repeat(${p => p.rows}, 48px) 16px;
+  grid-template-columns: 64px repeat(${p => p.columns}, 48px) 24px;
+  grid-template-rows: 32px repeat(${p => p.rows}, 48px) 24px;
 `
 
-const HueInput = styled.input`
-  border: 0;
-  padding: 0;
-  background: transparent;
-`
-const ToneInput = styled(HueInput)`
+const ToneInput = styled(InvisibleInput)`
   text-align: center;
-  padding: 4px 0;
 `
 
 type SwatchProps = {
@@ -293,45 +288,37 @@ type SwatchProps = {
 const Swatch: FC<SwatchProps> = props => {
   const { color, isSelected, onSelect, contrast } = props
   const contrastRatio = Math.floor(contrast * 10) / 10
+  const contrastText = getMostContrast(color, ['black', 'white'])
+  const style = { '--bg': color, '--text': contrastText } as React.CSSProperties
   return (
-    <SwatchWrapper
-      style={{
-        backgroundColor: color,
-        color: getMostContrast(color, ['black', 'white']),
-      }}
-      isSelected={isSelected}
-      onClick={onSelect}
-    >
-      <span>{contrastRatio}</span>
+    <SwatchWrapper style={style} isSelected={isSelected} onClick={onSelect}>
+      <span style={isSelected ? { fontWeight: 900 } : {}}>{contrastRatio}</span>
     </SwatchWrapper>
   )
 }
 
 const SwatchWrapper = styled.button<{ isSelected: boolean }>`
+  background: var(--bg);
+  color: var(--text);
   cursor: pointer;
   display: flex;
+  position: relative;
+  border: none;
   align-items: center;
   justify-content: center;
-  border: ${p =>
-    p.isSelected
-      ? '6px solid var(--c-bg, white)'
-      : '0px solid var(--c-bg, white)'};
-  border-radius: 0;
-  transition: 100ms ease-in-out;
+  border-radius: ${p => (p.isSelected ? 'var(--radius-m)' : 0)};
+  transform: ${p => (p.isSelected ? 'scale(1.25)' : 'scale(1)')};
+  z-index: ${p => (p.isSelected ? 3 : 0)};
+
+  :focus {
+    outline: none;
+  }
 `
 
-const SmallButton = styled.button`
+const SmallButton = styled(Button)`
   background: transparent;
-  border: none;
   padding: 0;
-  cursor: pointer;
-  line-height: 16px;
   opacity: 0;
-  transition: 200ms ease-in-out;
-
-  :hover {
-    background: var(--c-input-bg-hover);
-  }
 
   ${Wrapper}:hover & {
     opacity: 1;

@@ -18,6 +18,7 @@ import { createLocalStorageStateHook } from 'use-local-storage-state'
 import { ExportButton } from './components/ExportButton'
 import { ColorInfo } from './components/ColorInfo'
 import { ExampleUI } from './components/ExampleUI'
+import { Button, ControlGroup, Select } from './components/inputs'
 import LZString from 'lz-string'
 
 const paletteList = PRESETS.map(parsePalette)
@@ -94,20 +95,22 @@ export default function App() {
               </option>
             ))}
           </Select>
-          <Button
-            onClick={() =>
-              setOverlayMode(m => (m === 'APCA' ? 'WCAG' : 'APCA'))
-            }
-          >
-            {overlayMode} contrast
-          </Button>
-          <Button
-            onClick={() =>
-              setContrastMode(m => (m === 'selected' ? 'white' : 'selected'))
-            }
-          >
-            vs. {contrastMode}
-          </Button>
+          <ControlGroup>
+            <Button
+              onClick={() =>
+                setOverlayMode(m => (m === 'APCA' ? 'WCAG' : 'APCA'))
+              }
+            >
+              {overlayMode} contrast
+            </Button>
+            <Button
+              onClick={() =>
+                setContrastMode(m => (m === 'selected' ? 'white' : 'selected'))
+              }
+            >
+              vs. {contrastMode}
+            </Button>
+          </ControlGroup>
         </ControlRow>
         <PaletteSwatches
           palette={palette}
@@ -240,7 +243,6 @@ const PaletteSection = styled.section`
   flex-direction: column;
   gap: 16px;
   padding: 16px;
-  background: #fff;
 `
 const Charts = styled.section`
   display: grid;
@@ -254,57 +256,11 @@ const ChartsSection = styled.section`
   flex-direction: column;
   padding: 16px 24px;
   flex-grow: 1;
-  background: #aaa;
+  background: var(--c-bg-card);
   overflow: auto;
 `
 const Column = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-`
-const Select = styled.select`
-  cursor: pointer;
-  color: #6a707a;
-  border: 1px solid #c2c5cd;
-  border-radius: var(--radius-m);
-  background-color: #f3f5f9;
-  font-size: 14px;
-  line-height: 20px;
-  padding: 4px 8px;
-  box-shadow: 0 2px 4px 0 rgb(23 26 34 / 10%);
-  transition: 150ms ease-in-out;
-
-  :hover {
-    color: #171a22;
-    border: 1px solid #a6abb5;
-  }
-
-  :active {
-    box-shadow: 0 0 0 0 rgb(23 26 34 / 10%);
-    transform: translateY(1px);
-    transition: 100ms ease-in-out;
-  }
-`
-const Button = styled.button`
-  cursor: pointer;
-  color: #6a707a;
-  border: 1px solid #c2c5cd;
-  border-radius: var(--radius-m);
-  background-color: #f3f5f9;
-  font-size: 14px;
-  line-height: 20px;
-  padding: 4px 8px;
-  box-shadow: 0 2px 4px 0 rgb(23 26 34 / 10%);
-  transition: 150ms ease-in-out;
-
-  :hover {
-    color: #171a22;
-    border: 1px solid #a6abb5;
-  }
-
-  :active {
-    box-shadow: 0 0 0 0 rgb(23 26 34 / 10%);
-    transform: translateY(1px);
-    transition: 100ms ease-in-out;
-  }
 `

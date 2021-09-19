@@ -65,17 +65,3 @@ const Info = styled.span`
   font-size: 14px;
   padding: 8px;
 `
-export const HexInput = styled.input`
-  border: 1px solid #c1c1c1;
-  border-radius: 6px;
-  color: var(--c-text-primary);
-  padding: 4px 8px;
-  background: white;
-  transition: 100ms;
-  width: 88px;
-
-  :focus {
-    border-color: var(--c-accent);
-    outline: none;
-  }
-`

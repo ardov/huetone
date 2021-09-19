@@ -5,6 +5,7 @@
   "dependencies": {
     "chroma-js": "^2.1.2",
     "comlink": "^4.3.1",
+    "dart-sass": "^1.25.0",
     "lodash": "^4.17.21",
     "lz-string": "^1.4.4",
     "react": "^17.0.2",
@@ -62,6 +63,7 @@
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
     "@types/styled-components": "^5.1.11",
+    "sass": "^1.41.1",
     "stylelint": "^13.13.1",
     "stylelint-config-recommended": "^5.0.0",
     "stylelint-config-styled-components": "^0.1.1",
