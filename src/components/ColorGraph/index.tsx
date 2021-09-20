@@ -4,11 +4,6 @@ import styled from 'styled-components'
 import { Canvas } from './Chart/Canvas'
 
 const channelIndexes = { l: 0, c: 1, h: 2 }
-const channelNames = {
-  l: 'Lightness',
-  c: 'Chroma a.k.a. saturation',
-  h: 'Hue',
-}
 
 type ScaleProps = {
   colors: LCH[]
@@ -16,6 +11,7 @@ type ScaleProps = {
   channel: Channel
   height?: number
   width?: number
+  onSelect: (idx: number) => void
   onColorChange: (idx: number, value: LCH) => void
 }
 
@@ -25,6 +21,7 @@ export function Scale({
   channel = 'l',
   height = 150,
   width = 400,
+  onSelect,
   onColorChange,
 }: ScaleProps) {
   if (!colors?.length) return null
@@ -37,7 +34,7 @@ export function Scale({
         flexDirection: 'column',
       }}
     >
-      {channelNames[channel]}
+      {/* {channelNames[channel]} */}
       <div
         style={{
           display: 'flex',
@@ -46,7 +43,7 @@ export function Scale({
         }}
       >
         {colors.map((lch, i) => (
-          <Value key={i} color={toHex(lch)}>
+          <Value key={i} color={toHex(lch)} onClick={() => onSelect(i)}>
             {+lch[channelIndexes[channel]].toFixed(1)}
           </Value>
         ))}
@@ -83,7 +80,7 @@ export function Scale({
                 if (channel === 'c') onColorChange(i, [l, value, h])
                 if (channel === 'h') onColorChange(i, [l, c, value])
               }}
-              onClick={() => onColorChange(i, lch)}
+              onClick={() => onSelect(i)}
               isSelected={i === selected}
               style={{
                 // @ts-ignore
@@ -104,7 +101,8 @@ const Value = styled.div<{ color: string }>`
   color: ${p => getMostContrast(p.color, ['black', 'white'])};
   text-align: center;
   font-size: 12px;
-  padding: 4px 0;
+  line-height: 24px;
+  padding: 0;
   min-width: 0;
   flex: 1 0;
 `

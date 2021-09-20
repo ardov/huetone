@@ -3,7 +3,7 @@ import { apcaContrast as rawApcaConterast } from './APCAcontrast'
 import { LCH } from './types'
 
 export const MAX_L = 100
-export const MAX_C = 150
+export const MAX_C = 134
 export const MAX_H = 360
 
 export const toLch = (hex: string): LCH =>
@@ -52,3 +52,25 @@ export const getMostContrast = (color: string, colorList: string[]): string => {
 }
 
 export const valid = chroma.valid
+
+// const lchToLab = (lch: LCH) => {
+//   const [l, c, h] = lch
+//   const rad = h * (Math.PI / 180)
+//   const a = Math.cos(rad) * c
+//   const b = Math.sin(rad) * c
+//   return [l, a, b] as LCH
+// }
+// const labToXyz = (lab: LCH) => {
+//   const [l, a, b] = lab
+//   let y = (l + 16) / 116
+//   let x = a / 500 + y
+//   let z = y - b / 200
+
+//   // return [gamma(x)*,a,b]
+// }
+
+// function gamma(n: number) {
+//   const cube = n ** 3
+//   if (cube > 0.008856) return cube
+//   return (cube - 16 / 116) / 7.787
+// }

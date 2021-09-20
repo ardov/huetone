@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, FC } from 'react'
 import styled from 'styled-components'
 import { toHex } from './color'
 import { ColorEditor } from './components/ColorEditor'
@@ -17,10 +17,13 @@ import { OverlayMode, Palette } from './types'
 import { createLocalStorageStateHook } from 'use-local-storage-state'
 import { ExportButton } from './components/ExportButton'
 import { ColorInfo } from './components/ColorInfo'
-import { ExampleUI } from './components/ExampleUI'
+// import { ExampleUI } from './components/ExampleUI'
+import { Help } from './components/Help'
 import { Button, ControlGroup, Select } from './components/inputs'
 import LZString from 'lz-string'
+import { useKeyPress } from './useKeyPress'
 
+const chartWidth = 400
 const paletteList = PRESETS.map(parsePalette)
 
 const useLocalPalette = createLocalStorageStateHook<Palette>(
@@ -160,68 +163,83 @@ export default function App() {
             Make colors displayable
           </Button>
         </ControlRow>
-        <Charts>
-          <Column>
-            <Scale
-              selected={selected[1]}
-              channel="l"
-              colors={palette.colors[selected[0]]}
-              onColorChange={(i, lch) => {
-                setSelected([selected[0], i])
-                editPalette(setColor(palette, lch, selected[0], i))
-              }}
-            />
-            <Scale
-              selected={selected[1]}
-              channel="c"
-              colors={palette.colors[selected[0]]}
-              onColorChange={(i, lch) => {
-                setSelected([selected[0], i])
-                editPalette(setColor(palette, lch, selected[0], i))
-              }}
-            />
-            <Scale
-              selected={selected[1]}
-              channel="h"
-              colors={palette.colors[selected[0]]}
-              onColorChange={(i, lch) => {
-                setSelected([selected[0], i])
-                editPalette(setColor(palette, lch, selected[0], i))
-              }}
-            />
-          </Column>
-          <Column>
-            <Scale
-              selected={selected[0]}
-              channel="l"
-              colors={palette.colors.map(hue => hue[selected[1]])}
-              onColorChange={(i, lch) => {
-                setSelected([i, selected[1]])
-                editPalette(setColor(palette, lch, i, selected[1]))
-              }}
-            />
-            <Scale
-              selected={selected[0]}
-              channel="c"
-              colors={palette.colors.map(hue => hue[selected[1]])}
-              onColorChange={(i, lch) => {
-                setSelected([i, selected[1]])
-                editPalette(setColor(palette, lch, i, selected[1]))
-              }}
-            />
-            <Scale
-              selected={selected[0]}
-              channel="h"
-              colors={palette.colors.map(hue => hue[selected[1]])}
-              onColorChange={(i, lch) => {
-                setSelected([i, selected[1]])
-                editPalette(setColor(palette, lch, i, selected[1]))
-              }}
-            />
-          </Column>
-        </Charts>
 
-        <ExampleUI palette={palette} />
+        <Charts>
+          <Scale
+            width={chartWidth}
+            selected={selected[1]}
+            channel="l"
+            colors={palette.colors[selected[0]]}
+            onSelect={i => setSelected([selected[0], i])}
+            onColorChange={(i, lch) => {
+              setSelected([selected[0], i])
+              editPalette(setColor(palette, lch, selected[0], i))
+            }}
+          />
+          <ScaleIndicator axis="l" />
+          <Scale
+            width={chartWidth}
+            selected={selected[0]}
+            channel="l"
+            colors={palette.colors.map(hue => hue[selected[1]])}
+            onSelect={i => setSelected([i, selected[1]])}
+            onColorChange={(i, lch) => {
+              setSelected([i, selected[1]])
+              editPalette(setColor(palette, lch, i, selected[1]))
+            }}
+          />
+
+          <Scale
+            width={chartWidth}
+            selected={selected[1]}
+            channel="c"
+            colors={palette.colors[selected[0]]}
+            onSelect={i => setSelected([selected[0], i])}
+            onColorChange={(i, lch) => {
+              setSelected([selected[0], i])
+              editPalette(setColor(palette, lch, selected[0], i))
+            }}
+          />
+          <ScaleIndicator axis="c" />
+          <Scale
+            width={chartWidth}
+            selected={selected[0]}
+            channel="c"
+            colors={palette.colors.map(hue => hue[selected[1]])}
+            onSelect={i => setSelected([i, selected[1]])}
+            onColorChange={(i, lch) => {
+              setSelected([i, selected[1]])
+              editPalette(setColor(palette, lch, i, selected[1]))
+            }}
+          />
+
+          <Scale
+            width={chartWidth}
+            selected={selected[1]}
+            channel="h"
+            colors={palette.colors[selected[0]]}
+            onSelect={i => setSelected([selected[0], i])}
+            onColorChange={(i, lch) => {
+              setSelected([selected[0], i])
+              editPalette(setColor(palette, lch, selected[0], i))
+            }}
+          />
+          <ScaleIndicator axis="h" />
+          <Scale
+            width={chartWidth}
+            selected={selected[0]}
+            channel="h"
+            colors={palette.colors.map(hue => hue[selected[1]])}
+            onSelect={i => setSelected([i, selected[1]])}
+            onColorChange={(i, lch) => {
+              setSelected([i, selected[1]])
+              editPalette(setColor(palette, lch, i, selected[1]))
+            }}
+          />
+        </Charts>
+        <Help />
+
+        {/* <ExampleUI palette={palette} /> */}
       </ChartsSection>
     </Wrapper>
   )
@@ -246,21 +264,82 @@ const PaletteSection = styled.section`
 `
 const Charts = styled.section`
   display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(2, auto);
+  gap: 16px;
+  grid-template-columns: ${chartWidth}px 8px ${chartWidth}px;
 `
 const ChartsSection = styled.section`
+  --c-bg: var(--c-bg-card);
   overflow: auto;
   display: flex;
   gap: 16px;
   flex-direction: column;
   padding: 16px 24px;
   flex-grow: 1;
-  background: var(--c-bg-card);
+  background: var(--c-bg);
   overflow: auto;
 `
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+
+const Axis = styled.div`
+  border-radius: 8px;
+  width: 8px;
+`
+const AxisL = styled(Axis)`
+  background: linear-gradient(#fff, #000);
+`
+const AxisC = styled(Axis)`
+  background: linear-gradient(#0000ff, #4626d0, #5437a3, #554377, #4c4c4c);
+`
+const AxisH = styled(Axis)`
+  background: linear-gradient(
+    #fe97b7,
+    #baacfa,
+    #23c4f9,
+    #3bcab5,
+    #a7bf71,
+    #eea674,
+    #fe97b7
+  );
+`
+
+const axises = {
+  l: <AxisL />,
+  c: <AxisC />,
+  h: <AxisH />,
+}
+
+const ScaleIndicator: FC<{ axis: 'l' | 'c' | 'h' }> = ({ axis }) => {
+  const pressed = useKeyPress(axis)
+  const style = pressed
+    ? { fontWeight: 900, '--bg': 'var(--c-btn-bg-active)' }
+    : { '--bg': 'var(--c-btn-bg)' }
+  return (
+    <ScaleIndicatorWrapper>
+      <LetterContainer>
+        <Letter style={style}>{axis.toUpperCase()}</Letter>
+      </LetterContainer>
+      {axises[axis]}
+    </ScaleIndicatorWrapper>
+  )
+}
+
+const LetterContainer = styled.span`
+  position: relative;
+`
+
+const Letter = styled.span`
+  width: 24px;
+  text-align: center;
+  line-height: 24px;
+  color: var(--c-text-primary);
+  background: var(--bg);
+  border-radius: var(--radius-m);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`
+
+const ScaleIndicatorWrapper = styled.div`
+  display: grid;
+  grid-template-rows: 26px auto;
 `
