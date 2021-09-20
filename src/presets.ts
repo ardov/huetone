@@ -1161,6 +1161,51 @@ const USWDS: HexPalette = {
   name: 'US Digital Service (USWDS)',
   hues: [
     {
+      name: 'Gray',
+      colors: [
+        '#f0f0f0',
+        '#e6e6e6',
+        '#c9c9c9',
+        '#adadad',
+        '#919191',
+        '#757575',
+        '#5c5c5c',
+        '#454545',
+        '#2e2e2e',
+        '#1b1b1b',
+      ],
+    },
+    {
+      name: 'CoolGray',
+      colors: [
+        '#edeff0',
+        '#dcdee0',
+        '#c6cace',
+        '#a9aeb1',
+        '#8d9297',
+        '#71767a',
+        '#565c65',
+        '#3d4551',
+        '#2d2e2f',
+        '#1c1d1f',
+      ],
+    },
+    {
+      name: 'WarmGray',
+      colors: [
+        '#f0f0ec',
+        '#e6e6e2',
+        '#cac9c0',
+        '#afaea2',
+        '#929285',
+        '#76766a',
+        '#5d5d52',
+        '#454540',
+        '#2e2e2a',
+        '#171716',
+      ],
+    },
+    {
       name: 'CoolMint',
       colors: [
         '#e0f7f6',
@@ -1203,21 +1248,6 @@ const USWDS: HexPalette = {
         '#224a58',
         '#14333d',
         '#0f191c',
-      ],
-    },
-    {
-      name: 'CoolGray',
-      colors: [
-        '#edeff0',
-        '#dcdee0',
-        '#c6cace',
-        '#a9aeb1',
-        '#8d9297',
-        '#71767a',
-        '#565c65',
-        '#3d4551',
-        '#2d2e2f',
-        '#1c1d1f',
       ],
     },
     {
@@ -1371,21 +1401,6 @@ const USWDS: HexPalette = {
       ],
     },
     {
-      name: 'WarmRed',
-      colors: [
-        '#f6efea',
-        '#f4e3db',
-        '#ecc0a7',
-        '#dca081',
-        '#d27a56',
-        '#c3512c',
-        '#805039',
-        '#524236',
-        '#332d29',
-        '#1f1c18',
-      ],
-    },
-    {
       name: 'WarmOrange',
       colors: [
         '#faeee5',
@@ -1398,6 +1413,21 @@ const USWDS: HexPalette = {
         '#633a32',
         '#3d2925',
         '#1c1615',
+      ],
+    },
+    {
+      name: 'WarmRed',
+      colors: [
+        '#f6efea',
+        '#f4e3db',
+        '#ecc0a7',
+        '#dca081',
+        '#d27a56',
+        '#c3512c',
+        '#805039',
+        '#524236',
+        '#332d29',
+        '#1f1c18',
       ],
     },
     {
@@ -1446,21 +1476,6 @@ const USWDS: HexPalette = {
       ],
     },
     {
-      name: 'WarmGray',
-      colors: [
-        '#f0f0ec',
-        '#e6e6e2',
-        '#cac9c0',
-        '#afaea2',
-        '#929285',
-        '#76766a',
-        '#5d5d52',
-        '#454540',
-        '#2e2e2a',
-        '#171716',
-      ],
-    },
-    {
       name: 'WarmGreen',
       colors: [
         '#f1f4d7',
@@ -1503,21 +1518,6 @@ const USWDS: HexPalette = {
         '#37493b',
         '#28312a',
         '#1a1f1a',
-      ],
-    },
-    {
-      name: 'Gray',
-      colors: [
-        '#f0f0f0',
-        '#e6e6e6',
-        '#c9c9c9',
-        '#adadad',
-        '#919191',
-        '#757575',
-        '#5c5c5c',
-        '#454545',
-        '#2e2e2e',
-        '#1b1b1b',
       ],
     },
     {
