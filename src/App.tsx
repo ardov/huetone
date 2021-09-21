@@ -35,9 +35,7 @@ export default function App() {
   const [localPalette, setLocalPatette] = useLocalPalette()
   const [paletteIdx, setPaletteIdx] = useState<number>(localPalette ? 0 : 1)
   const [selected, setSelected] = useState<[number, number]>([0, 0])
-  const [contrastMode, setContrastMode] = useState<'selected' | string>(
-    'selected'
-  )
+  const [contrastMode, setContrastMode] = useState<'selected' | string>('white')
   const [overlayMode, setOverlayMode] = useState<OverlayMode>('APCA')
   const palette = paletteIdx === 0 ? localPalette : paletteList[paletteIdx - 1]
   const selectedColor = palette.colors[selected[0]][selected[1]]
