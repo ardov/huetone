@@ -124,6 +124,10 @@ const Knob = styled.input.attrs({ type: 'range' })<{
   background-color: transparent;
   -webkit-appearance: none;
 
+  :focus {
+    outline: none;
+  }
+
   ::-webkit-slider-runnable-track {
     border: 0;
     height: 1px;

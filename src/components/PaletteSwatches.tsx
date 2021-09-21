@@ -62,7 +62,7 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
   useEffect(() => {
     function handler(e: KeyboardEvent) {
       const { key, metaKey, shiftKey } = e
-      if (!filterInput(e)) return
+      // if (!filterInput(e)) return
       const noDefault = (func: () => any) => {
         e.preventDefault()
         func()
@@ -326,13 +326,13 @@ const SmallButton = styled(Button)`
 `
 
 /** Detects if keyboard input is from editable field */
-function filterInput(event: KeyboardEvent) {
-  const target = event.target
-  if (!target) return true
-  // @ts-ignore
-  const { tagName, isContentEditable, readOnly } = target
-  if (isContentEditable) return false
-  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName) && !readOnly)
-    return false
-  return true
-}
+// function filterInput(event: KeyboardEvent) {
+//   const target = event.target
+//   if (!target) return true
+//   // @ts-ignore
+//   const { tagName, isContentEditable, readOnly } = target
+//   if (isContentEditable) return false
+//   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName) && !readOnly)
+//     return false
+//   return true
+// }
