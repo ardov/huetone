@@ -1,0 +1,38 @@
+{
+  "name": "Segment (Evergreen)",
+  "hues": [
+    {
+      "name": "Neutral",
+      "colors": ["#f9f9fb", "#e4e7eb", "#425a70", "#234361"]
+    },
+    {
+      "name": "Blue",
+      "colors": ["#f7f9fd", "#ddebf7", "#1070ca", "#084b8a"]
+    },
+    {
+      "name": "Red",
+      "colors": ["#fef6f6", "#fae2e2", "#ec4c47", "#bf0e08"]
+    },
+    {
+      "name": "Orange",
+      "colors": ["#fdf8f3", "#fae3cd", "#d9822b", "#95591e"]
+    },
+    {
+      "name": "Yellow",
+      "colors": ["#fef8e7", "#fbe6a2", "#f7d154", "#7e6514"]
+    },
+    {
+      "name": "Green",
+      "colors": ["#f1faf5", "#d4eee2", "#47b881", "#00783e"]
+    },
+    {
+      "name": "Teal",
+      "colors": ["#f1fbfc", "#d2eef3", "#14b5d0", "#007489"]
+    },
+    {
+      "name": "Purple",
+      "colors": ["#f8f7fc", "#eae7f8", "#735dd0", "#37248f"]
+    }
+  ],
+  "tones": ["Lightest", "Light", "Base", "Dark"]
+}
