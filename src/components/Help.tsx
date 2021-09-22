@@ -5,7 +5,7 @@ export const Help: FC = props => {
   return (
     <Wrapper>
       <h3>Hotkeys</h3>
-      <List>
+      <List role="list">
         <li>
           <Key>↑</Key> <Key>↓</Key> <Key>→</Key> <Key>←</Key> — select another
           color
@@ -42,6 +42,10 @@ export const Help: FC = props => {
           Hold <Key>B</Key> — preview palette in greys.
         </li>
       </List>
+
+      <p>
+        Made by <Link href="https://ardov.me">Alexey Ardov</Link>.
+      </p>
     </Wrapper>
   )
 }
@@ -50,6 +54,7 @@ const Wrapper = styled.div`
   /* display: flex; */
 `
 const List = styled.ul`
+  padding-left: 0;
   & > li {
     margin-top: 12px;
   }
@@ -58,8 +63,20 @@ const List = styled.ul`
   }
 `
 const Key = styled.span`
-  padding: 2px 4px;
+  display: inline-block;
+  padding: 0px 0px;
+  text-align: center;
+  min-width: 24px;
   border-radius: 4px;
   background-color: var(--c-btn-bg);
   border: 1px solid var(--c-divider);
+`
+
+const Link = styled.a`
+  color: inherit;
+  text-decoration-color: var(--c-text-secondary);
+  :hover {
+    color: var(--c-text-primary);
+    text-decoration: none;
+  }
 `
