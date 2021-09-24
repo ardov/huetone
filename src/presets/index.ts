@@ -13,14 +13,14 @@ import uswds from './uswds.json'
 
 export const PRESETS: HexPalette[] = [
   example,
-  antDesign,
-  evergreen,
-  github,
-  google,
-  ibm,
-  semrushOld,
   stripe,
-  tailwindOld,
-  tailwindNew,
+  ibm,
   uswds,
+  evergreen,
+  tailwindNew,
+  tailwindOld,
+  google,
+  github,
+  antDesign,
+  semrushOld,
 ]

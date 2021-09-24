@@ -43,8 +43,31 @@ export const Help: FC = props => {
         </li>
       </List>
 
+      <h3>Credits</h3>
       <p>
-        Made by <Link href="https://ardov.me">Alexey Ardov</Link>.
+        Made by <Link href="https://ardov.me">Alexey Ardov</Link>. Contact me if
+        you have any suggestions.
+      </p>
+      <p>
+        Huetone is heavily inspired by{' '}
+        <Link href="https://stripe.com/blog/accessible-color-systems">
+          that Stripe article
+        </Link>
+        . And it uses the great{' '}
+        <Link href="https://github.com/gka/chroma.js">chroma.js</Link> library
+        under the hood.
+      </p>
+      <p>
+        Advanced Perceptual Contrast Algorithm (APCA) by Andrew Somers is a
+        WCAG 3 working draft and may change later. To learn more visit{' '}
+        <Link href="https://www.w3.org/WAI/GL/task-forces/silver/wiki/Visual_Contrast_of_Text_Subgroup">
+          this page
+        </Link>{' '}
+        or check{' '}
+        <Link href="https://github.com/w3c/wcag/issues/695">
+          this thread on GitHub
+        </Link>
+        .
       </p>
     </Wrapper>
   )
@@ -52,6 +75,12 @@ export const Help: FC = props => {
 
 const Wrapper = styled.div`
   /* display: flex; */
+  font-size: 16px;
+
+  > p {
+    max-width: 60ch;
+    margin-top: 12px;
+  }
 `
 const List = styled.ul`
   padding-left: 0;
@@ -66,7 +95,7 @@ const Key = styled.span`
   display: inline-block;
   padding: 0px 0px;
   text-align: center;
-  min-width: 24px;
+  min-width: 28px;
   border-radius: 4px;
   background-color: var(--c-btn-bg);
   border: 1px solid var(--c-divider);
