@@ -1,37 +1,37 @@
 {
-  "name": "Semrush (old)",
+  "name": "Semrush",
   "hues": [
     {
       "name": "Red",
-      "colors": ["#fad0d7", "#ff788f", "#f71939", "#b21b3c", "#750014"]
+      "colors": ["#fad0d7", "#ff788f", "#f71939", "#b01c3d", "#750014"]
     },
     {
       "name": "Pink",
-      "colors": ["#ead1e9", "#ff7ad1", "#d629d6", "#840f87", "#000000"]
+      "colors": ["#ead1e9", "#ff7ad1", "#d629d6", "#820f87", "#4d004a"]
     },
     {
-      "name": "Purple",
-      "colors": ["#dfd2ef", "#b880ff", "#6c31c9", "#421984", "#2e005e"]
+      "name": "Violet",
+      "colors": ["#dfd2ef", "#b880ff", "#6c31c9", "#421983", "#2e005e"]
     },
     {
       "name": "Blue",
-      "colors": ["#cbedff", "#6edbff", "#00a9ff", "#0071cd", "#003366"]
+      "colors": ["#cbedff", "#6edbff", "#00a9ff", "#0070cc", "#003366"]
+    },
+    {
+      "name": "Emerald",
+      "colors": ["#bbffd6", "#45e0a8", "#00bc98", "#008275", "#004f45"]
     },
     {
       "name": "Green",
-      "colors": ["#bbffd6", "#45e0a8", "#00bc98", "#008275", "#000000"]
-    },
-    {
-      "name": "Salad",
-      "colors": ["#eeffa9", "#c7fa73", "#89ca4f", "#38843a", "#000000"]
+      "colors": ["#eeffa9", "#c7fa73", "#89ca4f", "#38843a", "#005c29"]
     },
     {
       "name": "Yellow",
-      "colors": ["#fff4b6", "#ffe84d", "#ffc200", "#ff9600", "#b5662c"]
+      "colors": ["#fff4b6", "#ffe84d", "#ffc200", "#ff9600", "#cc5b15"]
     },
     {
       "name": "Orange",
-      "colors": ["#ffe5cb", "#ffb26e", "#ff622d", "#af3100", "#592d00"]
+      "colors": ["#ffe5cb", "#ff9400", "#ff642d", "#af3100", "#6b2002"]
     }
   ],
   "tones": ["100", "200", "300", "400", "500"]
