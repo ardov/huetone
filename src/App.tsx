@@ -20,6 +20,7 @@ import { ColorInfo } from './components/ColorInfo'
 // import { ExampleUI } from './components/ExampleUI'
 import { Help } from './components/Help'
 import { Button, ControlGroup, Select } from './components/inputs'
+import { ThemeButton } from './components/ThemeButton'
 import LZString from 'lz-string'
 import { useKeyPress } from './useKeyPress'
 
@@ -112,6 +113,7 @@ export default function App() {
               vs. {contrastMode}
             </Button>
           </ControlGroup>
+          <ThemeButton />
         </ControlRow>
         <PaletteSwatches
           palette={palette}

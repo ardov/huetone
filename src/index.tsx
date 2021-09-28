@@ -5,13 +5,14 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
 import GlobalStyles from './GlobalStyles'
 import './styles.scss'
+import { ColorSchemeProvider } from './useColorScheme'
 
 ReactDOM.render(
   <React.StrictMode>
-    <>
+    <ColorSchemeProvider>
       <GlobalStyles />
       <App />
-    </>
+    </ColorSchemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )

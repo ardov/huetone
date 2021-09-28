@@ -3,6 +3,9 @@ import styled from 'styled-components'
 export const Button = styled.button`
   cursor: pointer;
   border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: var(--c-text-secondary);
   border-radius: var(--radius-m);
   background-color: var(--c-btn-bg);
