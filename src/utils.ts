@@ -4,7 +4,3 @@ export function reorder<T>(list: T[], startIndex: number, endIndex: number) {
   result.splice(endIndex, 0, removed)
   return result
 }
-
-// export function clone<T>(obj: T) {
-//   return JSON.parse(JSON.stringify(obj)) as T
-// }

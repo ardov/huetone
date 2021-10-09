@@ -15,7 +15,7 @@ import {
 import { PRESETS } from './presets'
 import { OverlayMode, Palette } from './types'
 import { createLocalStorageStateHook } from 'use-local-storage-state'
-import { ExportButton } from './components/ExportButton'
+import { ExportField } from './components/Export'
 import { ColorInfo } from './components/ColorInfo'
 // import { ExampleUI } from './components/ExampleUI'
 import { Help } from './components/Help'
@@ -147,7 +147,7 @@ export default function App() {
         <ColorInfo palette={palette} selected={selected} />
 
         <ControlRow>
-          <ExportButton palette={palette} onChange={editPalette} />
+          <ExportField palette={palette} onChange={editPalette} />
         </ControlRow>
       </PaletteSection>
 
@@ -237,7 +237,7 @@ export default function App() {
             }}
           />
         </Charts>
-        <Help />
+        <Help palette={palette} />
 
         {/* <ExampleUI palette={palette} /> */}
       </ChartsSection>

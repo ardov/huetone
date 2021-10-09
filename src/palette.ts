@@ -1,5 +1,5 @@
 import { reorder } from './utils'
-import { HexPalette, Palette, LCH } from './types'
+import { HexPalette, Palette, LCH, TokenExport } from './types'
 import { clampToRgb, toHex, toLch } from './color'
 
 export function parsePalette(raw: HexPalette): Palette {
@@ -20,6 +20,21 @@ export function paletteToHex(palette: Palette): HexPalette {
     })),
     tones: [...palette.tones],
   }
+}
+
+export function paletteToTokens(palette: Palette): TokenExport {
+  let tokens: TokenExport = {}
+  let { tones, hues, colors } = palette
+  hues.forEach((hue, hueIdx) => {
+    if (!tokens[hue]) tokens[hue] = {}
+    tones.forEach((tone, toneIdx) => {
+      tokens[hue][tone] = {
+        value: toHex(colors[hueIdx][toneIdx]),
+        type: 'color',
+      }
+    })
+  })
+  return tokens
 }
 
 export function addHue(palette: Palette, hueName: string = 'Gray'): Palette {

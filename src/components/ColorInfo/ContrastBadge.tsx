@@ -53,21 +53,13 @@ const Info = styled.span`
   padding: 8px;
 `
 
-// const Sticker = styled.span`
-//   --outline: var(--c-text-primary);
-//   line-height: 20px;
-//   font-size: 24px;
-//   text-shadow: 0 0 1.5px var(--outline), 0 0 1.5px var(--outline),
-//     0 0 1.5px var(--outline), 0 0 1.5px var(--outline), 0 0 1.5px var(--outline),
-//     0 0 1.5px var(--outline), 0 0 1.5px var(--outline);
-// `
-
 function getAPCAComment(cr: number) {
-  if (cr >= 75) return 'AAA'
-  if (cr >= 60) return 'AA'
+  if (cr >= 75) return 'Best for text'
+  if (cr >= 68.95 && cr <= 69.05) return 'Nice'
+  if (cr >= 60) return 'Ok for text'
   if (cr >= 45) return 'Only large text'
-  if (cr >= 30) return 'Only non-reading text'
-  if (cr >= 15) return 'Only non-text'
+  if (cr >= 30) return 'Not for reading text'
+  if (cr >= 15) return 'Not for any text'
   return 'Fail'
 }
 function getAPCAColor(cr: number) {

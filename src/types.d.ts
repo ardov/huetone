@@ -11,6 +11,17 @@ export type HexPalette = {
   }[]
 }
 
+type ColorToken = {
+  value: string
+  type: 'color'
+}
+
+export type TokenExport = {
+  [hue: string]: {
+    [tone: string]: ColorToken
+  }
+}
+
 export type Palette = {
   name: string
   hues: string[]
