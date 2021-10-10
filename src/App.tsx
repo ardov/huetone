@@ -142,7 +142,6 @@ export default function App() {
             Apply current hue to row
           </Button>
         </ControlRow>
-        <ControlRow></ControlRow>
 
         <ColorInfo palette={palette} selected={selected} />
 
@@ -159,7 +158,10 @@ export default function App() {
               editPalette(setColor(palette, color, selected[0], selected[1]))
             }
           />
-          <Button onClick={() => editPalette(clampColorsToRgb)}>
+          <Button
+            title="Not all LCH colors are displayable in RGB color space. This button will tweak all LCH values to be displayable."
+            onClick={() => editPalette(clampColorsToRgb)}
+          >
             Make colors displayable
           </Button>
         </ControlRow>
@@ -248,9 +250,13 @@ export default function App() {
 const Wrapper = styled.main`
   height: 100%;
   display: flex;
+  @media (max-width: 860px) {
+    flex-direction: column;
+  }
 `
 const ControlRow = styled.main`
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 `
 const PaletteSection = styled.section`

@@ -7,7 +7,7 @@ const LightStyles = createGlobalStyle`
     --c-bg-card: #f4f6fe;
     --c-text-primary: hsla(0, 0%, 10%, 1);
     --c-text-secondary: hsla(0, 0%, 0%, 0.64);
-    --c-text-hint: hsla(0, 0%, 0%, 0.3);
+    --c-text-hint: hsla(0, 0%, 0%, 0.4);
     --c-text-error: hsl(0, 75%, 37%);
     --c-text-success: #1f881f;
 
@@ -30,7 +30,7 @@ const DarkStyles = createGlobalStyle`
     --c-bg-card: hsl(227, 14%, 13%);
     --c-text-primary: hsla(0, 0%, 100%, 1);
     --c-text-secondary: hsla(0, 0%, 100%, 0.72);
-    --c-text-hint: hsla(0, 0%, 100%, 0.3);
+    --c-text-hint: hsla(0, 0%, 100%, 0.5);
     --c-text-error: hsl(0, 100%, 50%);
     --c-text-success: hsl(120, 94%, 49%);
 

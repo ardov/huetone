@@ -86,8 +86,9 @@ const ChannelInputWrapper = styled.label`
 `
 const ChannelLabel = styled.span`
   position: absolute;
-  top: 1px;
+  top: 50%;
   left: 0;
+  transform: translateY(-50%);
   padding: 4px 0 4px 8px;
   color: var(--c-text-hint);
 `
@@ -95,6 +96,7 @@ const ChannelInput = styled(Input)`
   width: 80px;
   padding-left: 24px;
   border-radius: inherit;
+  height: 100%;
   -moz-appearance: textfield;
 
   ::-webkit-outer-spin-button,
