@@ -114,8 +114,25 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
       if (key === 'ArrowRight') return noDefault(selectRight)
 
       function copyCurrent() {
-        navigator.clipboard.writeText(toHex(selectedColorLch))
+        e.preventDefault()
+        let toCopy = toHex(selectedColorLch)
         setCopiedColor([...selectedColorLch] as LCH)
+        navigator.clipboard.writeText(toHex(selectedColorLch))
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(toCopy)
+        } else {
+          // text area method
+          let textArea = document.createElement('textarea')
+          textArea.value = toCopy
+          // make the textarea out of viewport
+          textArea.style.position = 'absolute'
+          textArea.style.opacity = '0'
+          document.body.appendChild(textArea)
+          textArea.focus()
+          textArea.select()
+          document.execCommand('copy')
+          textArea.remove()
+        }
       }
       function pasteToCurrent() {
         navigator.clipboard.readText().then(hex => {
