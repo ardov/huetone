@@ -49,10 +49,10 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
   onSelect,
   onPaletteChange,
 }) => {
-  const lPress = useKeyPress('l')
-  const cPress = useKeyPress('c')
-  const hPress = useKeyPress('h')
-  const bPress = useKeyPress('b')
+  const lPress = useKeyPress('KeyL')
+  const cPress = useKeyPress('KeyC')
+  const hPress = useKeyPress('KeyH')
+  const bPress = useKeyPress('KeyB')
   const [copiedColor, setCopiedColor] = useState<LCH>([0, 0, 0])
   const { hues, tones, colors } = palette
   const [selectedHue, selectedTone] = selected
@@ -61,14 +61,15 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
 
   useEffect(() => {
     function handler(e: KeyboardEvent) {
-      const { key, metaKey, shiftKey } = e
+      const { key, metaKey, ctrlKey, shiftKey, code } = e
+      const metaPressed = metaKey || ctrlKey
       // if (!filterInput(e)) return
       const noDefault = (func: () => any) => {
         e.preventDefault()
         func()
       }
-      if (metaKey && key === 'c') return copyCurrent()
-      if (metaKey && key === 'v') return pasteToCurrent()
+      if (metaPressed && code === 'KeyC') return copyCurrent()
+      if (metaPressed && code === 'KeyV') return pasteToCurrent()
 
       // Modify color
       if (lPress || cPress || hPress) {
@@ -91,7 +92,7 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
       }
 
       // Duplicate row or column
-      if (metaKey && shiftKey) {
+      if (metaPressed && shiftKey) {
         if (key === 'ArrowUp') return noDefault(duplicateUp)
         if (key === 'ArrowDown') return noDefault(duplicateDown)
         if (key === 'ArrowLeft') return noDefault(duplicateLeft)
@@ -99,7 +100,7 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
       }
 
       // Move row or column
-      if (metaKey) {
+      if (metaPressed) {
         if (key === 'ArrowUp') return noDefault(moveRowUp)
         if (key === 'ArrowDown') return noDefault(moveRowDown)
         if (key === 'ArrowLeft') return noDefault(moveColumnLeft)

@@ -5,8 +5,8 @@ export function useKeyPress(targetKey: string): boolean {
   // State for keeping track of whether key is pressed
   const [keyPressed, setKeyPressed] = useState(false)
   // If pressed key is our target key then set to true
-  function downHandler({ key, metaKey }: KeyboardEvent): void {
-    if (key === targetKey && !metaKey) {
+  function downHandler({ code, metaKey }: KeyboardEvent): void {
+    if (code === targetKey && !metaKey) {
       // Mac never fires keyup event if CMD is pressed with a key
       // so to prevent key from staying pressed we will igonore this kydown event
       if (metaKey) return
@@ -14,8 +14,8 @@ export function useKeyPress(targetKey: string): boolean {
     }
   }
   // If released key is our target key then set to false
-  const upHandler = ({ key }: KeyboardEvent): void => {
-    if (key === targetKey) {
+  const upHandler = ({ code }: KeyboardEvent): void => {
+    if (code === targetKey) {
       setKeyPressed(false)
     }
   }

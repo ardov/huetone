@@ -314,7 +314,7 @@ const axises = {
 }
 
 const ScaleIndicator: FC<{ axis: 'l' | 'c' | 'h' }> = ({ axis }) => {
-  const pressed = useKeyPress(axis)
+  const pressed = useKeyPress('Key' + axis.toUpperCase())
   const style = pressed
     ? { fontWeight: 900, '--bg': 'var(--c-btn-bg-active)' }
     : { '--bg': 'var(--c-btn-bg)' }

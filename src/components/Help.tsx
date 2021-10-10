@@ -28,47 +28,52 @@ const Export: FC<{ palette: Palette }> = props => (
   </Section>
 )
 
-const Hotkeys = () => (
-  <Section>
-    <h3>Hotkeys</h3>
-    <List role="list">
-      <li>
-        <Key>↑</Key> <Key>↓</Key> <Key>→</Key> <Key>←</Key> — select another
-        color
-      </li>
-      <li>
-        <Key>⌘</Key> + <Key>↑</Key> <Key>↓</Key> <Key>→</Key> <Key>←</Key> —
-        move rows and columns
-      </li>
-      <li>
-        <Key>⌘</Key> + <Key>⇧</Key> + <Key>↑</Key> <Key>↓</Key> <Key>→</Key>{' '}
-        <Key>←</Key> — duplicate rows and columns
-      </li>
-      <li>
-        <Key>L</Key> + <Key>↑</Key> <Key>↓</Key> — change lightness of selected
-        color
-      </li>
-      <li>
-        <Key>C</Key> + <Key>↑</Key> <Key>↓</Key> — change chroma of selected
-        color
-      </li>
-      <li>
-        <Key>H</Key> + <Key>↑</Key> <Key>↓</Key> — change hue of selected color
-      </li>
-      <li>
-        <Key>⌘</Key> + <Key>C</Key> — copy selected color. You can even paste it
-        somewhere as HEX
-      </li>
-      <li>
-        <Key>⌘</Key> + <Key>V</Key> — paste color. Just copy color in any format
-        and paste it here.
-      </li>
-      <li>
-        Hold <Key>B</Key> — preview palette in greys.
-      </li>
-    </List>
-  </Section>
-)
+const Hotkeys = () => {
+  const isWin = navigator.platform.toUpperCase().indexOf('WIN') >= 0
+  const MetaKey = () => (isWin ? <Key>Ctrl</Key> : <Key>⌘</Key>)
+  return (
+    <Section>
+      <h3>Hotkeys</h3>
+      <List role="list">
+        <li>
+          <Key>↑</Key> <Key>↓</Key> <Key>→</Key> <Key>←</Key> — select another
+          color
+        </li>
+        <li>
+          <MetaKey /> + <Key>↑</Key> <Key>↓</Key> <Key>→</Key> <Key>←</Key> —
+          move rows and columns
+        </li>
+        <li>
+          <MetaKey /> + <Key>⇧</Key> + <Key>↑</Key> <Key>↓</Key> <Key>→</Key>{' '}
+          <Key>←</Key> — duplicate rows and columns
+        </li>
+        <li>
+          <Key>L</Key> + <Key>↑</Key> <Key>↓</Key> — change lightness of
+          selected color
+        </li>
+        <li>
+          <Key>C</Key> + <Key>↑</Key> <Key>↓</Key> — change chroma of selected
+          color
+        </li>
+        <li>
+          <Key>H</Key> + <Key>↑</Key> <Key>↓</Key> — change hue of selected
+          color
+        </li>
+        <li>
+          <MetaKey /> + <Key>C</Key> — copy selected color. You can even paste
+          it somewhere as HEX
+        </li>
+        <li>
+          <MetaKey /> + <Key>V</Key> — paste color. Just copy color in any
+          format and paste it here.
+        </li>
+        <li>
+          Hold <Key>B</Key> — preview palette in greys.
+        </li>
+      </List>
+    </Section>
+  )
+}
 
 const Credits = () => (
   <Section>
