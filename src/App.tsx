@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, FC } from 'react'
+import React, { useEffect, useState, FC } from 'react'
 import styled from 'styled-components'
 import { toHex } from './color'
 import { ColorEditor } from './components/ColorEditor'
@@ -35,25 +35,38 @@ const useLocalPalette = createLocalStorageStateHook<Palette>(
 export default function App() {
   const [localPalette, setLocalPatette] = useLocalPalette()
   const [paletteIdx, setPaletteIdx] = useState<number>(localPalette ? 0 : 1)
-  const [selected, setSelected] = useState<[number, number]>([0, 0])
+  const [palette, setPalette] = useState<Palette>(
+    paletteIdx ? paletteList[paletteIdx - 1] : localPalette
+  )
+  const [selected, setSelected] = useState<[number, number]>([
+    Math.floor(palette.hues.length / 2),
+    Math.floor(palette.tones.length / 2),
+  ])
   const [contrastMode, setContrastMode] = useState<'selected' | string>('white')
   const [overlayMode, setOverlayMode] = useState<OverlayMode>('APCA')
-  const palette = paletteIdx === 0 ? localPalette : paletteList[paletteIdx - 1]
   const selectedColor = palette.colors[selected[0]][selected[1]]
   const contrastTo =
     contrastMode === 'selected' ? toHex(selectedColor) : contrastMode
 
-  const editPalette = useCallback(
-    (palette: Palette | ((p: Palette) => Palette)) => {
-      if (paletteIdx !== 0 && typeof palette === 'function') {
-        setLocalPatette(palette(paletteList[paletteIdx - 1]))
-      } else {
-        setLocalPatette(palette)
-      }
-      setPaletteIdx(0)
-    },
-    [paletteIdx, setLocalPatette]
-  )
+  const editPalette = (newPalette: Palette | ((p: Palette) => Palette)) => {
+    const createdPalette =
+      typeof newPalette === 'function' ? newPalette(palette) : newPalette
+    setPalette(createdPalette)
+    setLocalPatette(createdPalette)
+    setPaletteIdx(0)
+  }
+
+  const switchPalette: React.ChangeEventHandler<HTMLSelectElement> = e => {
+    const idx = +e.target.value
+    setSelected([0, 0])
+    setPaletteIdx(idx)
+    const newPalette = idx ? paletteList[idx - 1] : localPalette
+    setPalette(newPalette)
+    setSelected([
+      Math.floor(newPalette.hues.length / 2),
+      Math.floor(newPalette.tones.length / 2),
+    ])
+  }
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -84,15 +97,7 @@ export default function App() {
     <Wrapper>
       <PaletteSection>
         <ControlRow>
-          <Select
-            name="palettes"
-            value={paletteIdx}
-            onChange={e => {
-              const value = +e.target.value
-              setSelected([0, 0])
-              setPaletteIdx(value)
-            }}
-          >
+          <Select name="palettes" value={paletteIdx} onChange={switchPalette}>
             <option value={0}>Local palette</option>
             {paletteList.map((p, i) => (
               <option key={p.name} value={i + 1}>
