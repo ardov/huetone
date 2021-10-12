@@ -2,12 +2,26 @@ import { reorder } from './utils'
 import { HexPalette, Palette, LCH, TokenExport } from './types'
 import { clampToRgb, toHex, toLch } from './color'
 
+const fillerColor = '#000'
+
 export function parsePalette(raw: HexPalette): Palette {
+  const hues = raw.hues.filter(hue => hue?.colors?.length)
+  const hueNames = hues.map(hue => hue.name || '???')
+  const maxTones = hues
+    .map(hue => hue.colors.length)
+    .reduce((prev, curr) => Math.max(curr, prev), 0)
+  const toneNames = Array.from(Array(maxTones)).map(
+    (v, idx) => raw.tones[idx] || (idx * 100).toString()
+  )
+  const colors = hues.map(hue =>
+    toneNames.map((v, idx) => hue.colors[idx] || fillerColor).map(toLch)
+  )
+
   return {
-    name: raw.name,
-    hues: raw.hues.map(hue => hue.name),
-    tones: [...raw.tones],
-    colors: raw.hues.map(hue => hue.colors.map(toLch)),
+    name: raw.name || 'Loaded palette',
+    hues: hueNames,
+    tones: toneNames,
+    colors,
   }
 }
 

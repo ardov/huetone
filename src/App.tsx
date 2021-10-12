@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FC } from 'react'
+import React, { useEffect, useState, useCallback, FC } from 'react'
 import styled from 'styled-components'
 import { toHex } from './color'
 import { ColorEditor } from './components/ColorEditor'
@@ -43,14 +43,17 @@ export default function App() {
   const contrastTo =
     contrastMode === 'selected' ? toHex(selectedColor) : contrastMode
 
-  const editPalette = (palette: Palette | ((p: Palette) => Palette)) => {
-    if (paletteIdx !== 0 && typeof palette === 'function') {
-      setLocalPatette(palette(paletteList[paletteIdx - 1]))
-    } else {
-      setLocalPatette(palette)
-    }
-    setPaletteIdx(0)
-  }
+  const editPalette = useCallback(
+    (palette: Palette | ((p: Palette) => Palette)) => {
+      if (paletteIdx !== 0 && typeof palette === 'function') {
+        setLocalPatette(palette(paletteList[paletteIdx - 1]))
+      } else {
+        setLocalPatette(palette)
+      }
+      setPaletteIdx(0)
+    },
+    [paletteIdx, setLocalPatette]
+  )
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
