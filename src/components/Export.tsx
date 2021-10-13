@@ -52,7 +52,7 @@ export const ExportField: FC<{
             const palette = parsePalette(json)
             onChange(palette)
           } catch (error) {
-            console.warn('Invalid JSON')
+            console.warn('Parsing error', error)
           }
         }
       }}

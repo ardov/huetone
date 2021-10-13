@@ -51,6 +51,14 @@ export default function App() {
   const editPalette = (newPalette: Palette | ((p: Palette) => Palette)) => {
     const createdPalette =
       typeof newPalette === 'function' ? newPalette(palette) : newPalette
+    let newSelected = [...selected] as [number, number]
+    if (newSelected[0] >= createdPalette.hues.length) {
+      newSelected[0] = createdPalette.hues.length - 1
+    }
+    if (newSelected[1] >= createdPalette.tones.length) {
+      newSelected[1] = createdPalette.tones.length - 1
+    }
+    setSelected(newSelected)
     setPalette(createdPalette)
     setLocalPatette(createdPalette)
     setPaletteIdx(0)

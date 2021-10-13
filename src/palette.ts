@@ -11,7 +11,7 @@ export function parsePalette(raw: HexPalette): Palette {
     .map(hue => hue.colors.length)
     .reduce((prev, curr) => Math.max(curr, prev), 0)
   const toneNames = Array.from(Array(maxTones)).map(
-    (v, idx) => raw.tones[idx] || (idx * 100).toString()
+    (v, idx) => raw?.tones?.[idx] || (idx * 100).toString()
   )
   const colors = hues.map(hue =>
     toneNames.map((v, idx) => hue.colors[idx] || fillerColor).map(toLch)
