@@ -40,7 +40,6 @@ export const ExportField: FC<{
     <JSONArea
       ref={ref}
       onBlur={() => setAreaValue(currentJSON)}
-      onKeyDown={e => e.stopPropagation()}
       value={areaValue}
       onFocus={e => e.target.select()}
       onChange={e => {

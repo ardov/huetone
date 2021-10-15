@@ -56,7 +56,6 @@ const ContrastGroup: FC<ColorInfoProps & { color: string }> = props => {
           {name} vs.{' '}
           <Input
             value={colorInput}
-            onKeyDown={e => e.stopPropagation()}
             onChange={e => {
               const value = e.target.value
               setColorInput(value)

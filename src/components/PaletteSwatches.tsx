@@ -63,13 +63,19 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
     function handler(e: KeyboardEvent) {
       const { key, metaKey, ctrlKey, shiftKey, code } = e
       const metaPressed = metaKey || ctrlKey
-      // if (!filterInput(e)) return
+      if (!filterInput(e)) return
+
       const noDefault = (func: () => any) => {
         e.preventDefault()
         func()
       }
+
       if (metaPressed && code === 'KeyC') return copyCurrent()
       if (metaPressed && code === 'KeyV') return pasteToCurrent()
+      if (code === 'Escape') {
+        // @ts-ignore
+        return e?.target?.blur()
+      }
 
       // Modify color
       if (lPress || cPress || hPress) {
@@ -224,7 +230,6 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
         <ToneInput
           key={tone}
           value={toneName}
-          onKeyDown={e => e.stopPropagation()}
           onChange={e =>
             onPaletteChange(renameTone(palette, tone, e.target.value))
           }
@@ -243,7 +248,6 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
           <InvisibleInput
             key={hue}
             value={hues[hue]}
-            onKeyDown={e => e.stopPropagation()}
             onChange={e =>
               onPaletteChange(renameHue(palette, hue, e.target.value))
             }
@@ -344,13 +348,16 @@ const SmallButton = styled(Button)`
 `
 
 /** Detects if keyboard input is from editable field */
-// function filterInput(event: KeyboardEvent) {
-//   const target = event.target
-//   if (!target) return true
-//   // @ts-ignore
-//   const { tagName, isContentEditable, readOnly } = target
-//   if (isContentEditable) return false
-//   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName) && !readOnly)
-//     return false
-//   return true
-// }
+function filterInput(event: KeyboardEvent) {
+  const target = event.target
+  if (!target) return true
+  // @ts-ignore
+  const { tagName, isContentEditable, readOnly } = target
+  if (isContentEditable) return false
+  // Skip range inputs
+  // @ts-ignore
+  if (target?.type === 'range') return true
+  if (readOnly) return true
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName)) return false
+  return true
+}

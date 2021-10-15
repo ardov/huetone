@@ -31,7 +31,6 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
           max={MAX_L}
           step={0.5}
           value={+l.toFixed(2)}
-          onKeyDown={e => e.stopPropagation()}
           onChange={e => onChange([+e.target.value, c, h])}
         />
       </ChannelInputWrapper>
@@ -43,7 +42,6 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
           max={MAX_C}
           step={0.5}
           value={+c.toFixed(2)}
-          onKeyDown={e => e.stopPropagation()}
           onChange={e => onChange([l, +e.target.value, h])}
         />
       </ChannelInputWrapper>
@@ -55,14 +53,12 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
           max={MAX_H}
           step={0.5}
           value={+h.toFixed(2)}
-          onKeyDown={e => e.stopPropagation()}
           onChange={e => onChange([l, c, +e.target.value])}
         />
       </ChannelInputWrapper>
       <HexInput
         value={colorInput}
         style={{ color: isDisplayable ? 'inherit' : 'red' }}
-        onKeyDown={e => e.stopPropagation()}
         onFocus={() => setIsFocused(true)}
         onBlur={() => {
           setIsFocused(false)
