@@ -26,7 +26,12 @@ export const Button = styled.button`
   }
 `
 
-export const Select = Button.withComponent('select')
+export const Select = styled(Button.withComponent('select'))`
+  :active {
+    /* Transform closes select on Firefox */
+    transform: none;
+  }
+`
 
 export const InvisibleInput = styled.input`
   border: none;
