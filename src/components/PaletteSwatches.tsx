@@ -328,6 +328,7 @@ const SwatchWrapper = styled.button<{ isSelected: boolean }>`
   border: none;
   align-items: center;
   justify-content: center;
+  will-change: transform;
   border-radius: ${p => (p.isSelected ? 'var(--radius-m)' : 0)};
   transform: ${p => (p.isSelected ? 'scale(1.25)' : 'scale(1)')};
   z-index: ${p => (p.isSelected ? 3 : 0)};
