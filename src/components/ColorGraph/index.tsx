@@ -34,7 +34,6 @@ export function Scale({
         flexDirection: 'column',
       }}
     >
-      {/* {channelNames[channel]} */}
       <div
         style={{
           display: 'flex',

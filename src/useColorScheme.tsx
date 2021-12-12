@@ -29,7 +29,7 @@ export const ColorSchemeProvider: FC = ({ children }) => {
     setScheme(getCurrent())
   }, [])
 
-  // Update when local value is changed
+  // Add handler to update on local value change
   useEffect(() => {
     const updateValue = (e: StorageEvent) => {
       if (e.key === KEY) setScheme(getCurrent())
@@ -38,7 +38,7 @@ export const ColorSchemeProvider: FC = ({ children }) => {
     return () => window.removeEventListener('storage', updateValue)
   })
 
-  // Update when prefers-color-scheme is changed
+  // Add handler to update on prefers-color-scheme change
   useEffect(() => {
     const updateValue = () => setScheme(getCurrent())
     window

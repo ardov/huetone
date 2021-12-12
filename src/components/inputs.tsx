@@ -28,7 +28,7 @@ export const Button = styled.button`
 
 export const Select = styled(Button.withComponent('select'))`
   :active {
-    /* Transform closes select on Firefox */
+    /* Transform closes select on Firefox (or not) */
     transform: none;
   }
 `

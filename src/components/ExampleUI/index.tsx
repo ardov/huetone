@@ -1,3 +1,5 @@
+// Not used now
+
 import React, { FC } from 'react'
 import styled from 'styled-components'
 import { toHex } from '../../color'
