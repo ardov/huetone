@@ -2530,6 +2530,11 @@ anymatch@^3.0.0, anymatch@^3.0.3, anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
+apca-w3@^0.0.98-g-4g.2:
+  version "0.0.98-g-4g.2"
+  resolved "https://registry.yarnpkg.com/apca-w3/-/apca-w3-0.0.98-g-4g.2.tgz#96191696707febde0dd5e4e42b3d783119d0871c"
+  integrity sha512-k2k0CxCdQddRand3xFcKKH/HaqM7w6U9SCQOdBiidUA7BpcFMUaxL8kveCejVt4bV3NsNFfau/bvJ0mkxqfCJQ==
+
 aproba@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/aproba/-/aproba-1.2.0.tgz#6802e6264efd18c790a1b0d517f0f2627bf2c94a"

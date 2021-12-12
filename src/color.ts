@@ -1,5 +1,5 @@
 import chroma from 'chroma-js'
-import { apcaContrast as rawApcaConterast } from './APCAcontrast'
+import { APCAcontrast, sRGBtoY } from 'apca-w3'
 import { LCH } from './types'
 
 export const MAX_L = 100
@@ -39,7 +39,12 @@ export const wcagContrast = (backgroundHex: string, textHex: string): number =>
   chroma.contrast(backgroundHex, textHex)
 
 export const apcaContrast = (backgroundHex: string, textHex: string): number =>
-  Math.abs(rawApcaConterast(chroma(backgroundHex).rgb(), chroma(textHex).rgb()))
+  Math.abs(
+    APCAcontrast(
+      sRGBtoY(chroma(textHex).hex()),
+      sRGBtoY(chroma(backgroundHex).hex())
+    )
+  )
 
 export const deltaEContrast = (
   backgroundHex: string,

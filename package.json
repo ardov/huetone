@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "apca-w3": "^0.0.98-g-4g.2",
     "chroma-js": "^2.1.2",
     "comlink": "^4.3.1",
     "dart-sass": "^1.25.0",
