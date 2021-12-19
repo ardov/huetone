@@ -117,19 +117,19 @@ export function duplicateHue(
 }
 
 export function removeHue(palette: Palette, idx: number): Palette {
-  return {
-    ...palette,
-    hues: palette.hues.filter((_, i) => i !== idx),
-    colors: palette.colors.filter((_, i) => i !== idx),
-  }
+  // Do not remove last hue
+  if (palette.hues.length === 1) return palette
+  let hues = palette.hues.filter((_, i) => i !== idx)
+  let colors = palette.colors.filter((_, i) => i !== idx)
+  return { ...palette, hues, colors }
 }
 
 export function removeTone(palette: Palette, idx: number): Palette {
-  return {
-    ...palette,
-    tones: palette.tones.filter((_, i) => i !== idx),
-    colors: palette.colors.map(tones => tones.filter((_, i) => i !== idx)),
-  }
+  // Do not remove last tone
+  if (palette.tones.length === 1) return palette
+  let tones = palette.tones.filter((_, i) => i !== idx)
+  let colors = palette.colors.map(tones => tones.filter((_, i) => i !== idx))
+  return { ...palette, tones, colors }
 }
 
 export function reorderHues(
