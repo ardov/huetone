@@ -11,6 +11,7 @@ import {
   setColor,
   setHueHue,
   setToneLuminance,
+  validatePalette,
 } from './palette'
 import { PRESETS } from './presets'
 import { OverlayMode, Palette } from './types'
@@ -34,7 +35,8 @@ const useLocalPalette = createLocalStorageStateHook<Palette>(
 
 export default function App() {
   const [localPalette, setLocalPatette] = useLocalPalette()
-  const [paletteIdx, setPaletteIdx] = useState<number>(localPalette ? 0 : 1)
+  const isValidLocal = validatePalette(localPalette)
+  const [paletteIdx, setPaletteIdx] = useState<number>(isValidLocal ? 0 : 1)
   const [palette, setPalette] = useState<Palette>(
     paletteIdx ? paletteList[paletteIdx - 1] : localPalette
   )

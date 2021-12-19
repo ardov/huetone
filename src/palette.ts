@@ -25,6 +25,14 @@ export function parsePalette(raw: HexPalette): Palette {
   }
 }
 
+export function validatePalette(palette: Palette | null): boolean {
+  if (!palette) return false
+  if (!palette.hues?.length) return false
+  if (!palette.tones?.length) return false
+  if (!palette.colors?.length) return false
+  return true
+}
+
 export function paletteToHex(palette: Palette): HexPalette {
   return {
     name: palette.name,
