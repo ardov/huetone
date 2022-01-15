@@ -1,7 +1,10 @@
-import { getMostContrast, MAX_C, MAX_H, MAX_L, toHex } from '../../color'
+import { getMostContrast } from '../../color'
+import { cielch as lch } from '../../color2'
 import { Channel, LCH } from '../../types'
 import styled from 'styled-components'
 import { Canvas } from './Chart/Canvas'
+
+const { ranges, toHex } = lch
 
 const channelIndexes = { l: 0, c: 1, h: 2 }
 
@@ -68,7 +71,13 @@ export function Scale({
             <Knob
               key={i}
               min={0}
-              max={channel === 'l' ? MAX_L : channel === 'c' ? MAX_C : MAX_H}
+              max={
+                channel === 'l'
+                  ? ranges.l.max
+                  : channel === 'c'
+                  ? ranges.c.max
+                  : ranges.h.max
+              }
               value={
                 channel === 'l' ? lch[0] : channel === 'c' ? lch[1] : lch[2]
               }

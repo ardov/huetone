@@ -1,6 +1,8 @@
+import { cielch as lch } from './color2'
 import { reorder } from './utils'
 import { HexPalette, Palette, LCH, TokenExport } from './types'
-import { clampToRgb, toHex, toLch } from './color'
+
+const { fromHex, toHex } = lch
 
 const fillerColor = '#000'
 
@@ -14,7 +16,7 @@ export function parsePalette(raw: HexPalette): Palette {
     (v, idx) => raw?.tones?.[idx] || (idx * 100).toString()
   )
   const colors = hues.map(hue =>
-    toneNames.map((v, idx) => hue.colors[idx] || fillerColor).map(toLch)
+    toneNames.map((v, idx) => fromHex(hue.colors[idx] || fillerColor))
   )
 
   return {
@@ -50,8 +52,9 @@ export function paletteToTokens(palette: Palette): TokenExport {
   hues.forEach((hue, hueIdx) => {
     if (!tokens[hue]) tokens[hue] = {}
     tones.forEach((tone, toneIdx) => {
+      const color = colors[hueIdx][toneIdx]
       tokens[hue][tone] = {
-        value: toHex(colors[hueIdx][toneIdx]),
+        value: toHex(color),
         type: 'color',
       }
     })
@@ -225,6 +228,13 @@ export function setHueHue(
 export function clampColorsToRgb(palette: Palette): Palette {
   return {
     ...palette,
-    colors: palette.colors.map(shades => shades.map(clampToRgb)),
+    colors: palette.colors.map(shades =>
+      shades.map(color => {
+        const { r, g, b, undisplayable } = lch.toClampedRgb(color)
+        if (!undisplayable) return color
+        console.log('Color converted')
+        return lch.fromRgb([r, g, b])
+      })
+    ),
   }
 }

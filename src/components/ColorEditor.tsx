@@ -1,8 +1,11 @@
+import { cielch as lch } from '../color2'
 import React, { FC, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { displayable, MAX_C, MAX_H, MAX_L, toHex, toLch, valid } from '../color'
+import { valid } from '../color'
 import { LCH } from '../types'
 import { ControlGroup, Input } from './inputs'
+
+const { ranges, toClampedRgb, fromHex, toHex } = lch
 
 type ColorEditorProps = {
   color: LCH
@@ -13,7 +16,7 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
   const [l, c, h] = color
   const [isFocused, setIsFocused] = useState(false)
   const [colorInput, setColorInput] = useState(toHex(color))
-  const isDisplayable = displayable(color)
+  const isDisplayable = !toClampedRgb(color).undisplayable
 
   useEffect(() => {
     if (!isFocused) {
@@ -28,7 +31,7 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
         <ChannelInput
           type="number"
           min={0}
-          max={MAX_L}
+          max={ranges.l.max}
           step={0.5}
           value={+l.toFixed(2)}
           onChange={e => onChange([+e.target.value, c, h])}
@@ -39,7 +42,7 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
         <ChannelInput
           type="number"
           min={0}
-          max={MAX_C}
+          max={ranges.c.max}
           step={0.5}
           value={+c.toFixed(2)}
           onChange={e => onChange([l, +e.target.value, h])}
@@ -50,7 +53,7 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
         <ChannelInput
           type="number"
           min={0}
-          max={MAX_H}
+          max={ranges.h.max}
           step={0.5}
           value={+h.toFixed(2)}
           onChange={e => onChange([l, c, +e.target.value])}
@@ -68,7 +71,7 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
           const value = e.target.value
           setColorInput(value)
           if (valid(value)) {
-            onChange(toLch(value))
+            onChange(fromHex(value))
           }
         }}
       />

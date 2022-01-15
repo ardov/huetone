@@ -311,7 +311,7 @@ const AxisL = styled(Axis)`
   background: linear-gradient(#fff, #000);
 `
 const AxisC = styled(Axis)`
-  background: linear-gradient(#0000ff, #4626d0, #5437a3, #554377, #4c4c4c);
+  background: linear-gradient(#ff00ff, #9f9f9f);
 `
 const AxisH = styled(Axis)`
   background: linear-gradient(

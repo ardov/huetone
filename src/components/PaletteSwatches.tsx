@@ -1,11 +1,10 @@
+import { cielch as lch } from '../color2'
 import chroma from 'chroma-js'
 import React, { FC, Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import {
   clampLch,
   getMostContrast,
-  toHex,
-  toLch,
   valid,
   wcagContrast,
   apcaContrast,
@@ -26,6 +25,8 @@ import {
 import { LCH, OverlayMode, Palette } from '../types'
 import { useKeyPress } from '../useKeyPress'
 import { Button, InvisibleInput } from './inputs'
+
+const { fromHex, toHex } = lch
 
 const contrast = {
   WCAG: wcagContrast,
@@ -144,7 +145,7 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
         navigator.clipboard.readText().then(hex => {
           if (valid(hex))
             onPaletteChange(
-              setColor(palette, toLch(hex), selectedHue, selectedTone)
+              setColor(palette, fromHex(hex), selectedHue, selectedTone)
             )
         })
       }
