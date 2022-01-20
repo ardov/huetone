@@ -1,17 +1,16 @@
 import { FC } from 'react'
 import styled from 'styled-components'
-import { Palette } from '../types'
 import { TokenExportButton } from './Export'
 
-export const Help: FC<{ palette: Palette }> = props => (
+export const Help: FC = () => (
   <Wrapper>
-    <Export palette={props.palette} />
+    <Export />
     <Hotkeys />
     <Credits />
   </Wrapper>
 )
 
-const Export: FC<{ palette: Palette }> = props => (
+const Export: FC = () => (
   <Section>
     <h3>Export to Figma</h3>
 
@@ -23,7 +22,7 @@ const Export: FC<{ palette: Palette }> = props => (
       . Run the plugin and open JSON tab. Copy tokens and paste there.
     </p>
     <p>
-      <TokenExportButton palette={props.palette} />
+      <TokenExportButton />
     </p>
   </Section>
 )

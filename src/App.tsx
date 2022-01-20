@@ -1,152 +1,89 @@
-import React, { useEffect, useState, FC } from 'react'
+import { useStore } from '@nanostores/react'
+import React, { useState, FC } from 'react'
 import styled from 'styled-components'
-import { toHex } from './color'
 import { ColorEditor } from './components/ColorEditor'
 import { Scale } from './components/ColorGraph'
 import { PaletteSwatches } from './components/PaletteSwatches'
 import {
   clampColorsToRgb,
-  paletteToHex,
-  parsePalette,
+  getPaletteLink,
+  parseHexPalette,
   setColor,
   setHueHue,
   setToneLuminance,
-  validatePalette,
 } from './palette'
-import { PRESETS } from './presets'
-import { OverlayMode, Palette } from './types'
-import { createLocalStorageStateHook } from 'use-local-storage-state'
 import { ExportField } from './components/Export'
 import { ColorInfo } from './components/ColorInfo'
-// import { ExampleUI } from './components/ExampleUI'
 import { Help } from './components/Help'
 import { Button, ControlGroup, Select } from './components/inputs'
 import { ThemeButton } from './components/ThemeButton'
-import LZString from 'lz-string'
-import { useKeyPress } from './useKeyPress'
+import { useKeyPress } from './hooks/useKeyPress'
+import { PaletteSelect } from './components/DropdownMenu'
+import { CopyButton } from './components/CopyButton'
+import { paletteListStore } from './store/paletteList'
+import { paletteStore, setPalette, toggleColorSpace } from './store/palette'
+import { selectedStore, setSelected } from './store/currentPosition'
+import { overlayStore, setOverlayMode, setVersusColor } from './store/overlay'
 
 const chartWidth = 400
-const paletteList = PRESETS.map(parsePalette)
-
-const useLocalPalette = createLocalStorageStateHook<Palette>(
-  'palette',
-  paletteList[0]
-)
 
 export default function App() {
-  const [localPalette, setLocalPatette] = useLocalPalette()
-  const isValidLocal = validatePalette(localPalette)
-  const [paletteIdx, setPaletteIdx] = useState<number>(isValidLocal ? 0 : 1)
-  const [palette, setPalette] = useState<Palette>(
-    paletteIdx ? paletteList[paletteIdx - 1] : localPalette
-  )
-  const [selected, setSelected] = useState<[number, number]>([
-    Math.floor(palette.hues.length / 2),
-    Math.floor(palette.tones.length / 2),
-  ])
-  const [contrastMode, setContrastMode] = useState<'selected' | string>('white')
-  const [overlayMode, setOverlayMode] = useState<OverlayMode>('APCA')
-  const selectedColor = palette.colors[selected[0]][selected[1]]
-  const contrastTo =
-    contrastMode === 'selected' ? toHex(selectedColor) : contrastMode
+  const paletteList = useStore(paletteListStore)
+  const palette = useStore(paletteStore)
+  const selected = useStore(selectedStore)
+  const overlay = useStore(overlayStore)
 
-  const editPalette = (newPalette: Palette | ((p: Palette) => Palette)) => {
-    const createdPalette =
-      typeof newPalette === 'function' ? newPalette(palette) : newPalette
-    let newSelected = [...selected] as [number, number]
-    if (newSelected[0] >= createdPalette.hues.length) {
-      newSelected[0] = createdPalette.hues.length - 1
-    }
-    if (newSelected[1] >= createdPalette.tones.length) {
-      newSelected[1] = createdPalette.tones.length - 1
-    }
-    setSelected(newSelected)
-    setPalette(createdPalette)
-    setLocalPatette(createdPalette)
-    setPaletteIdx(0)
-  }
+  const [paletteIdx, setPaletteIdx] = useState<number>(0)
 
   const switchPalette: React.ChangeEventHandler<HTMLSelectElement> = e => {
     const idx = +e.target.value
-    setSelected([0, 0])
+    const newPalette = parseHexPalette(paletteList[idx], palette.mode)
     setPaletteIdx(idx)
-    const newPalette = idx ? paletteList[idx - 1] : localPalette
     setPalette(newPalette)
-    setSelected([
-      Math.floor(newPalette.hues.length / 2),
-      Math.floor(newPalette.tones.length / 2),
-    ])
   }
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const compressed = params.get('palette')
-    if (!compressed) return
-    const json = LZString.decompressFromEncodedURIComponent(compressed)
-    if (!json) return
-    try {
-      const hexPalette = JSON.parse(json)
-      setLocalPatette(parsePalette(hexPalette))
-    } catch (e) {}
-  }, [setLocalPatette])
-
-  useEffect(() => {
-    const href = window.location.href
-    const [base, search] = href.split('?')
-    const params = new URLSearchParams(search)
-    const hexPalette = paletteToHex(palette)
-    const compressed = LZString.compressToEncodedURIComponent(
-      JSON.stringify(hexPalette)
-    )
-    params.set('palette', compressed)
-    let location = [base, params.toString()].join('?')
-    window.history.pushState('page2', 'Title', location)
-  }, [palette])
 
   return (
     <Wrapper>
       <PaletteSection>
+        <PaletteSelect currentIdx={paletteIdx} />
         <ControlRow>
           <Select name="palettes" value={paletteIdx} onChange={switchPalette}>
-            <option value={0}>Local palette</option>
             {paletteList.map((p, i) => (
-              <option key={p.name} value={i + 1}>
+              <option key={p.name + i} value={i}>
                 {p.name}
               </option>
             ))}
           </Select>
+          <Button onClick={toggleColorSpace}>{palette.mode}</Button>
           <ControlGroup>
             <Button
               onClick={() =>
-                setOverlayMode(m => (m === 'APCA' ? 'WCAG' : 'APCA'))
+                setOverlayMode(overlay.mode === 'APCA' ? 'WCAG' : 'APCA')
               }
             >
-              {overlayMode} contrast
+              {overlay.mode} contrast
             </Button>
             <Button
               onClick={() =>
-                setContrastMode(m => (m === 'selected' ? 'white' : 'selected'))
+                setVersusColor(
+                  overlay.versus === 'selected' ? 'white' : 'selected'
+                )
               }
             >
-              vs. {contrastMode}
+              vs. {overlay.versus}
             </Button>
           </ControlGroup>
           <ThemeButton />
+          <CopyButton getContent={() => getPaletteLink(palette)}>
+            Copy link
+          </CopyButton>
         </ControlRow>
-        <PaletteSwatches
-          palette={palette}
-          selected={selected}
-          overlayMode={overlayMode}
-          contrastTo={contrastTo}
-          onSelect={setSelected}
-          onPaletteChange={editPalette}
-        />
-
+        <PaletteSwatches />
         <ControlRow>
           <Button
             onClick={() =>
-              editPalette(p =>
-                setToneLuminance(p, selectedColor[0], selected[1])
+              setPalette(
+                setToneLuminance(palette, selected.color.l, selected.toneId)
               )
             }
           >
@@ -154,31 +91,32 @@ export default function App() {
           </Button>
           <Button
             onClick={() =>
-              editPalette(p => setHueHue(p, selectedColor[2], selected[0]))
+              setPalette(setHueHue(palette, selected.color.h, selected.hueId))
             }
           >
             Apply current hue to row
           </Button>
         </ControlRow>
-
-        <ColorInfo palette={palette} selected={selected} />
-
+        <ColorInfo />
         <ControlRow>
-          <ExportField palette={palette} onChange={editPalette} />
+          <ExportField />
         </ControlRow>
       </PaletteSection>
 
       <ChartsSection>
         <ControlRow>
           <ColorEditor
-            color={selectedColor}
-            onChange={color =>
-              editPalette(setColor(palette, color, selected[0], selected[1]))
-            }
+            color={selected.color}
+            onChange={color => {
+              let { l, c, h } = color
+              setPalette(
+                setColor(palette, [l, c, h], selected.hueId, selected.toneId)
+              )
+            }}
           />
           <Button
             title="Not all LCH colors are displayable in RGB color space. This button will tweak all LCH values to be displayable."
-            onClick={() => editPalette(clampColorsToRgb)}
+            onClick={() => setPalette(clampColorsToRgb(palette))}
           >
             Make colors displayable
           </Button>
@@ -187,79 +125,83 @@ export default function App() {
         <Charts>
           <Scale
             width={chartWidth}
-            selected={selected[1]}
+            selected={selected.toneId}
             channel="l"
-            colors={palette.colors[selected[0]]}
-            onSelect={i => setSelected([selected[0], i])}
-            onColorChange={(i, lch) => {
-              setSelected([selected[0], i])
-              editPalette(setColor(palette, lch, selected[0], i))
+            colors={palette.colors[selected.hueId]}
+            onSelect={i => setSelected([selected.hueId, i])}
+            onColorChange={(i, color) => {
+              let { l, c, h } = color
+              setSelected([selected.hueId, i])
+              setPalette(setColor(palette, [l, c, h], selected.hueId, i))
             }}
           />
           <ScaleIndicator axis="l" />
           <Scale
             width={chartWidth}
-            selected={selected[0]}
+            selected={selected.hueId}
             channel="l"
-            colors={palette.colors.map(hue => hue[selected[1]])}
-            onSelect={i => setSelected([i, selected[1]])}
-            onColorChange={(i, lch) => {
-              setSelected([i, selected[1]])
-              editPalette(setColor(palette, lch, i, selected[1]))
+            colors={palette.colors.map(hue => hue[selected.toneId])}
+            onSelect={i => setSelected([i, selected.toneId])}
+            onColorChange={(i, color) => {
+              let { l, c, h } = color
+              setSelected([i, selected.toneId])
+              setPalette(setColor(palette, [l, c, h], i, selected.toneId))
             }}
           />
 
           <Scale
             width={chartWidth}
-            selected={selected[1]}
+            selected={selected.toneId}
             channel="c"
-            colors={palette.colors[selected[0]]}
-            onSelect={i => setSelected([selected[0], i])}
-            onColorChange={(i, lch) => {
-              setSelected([selected[0], i])
-              editPalette(setColor(palette, lch, selected[0], i))
+            colors={palette.colors[selected.hueId]}
+            onSelect={i => setSelected([selected.hueId, i])}
+            onColorChange={(i, color) => {
+              let { l, c, h } = color
+              setSelected([selected.hueId, i])
+              setPalette(setColor(palette, [l, c, h], selected.hueId, i))
             }}
           />
           <ScaleIndicator axis="c" />
           <Scale
             width={chartWidth}
-            selected={selected[0]}
+            selected={selected.hueId}
             channel="c"
-            colors={palette.colors.map(hue => hue[selected[1]])}
-            onSelect={i => setSelected([i, selected[1]])}
-            onColorChange={(i, lch) => {
-              setSelected([i, selected[1]])
-              editPalette(setColor(palette, lch, i, selected[1]))
+            colors={palette.colors.map(hue => hue[selected.toneId])}
+            onSelect={i => setSelected([i, selected.toneId])}
+            onColorChange={(i, color) => {
+              let { l, c, h } = color
+              setSelected([i, selected.toneId])
+              setPalette(setColor(palette, [l, c, h], i, selected.toneId))
             }}
           />
 
           <Scale
             width={chartWidth}
-            selected={selected[1]}
+            selected={selected.toneId}
             channel="h"
-            colors={palette.colors[selected[0]]}
-            onSelect={i => setSelected([selected[0], i])}
-            onColorChange={(i, lch) => {
-              setSelected([selected[0], i])
-              editPalette(setColor(palette, lch, selected[0], i))
+            colors={palette.colors[selected.hueId]}
+            onSelect={i => setSelected([selected.hueId, i])}
+            onColorChange={(i, color) => {
+              let { l, c, h } = color
+              setSelected([selected.hueId, i])
+              setPalette(setColor(palette, [l, c, h], selected.hueId, i))
             }}
           />
           <ScaleIndicator axis="h" />
           <Scale
             width={chartWidth}
-            selected={selected[0]}
+            selected={selected.hueId}
             channel="h"
-            colors={palette.colors.map(hue => hue[selected[1]])}
-            onSelect={i => setSelected([i, selected[1]])}
-            onColorChange={(i, lch) => {
-              setSelected([i, selected[1]])
-              editPalette(setColor(palette, lch, i, selected[1]))
+            colors={palette.colors.map(hue => hue[selected.toneId])}
+            onSelect={i => setSelected([i, selected.toneId])}
+            onColorChange={(i, color) => {
+              let { l, c, h } = color
+              setSelected([i, selected.toneId])
+              setPalette(setColor(palette, [l, c, h], i, selected.toneId))
             }}
           />
         </Charts>
-        <Help palette={palette} />
-
-        {/* <ExampleUI palette={palette} /> */}
+        <Help />
       </ChartsSection>
     </Wrapper>
   )

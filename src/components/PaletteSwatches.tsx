@@ -1,14 +1,7 @@
-import { cielch as lch } from '../color2'
 import chroma from 'chroma-js'
 import React, { FC, Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import {
-  clampLch,
-  getMostContrast,
-  valid,
-  wcagContrast,
-  apcaContrast,
-} from '../color'
+import { getMostContrast, wcagContrast, apcaContrast } from '../color'
 import {
   addHue,
   addTone,
@@ -22,43 +15,34 @@ import {
   reorderTones,
   setColor,
 } from '../palette'
-import { LCH, OverlayMode, Palette } from '../types'
-import { useKeyPress } from '../useKeyPress'
+import { LCH } from '../types'
+import { useKeyPress } from '../hooks/useKeyPress'
 import { Button, InvisibleInput } from './inputs'
-
-const { fromHex, toHex } = lch
+import { useStore } from '@nanostores/react'
+import { colorSpaceStore, paletteStore, setPalette } from '../store/palette'
+import { selectedStore, setSelected } from '../store/currentPosition'
+import { overlayStore, versusColorStore } from '../store/overlay'
 
 const contrast = {
   WCAG: wcagContrast,
   APCA: apcaContrast,
+  NONE: () => undefined,
 }
 
-type PaletteSwatchesProps = {
-  palette: Palette
-  selected: [number, number]
-  overlayMode: OverlayMode
-  contrastTo: string
-  onSelect: (selected: [number, number]) => void
-  onPaletteChange: (palette: Palette) => void
-}
+export const PaletteSwatches: FC = () => {
+  const { hex2color } = useStore(colorSpaceStore)
+  const palette = useStore(paletteStore)
+  const selected = useStore(selectedStore)
+  const overlay = useStore(overlayStore)
+  const versusColor = useStore(versusColorStore)
 
-export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
-  palette,
-  selected,
-  overlayMode,
-  contrastTo,
-  onSelect,
-  onPaletteChange,
-}) => {
   const lPress = useKeyPress('KeyL')
   const cPress = useKeyPress('KeyC')
   const hPress = useKeyPress('KeyH')
   const bPress = useKeyPress('KeyB')
   const [copiedColor, setCopiedColor] = useState<LCH>([0, 0, 0])
   const { hues, tones, colors } = palette
-  const [selectedHue, selectedTone] = selected
-  const hexColors = colors.map(arr => arr.map(toHex))
-  const selectedColorLch = colors[selectedHue][selectedTone]
+  const hexColors = colors.map(arr => arr.map(color => color.hex))
 
   useEffect(() => {
     function handler(e: KeyboardEvent) {
@@ -81,7 +65,7 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
       // Modify color
       if (lPress || cPress || hPress) {
         e.preventDefault()
-        let [l, c, h] = selectedColorLch
+        let { l, c, h } = selected.color
         if (key === 'ArrowUp') {
           if (lPress) l += 0.5
           if (cPress) c += 0.5
@@ -92,8 +76,8 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
           if (cPress) c -= 0.5
           if (hPress) h -= 0.5
         }
-        onPaletteChange(
-          setColor(palette, clampLch([l, c, h]), selectedHue, selectedTone)
+        setPalette(
+          setColor(palette, [l, c, h], selected.hueId, selected.toneId)
         )
         return
       }
@@ -122,9 +106,10 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
 
       function copyCurrent() {
         e.preventDefault()
-        let toCopy = toHex(selectedColorLch)
-        setCopiedColor([...selectedColorLch] as LCH)
-        navigator.clipboard.writeText(toHex(selectedColorLch))
+        let toCopy = selected.color.hex
+        let { l, c, h } = selected.color
+        setCopiedColor([l, c, h] as LCH)
+        navigator.clipboard.writeText(toCopy)
         if (navigator.clipboard) {
           navigator.clipboard.writeText(toCopy)
         } else {
@@ -143,65 +128,68 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
       }
       function pasteToCurrent() {
         navigator.clipboard.readText().then(hex => {
-          if (valid(hex))
-            onPaletteChange(
-              setColor(palette, fromHex(hex), selectedHue, selectedTone)
+          let color = hex2color(hex)
+          if (color) {
+            let { l, c, h } = color
+            setPalette(
+              setColor(palette, [l, c, h], selected.hueId, selected.toneId)
             )
+          }
         })
       }
 
       function moveRowUp() {
-        if (selectedHue <= 0) return
-        onPaletteChange(reorderHues(palette, selectedHue, selectedHue - 1))
-        onSelect([selectedHue - 1, selectedTone])
+        if (selected.hueId <= 0) return
+        setPalette(reorderHues(palette, selected.hueId, selected.hueId - 1))
+        setSelected([selected.hueId - 1, selected.toneId])
       }
       function moveRowDown() {
-        if (selectedHue >= hues.length - 1) return
-        onPaletteChange(reorderHues(palette, selectedHue, selectedHue + 1))
-        onSelect([selectedHue + 1, selectedTone])
+        if (selected.hueId >= hues.length - 1) return
+        setPalette(reorderHues(palette, selected.hueId, selected.hueId + 1))
+        setSelected([selected.hueId + 1, selected.toneId])
       }
       function moveColumnLeft() {
-        if (selectedTone <= 0) return
-        onPaletteChange(reorderTones(palette, selectedTone, selectedTone - 1))
-        onSelect([selectedHue, selectedTone - 1])
+        if (selected.toneId <= 0) return
+        setPalette(reorderTones(palette, selected.toneId, selected.toneId - 1))
+        setSelected([selected.hueId, selected.toneId - 1])
       }
       function moveColumnRight() {
-        if (selectedTone >= tones.length - 1) return
-        onPaletteChange(reorderTones(palette, selectedTone, selectedTone + 1))
-        onSelect([selectedHue, selectedTone + 1])
+        if (selected.toneId >= tones.length - 1) return
+        setPalette(reorderTones(palette, selected.toneId, selected.toneId + 1))
+        setSelected([selected.hueId, selected.toneId + 1])
       }
 
       function duplicateUp() {
-        onPaletteChange(duplicateHue(palette, selectedHue, selectedHue))
+        setPalette(duplicateHue(palette, selected.hueId, selected.hueId))
       }
       function duplicateDown() {
-        onPaletteChange(duplicateHue(palette, selectedHue, selectedHue + 1))
-        onSelect([selectedHue + 1, selectedTone])
+        setPalette(duplicateHue(palette, selected.hueId, selected.hueId + 1))
+        setSelected([selected.hueId + 1, selected.toneId])
       }
       function duplicateLeft() {
-        onPaletteChange(duplicateTone(palette, selectedTone, selectedTone))
-        onSelect([selectedHue, selectedTone])
+        setPalette(duplicateTone(palette, selected.toneId, selected.toneId))
+        setSelected([selected.hueId, selected.toneId])
       }
       function duplicateRight() {
-        onPaletteChange(duplicateTone(palette, selectedTone, selectedTone + 1))
-        onSelect([selectedHue, selectedTone + 1])
+        setPalette(duplicateTone(palette, selected.toneId, selected.toneId + 1))
+        setSelected([selected.hueId, selected.toneId + 1])
       }
 
       function selectUp() {
-        if (selectedHue <= 0) return
-        onSelect([selectedHue - 1, selectedTone])
+        if (selected.hueId <= 0) return
+        setSelected([selected.hueId - 1, selected.toneId])
       }
       function selectDown() {
-        if (selectedHue >= hues.length - 1) return
-        onSelect([selectedHue + 1, selectedTone])
+        if (selected.hueId >= hues.length - 1) return
+        setSelected([selected.hueId + 1, selected.toneId])
       }
       function selectLeft() {
-        if (selectedTone <= 0) return
-        onSelect([selectedHue, selectedTone - 1])
+        if (selected.toneId <= 0) return
+        setSelected([selected.hueId, selected.toneId - 1])
       }
       function selectRight() {
-        if (selectedTone >= tones.length - 1) return
-        onSelect([selectedHue, selectedTone + 1])
+        if (selected.toneId >= tones.length - 1) return
+        setSelected([selected.hueId, selected.toneId + 1])
       }
     }
     window.addEventListener('keydown', handler)
@@ -214,13 +202,10 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
     hPress,
     hues.length,
     lPress,
-    onPaletteChange,
-    onSelect,
     palette,
-    selectedColorLch,
-    selectedHue,
-    selectedTone,
+    selected,
     tones.length,
+    hex2color,
   ])
 
   return (
@@ -231,14 +216,12 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
         <ToneInput
           key={tone}
           value={toneName}
-          onChange={e =>
-            onPaletteChange(renameTone(palette, tone, e.target.value))
-          }
+          onChange={e => setPalette(renameTone(palette, tone, e.target.value))}
         />
       ))}
       <SmallButton
         title="Add tone"
-        onClick={() => onPaletteChange(addTone(palette))}
+        onClick={() => setPalette(addTone(palette))}
       >
         +
       </SmallButton>
@@ -249,22 +232,20 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
           <InvisibleInput
             key={hue}
             value={hues[hue]}
-            onChange={e =>
-              onPaletteChange(renameHue(palette, hue, e.target.value))
-            }
+            onChange={e => setPalette(renameHue(palette, hue, e.target.value))}
           />
           {hueColors.map((color, tone) => (
             <Swatch
               key={color + tone}
               color={!bPress ? color : chroma(color).desaturate(10).hex()}
-              contrast={contrast[overlayMode](contrastTo, color)}
-              isSelected={hue === selectedHue && tone === selectedTone}
-              onSelect={() => onSelect([hue, tone])}
+              contrast={contrast[overlay.mode](versusColor, color)}
+              isSelected={hue === selected.hueId && tone === selected.toneId}
+              setSelected={() => setSelected([hue, tone])}
             />
           ))}
           <SmallButton
             title="Delete this row"
-            onClick={() => onPaletteChange(removeHue(palette, hue))}
+            onClick={() => setPalette(removeHue(palette, hue))}
           >
             ×
           </SmallButton>
@@ -272,17 +253,14 @@ export const PaletteSwatches: FC<PaletteSwatchesProps> = ({
       ))}
 
       {/* COLUMN BUTTONS */}
-      <SmallButton
-        title="Add row"
-        onClick={() => onPaletteChange(addHue(palette))}
-      >
+      <SmallButton title="Add row" onClick={() => setPalette(addHue(palette))}>
         +
       </SmallButton>
       {tones.map((toneName, tone) => (
         <SmallButton
           key={tone}
           title="Delete this column"
-          onClick={() => onPaletteChange(removeTone(palette, tone))}
+          onClick={() => setPalette(removeTone(palette, tone))}
         >
           ×
         </SmallButton>
@@ -303,18 +281,19 @@ const ToneInput = styled(InvisibleInput)`
 
 type SwatchProps = {
   color: string
-  contrast: number
+  contrast?: number
   isSelected: boolean
-  onSelect: () => void
+  setSelected: () => void
 }
 
 const Swatch: FC<SwatchProps> = props => {
-  const { color, isSelected, onSelect, contrast } = props
-  const contrastRatio = Math.floor(contrast * 10) / 10
+  const { color, isSelected, setSelected, contrast } = props
+  const contrastRatio =
+    contrast === undefined ? '' : Math.floor(contrast * 10) / 10
   const contrastText = getMostContrast(color, ['black', 'white'])
   const style = { '--bg': color, '--text': contrastText } as React.CSSProperties
   return (
-    <SwatchWrapper style={style} isSelected={isSelected} onClick={onSelect}>
+    <SwatchWrapper style={style} isSelected={isSelected} onClick={setSelected}>
       <span style={isSelected ? { fontWeight: 900 } : {}}>{contrastRatio}</span>
     </SwatchWrapper>
   )
@@ -353,6 +332,7 @@ const SmallButton = styled(Button)`
 function filterInput(event: KeyboardEvent) {
   const target = event.target
   if (!target) return true
+
   // @ts-ignore
   const { tagName, isContentEditable, readOnly } = target
   if (isContentEditable) return false
@@ -361,5 +341,8 @@ function filterInput(event: KeyboardEvent) {
   if (target?.type === 'range') return true
   if (readOnly) return true
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName)) return false
+  // @ts-ignore
+  if (target?.getAttribute?.('role') === 'menuitem') return false
+  console.log(target)
   return true
 }

@@ -1,15 +1,15 @@
 import React, { FC, useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
-import { paletteToHex, paletteToTokens, parsePalette } from '../palette'
-import { Palette } from '../types'
+import { exportToHexPalette, exportToTokens, parseHexPalette } from '../palette'
 import { Button, TextArea } from './inputs'
+import { useStore } from '@nanostores/react'
+import { paletteStore, setPalette } from '../store/palette'
 
-export const TokenExportButton: FC<{
-  palette: Palette
-}> = ({ palette }) => {
+export const TokenExportButton: FC = () => {
+  const palette = useStore(paletteStore)
   const [copied, setCopied] = useState(false)
   const onCopy = () => {
-    const tokens = paletteToTokens(palette)
+    const tokens = exportToTokens(palette)
     const json = JSON.stringify(tokens, null, 2)
     navigator.clipboard.writeText(json)
     setCopied(true)
@@ -21,13 +21,11 @@ export const TokenExportButton: FC<{
   return <Button onClick={onCopy}>{copied ? 'Copied!' : 'Copy tokens'}</Button>
 }
 
-export const ExportField: FC<{
-  palette: Palette
-  onChange: (palette: Palette) => void
-}> = ({ palette, onChange }) => {
+export const ExportField: FC = () => {
+  const palette = useStore(paletteStore)
   const ref = useRef<any>()
   const [areaValue, setAreaValue] = useState('')
-  const currentJSON = JSON.stringify(paletteToHex(palette), null, 2)
+  const currentJSON = JSON.stringify(exportToHexPalette(palette), null, 2)
 
   useEffect(() => {
     if (document.activeElement !== ref.current) {
@@ -48,8 +46,8 @@ export const ExportField: FC<{
         if (value) {
           try {
             const json = JSON.parse(value)
-            const palette = parsePalette(json)
-            onChange(palette)
+            const newPalette = parseHexPalette(json, palette.mode)
+            setPalette(newPalette)
           } catch (error) {
             console.warn('Parsing error', error)
           }

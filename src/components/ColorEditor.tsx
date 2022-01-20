@@ -1,28 +1,24 @@
-import { cielch as lch } from '../color2'
 import React, { FC, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { valid } from '../color'
-import { LCH } from '../types'
+import { TColor } from '../types'
 import { ControlGroup, Input } from './inputs'
-
-const { ranges, toClampedRgb, fromHex, toHex } = lch
+import { useStore } from '@nanostores/react'
+import { colorSpaceStore } from '../store/palette'
 
 type ColorEditorProps = {
-  color: LCH
-  onChange: (color: LCH) => void
+  color: TColor
+  onChange: (color: TColor) => void
 }
 
 export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
-  const [l, c, h] = color
+  const { lch2color, hex2color, ranges } = useStore(colorSpaceStore)
+  const { l, c, h, hex, displayable } = color
   const [isFocused, setIsFocused] = useState(false)
-  const [colorInput, setColorInput] = useState(toHex(color))
-  const isDisplayable = !toClampedRgb(color).undisplayable
+  const [colorInput, setColorInput] = useState(hex)
 
   useEffect(() => {
-    if (!isFocused) {
-      setColorInput(toHex(color))
-    }
-  }, [color, isFocused])
+    if (!isFocused) setColorInput(hex)
+  }, [hex, isFocused])
 
   return (
     <ControlGroup>
@@ -30,49 +26,48 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
         <ChannelLabel>L</ChannelLabel>
         <ChannelInput
           type="number"
-          min={0}
+          min={ranges.l.min}
           max={ranges.l.max}
           step={0.5}
           value={+l.toFixed(2)}
-          onChange={e => onChange([+e.target.value, c, h])}
+          onChange={e => onChange(lch2color([+e.target.value, c, h]))}
         />
       </ChannelInputWrapper>
       <ChannelInputWrapper>
         <ChannelLabel>C</ChannelLabel>
         <ChannelInput
           type="number"
-          min={0}
+          min={ranges.c.min}
           max={ranges.c.max}
           step={0.5}
           value={+c.toFixed(2)}
-          onChange={e => onChange([l, +e.target.value, h])}
+          onChange={e => onChange(lch2color([l, +e.target.value, h]))}
         />
       </ChannelInputWrapper>
       <ChannelInputWrapper>
         <ChannelLabel>H</ChannelLabel>
         <ChannelInput
           type="number"
-          min={0}
+          min={ranges.c.min}
           max={ranges.h.max}
           step={0.5}
           value={+h.toFixed(2)}
-          onChange={e => onChange([l, c, +e.target.value])}
+          onChange={e => onChange(lch2color([l, c, +e.target.value]))}
         />
       </ChannelInputWrapper>
       <HexInput
         value={colorInput}
-        style={{ color: isDisplayable ? 'inherit' : 'red' }}
+        style={{ color: displayable ? 'inherit' : 'red' }}
         onFocus={() => setIsFocused(true)}
         onBlur={() => {
           setIsFocused(false)
-          setColorInput(toHex(color))
+          setColorInput(hex)
         }}
         onChange={e => {
           const value = e.target.value
           setColorInput(value)
-          if (valid(value)) {
-            onChange(fromHex(value))
-          }
+          let color = hex2color(value)
+          if (color) onChange(color)
         }}
       />
     </ControlGroup>

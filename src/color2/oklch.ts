@@ -1,16 +1,14 @@
-import { rgb2hex, hex2rgb, lrgb2rgb, rgb2lrgb } from './common'
-import { clamp } from './utils'
-import { RGB, LAB, LCH, TClampedRgb, TLchSpace } from './types'
-const { min, max, cbrt, sqrt, atan2, sin, cos, PI } = Math
+import { lrgb2rgb, rgb2lrgb } from './common'
+import { RGB, LAB, LCH, TLchSpace } from '../types'
 
 //
 // —————————————————————————————————————————————————————————————————————————————
 // Linear RGB <-> Lab
 
 export function lrgb2lab([r, g, b]: RGB): LAB {
-  const l = cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b)
-  const m = cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b)
-  const s = cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b)
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b)
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b)
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b)
   return [
     0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
     1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
@@ -34,6 +32,7 @@ export function lab2lrgb([L, a, b]: LAB): RGB {
 // Lab <-> LCH
 
 function lab2lch([L, a, b]: LAB): LCH {
+  const { sqrt, atan2, PI } = Math
   const c = sqrt(a * a + b * b)
   let h = 0
   if (c) {
@@ -45,6 +44,7 @@ function lab2lch([L, a, b]: LAB): LCH {
 }
 
 function lch2lab([L, c, h]: LCH): LAB {
+  const { sin, cos, PI } = Math
   L /= 100
   c /= 100
   const rad = h * (PI / 180)
@@ -67,48 +67,16 @@ export function lch2rgb(lch: LCH): RGB {
 
 //
 // —————————————————————————————————————————————————————————————————————————————
-// LCH -> Clamped RGB
-
-export function lch2rgbClamped(lch: LCH): TClampedRgb {
-  const [r, g, b] = lch2rgb(lch)
-  return {
-    r: clamp(r, 0, 255),
-    g: clamp(g, 0, 255),
-    b: clamp(b, 0, 255),
-    clamped: min(r, g, b) < 0 || max(r, g, b) > 255,
-    undisplayable: min(r, g, b) < -0.0005 || max(r, g, b) > 255.00001,
-  }
-}
-
-//
-// —————————————————————————————————————————————————————————————————————————————
-// LCH <-> HEX
-
-function lch2hex(lch: LCH): string {
-  const { r, g, b } = lch2rgbClamped(lch)
-  return rgb2hex([r, g, b])
-}
-
-function hex2lch(hex: string): LCH {
-  const rgb = hex2rgb(hex)
-  if (rgb) return rgb2lch(rgb)
-  console.log('error parsing hex: ', hex)
-  return [0, 0, 0]
-}
-
-//
-// —————————————————————————————————————————————————————————————————————————————
 // Object
 
 export const oklch: TLchSpace = {
-  fromRgb: rgb2lch,
-  fromHex: hex2lch,
-  toHex: lch2hex,
-  toRgb: lch2rgb,
-  toClampedRgb: lch2rgbClamped,
+  name: 'oklch',
+  rgb2lch,
+  lch2rgb,
+  rgbTreshold: { min: -0.0005, max: 255.00001 },
   ranges: {
     l: { min: 0, max: 100 },
-    c: { min: 0, max: 32 },
+    c: { min: 0, max: 33 },
     h: { min: 0, max: 360 },
   },
 }

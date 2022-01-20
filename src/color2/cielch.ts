@@ -1,8 +1,6 @@
 import chroma from 'chroma-js'
-import { hex2rgb, rgb2hex, lrgb2rgb } from './common'
-import { clamp } from './utils'
-import { RGB, LCH, LAB, XYZ, TLchSpace, TClampedRgb } from './types'
-const { min, max, sin, cos, PI } = Math
+import { lrgb2rgb } from './common'
+import { RGB, LCH, LAB, XYZ, TLchSpace } from '../types'
 
 //
 // —————————————————————————————————————————————————————————————————————————————
@@ -41,6 +39,7 @@ const lab2xyz = ([l, a, b]: LAB): XYZ => {
 // CIELab <-> CIELCH
 
 const lch2lab = ([L, c, h]: LCH): LAB => {
+  const { sin, cos, PI } = Math
   const rad = h * (PI / 180)
   const a = c * cos(rad)
   const b = c * sin(rad)
@@ -51,11 +50,9 @@ const lch2lab = ([L, c, h]: LCH): LAB => {
 // —————————————————————————————————————————————————————————————————————————————
 // RGB <-> CIELCH
 
-export const lch2rgb = (lch: LCH): RGB => {
-  return xyz2rgb(lab2xyz(lch2lab(lch)))
-}
+const lch2rgb = (lch: LCH): RGB => xyz2rgb(lab2xyz(lch2lab(lch)))
 
-export const rgb2lch = ([r, g, b]: RGB): LCH => {
+const rgb2lch = ([r, g, b]: RGB): LCH => {
   return chroma
     .rgb(r, g, b)
     .lch()
@@ -64,53 +61,16 @@ export const rgb2lch = ([r, g, b]: RGB): LCH => {
 
 //
 // —————————————————————————————————————————————————————————————————————————————
-// CIELCH -> Clamped RGB
-
-export function lch2rgbClamped(lch: LCH): TClampedRgb {
-  const [r, g, b] = lch2rgb(lch)
-  return {
-    r: clamp(r, 0, 255),
-    g: clamp(g, 0, 255),
-    b: clamp(b, 0, 255),
-    clamped: min(r, g, b) < 0 || max(r, g, b) > 255,
-    undisplayable: min(r, g, b) < -0.05 || max(r, g, b) > 255.1,
-  }
-}
-
-//
-// —————————————————————————————————————————————————————————————————————————————
-// CIELCH <-> HEX
-
-function lch2hex(lch: LCH): string {
-  const { r, g, b } = lch2rgbClamped(lch)
-  return rgb2hex([r, g, b])
-}
-
-function hex2lch(hex: string): LCH {
-  const rgb = hex2rgb(hex)
-  if (rgb) return rgb2lch(rgb)
-  console.log('error parsing hex: ', hex)
-  return [0, 0, 0]
-}
-
-//
-// —————————————————————————————————————————————————————————————————————————————
 // Object
 
 export const cielch: TLchSpace = {
-  fromRgb: rgb2lch,
-  fromHex: hex2lch,
-  toHex: lch2hex,
-  toRgb: lch2rgb,
-  toClampedRgb: lch2rgbClamped,
+  name: 'cielch',
+  rgb2lch,
+  lch2rgb,
+  rgbTreshold: { min: -0.05, max: 255.1 },
   ranges: {
     l: { min: 0, max: 100 },
     c: { min: 0, max: 134 },
     h: { min: 0, max: 360 },
   },
 }
-
-// export const cielch = {
-//   fromRgb: rgb2lch,
-//   toRgb: lch2rgb,
-// }

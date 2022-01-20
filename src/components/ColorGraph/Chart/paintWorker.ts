@@ -1,41 +1,33 @@
-import { cielch as lch } from '../../../color2'
+import { colorSpaces, TSpaceName } from '../../../color2'
 import * as Comlink from 'comlink'
-import { LCH } from '../../../types'
+import { TColor } from '../../../types'
 import { Pixels } from './Pixels'
 import { paddedScale, sycledLerp } from './interpolation'
-
-const { ranges, toClampedRgb } = lch
 
 type DrawChartProps = {
   width: number
   height: number
-  colors: LCH[]
-  channel: 'l' | 'c' | 'h'
-}
-
-function drawChart({ width, height, colors, channel }: DrawChartProps) {
-  if (channel === 'c') return drawChromaChart(width, height, colors, true)
-  if (channel === 'l') return drawLuminosityChart(width, height, colors, true)
-  if (channel === 'h') return drawHueChart(width, height, colors, true)
-  let pixels = new Pixels(width, height)
-
-  return pixels.array
-}
-
-function drawLuminosityChart(
-  width: number,
-  height: number,
-  colors: LCH[],
+  colors: TColor[]
+  mode: TSpaceName
   showColors?: boolean
-) {
+}
+
+function drawLuminosityChart({
+  width,
+  height,
+  colors,
+  mode,
+  showColors,
+}: DrawChartProps) {
+  const { ranges, lch2color } = colorSpaces[mode]
   let pixels = new Pixels(width, height)
   let chromaScale = paddedScale(
     width,
-    colors.map(([l, c, h]) => c)
+    colors.map(color => color.c)
   )
   let hueScale = paddedScale(
     width,
-    colors.map(([l, c, h]) => h),
+    colors.map(color => color.h),
     ranges.h.max
   )
 
@@ -46,10 +38,10 @@ function drawLuminosityChart(
 
     for (let y = height; y >= 0; y--) {
       let l = sycledLerp(ranges.l.max, ranges.l.min, y / height)
-      const { r, g, b, clamped } = toClampedRgb([l, c, h])
+      const { r, g, b, displayable } = lch2color([l, c, h])
       // Luminosity chart only have colors in the middle. So if the current color is undisplayable and we already had displayable colors, there will be no more displayable colors.
-      if (clamped && hadColors) break
-      if (!clamped) {
+      if (!displayable && hadColors) break
+      if (displayable) {
         hadColors = true
         pixels.setPixel(
           x,
@@ -62,23 +54,26 @@ function drawLuminosityChart(
       }
     }
   }
+
   return pixels.array
 }
 
-function drawChromaChart(
-  width: number,
-  height: number,
-  colors: LCH[],
-  showColors?: boolean
-) {
+function drawChromaChart({
+  width,
+  height,
+  colors,
+  mode,
+  showColors,
+}: DrawChartProps) {
+  const { ranges, lch2color } = colorSpaces[mode]
   let pixels = new Pixels(width, height)
   let luminostyScale = paddedScale(
     width,
-    colors.map(([l, c, h]) => l)
+    colors.map(color => color.l)
   )
   let hueScale = paddedScale(
     width,
-    colors.map(([l, c, h]) => h),
+    colors.map(color => color.h),
     ranges.h.max
   )
 
@@ -92,9 +87,9 @@ function drawChromaChart(
 
     for (let y = height; y >= 0; y--) {
       let c = sycledLerp(ranges.c.max, ranges.c.min, y / height)
-      const { r, g, b, clamped } = toClampedRgb([l, c, h])
+      const { r, g, b, displayable } = lch2color([l, c, h])
       // If color with this chroma is undisplayable, then all colors with higher chroma also will be undisplayable so we can just finish with this column.
-      if (clamped) break
+      if (!displayable) break
       pixels.setPixel(
         x,
         y,
@@ -108,20 +103,22 @@ function drawChromaChart(
   return pixels.array
 }
 
-function drawHueChart(
-  width: number,
-  height: number,
-  colors: LCH[],
-  showColors?: boolean
-) {
+function drawHueChart({
+  width,
+  height,
+  colors,
+  mode,
+  showColors,
+}: DrawChartProps) {
+  const { ranges, lch2color } = colorSpaces[mode]
   let pixels = new Pixels(width, height)
   let luminostyScale = paddedScale(
     width,
-    colors.map(([l, c, h]) => l)
+    colors.map(color => color.l)
   )
   let chromaScale = paddedScale(
     width,
-    colors.map(([l, c, h]) => c)
+    colors.map(color => color.c)
   )
 
   for (let x = 0; x < width; x++) {
@@ -130,8 +127,8 @@ function drawHueChart(
 
     for (let y = height; y >= 0; y--) {
       let h = sycledLerp(ranges.h.max, ranges.h.min, y / height)
-      const { r, g, b, clamped } = toClampedRgb([l, c, h])
-      if (!clamped) {
+      const { r, g, b, displayable } = lch2color([l, c, h])
+      if (displayable) {
         pixels.setPixel(
           x,
           y,
@@ -146,6 +143,6 @@ function drawHueChart(
   return pixels.array
 }
 
-const obj = { drawChart }
+const obj = { drawChromaChart, drawLuminosityChart, drawHueChart }
 export type WorkerObj = typeof obj
 Comlink.expose(obj)

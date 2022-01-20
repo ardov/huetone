@@ -1,26 +1,19 @@
+import { useStore } from '@nanostores/react'
 import { valid } from 'chroma-js'
 import React, { FC, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { toHex } from '../../color'
-import { Palette } from '../../types'
+import { selectedStore } from '../../store/currentPosition'
+import { paletteStore } from '../../store/palette'
 import { Input } from '../inputs'
 import { ContrastBadgeAPCA, ContrastBadgeWCAG } from './ContrastBadge'
 
-type ColorInfoProps = {
-  palette: Palette
-  selected: [number, number]
-}
-
-export const ColorInfo: FC<ColorInfoProps> = ({ palette, selected }) => {
+export const ColorInfo: FC = () => {
+  const { tones } = useStore(paletteStore)
   return (
     <ContrastStack>
-      <ContrastGroup
-        palette={palette}
-        selected={selected}
-        color={palette.tones[0]}
-      />
-      <ContrastGroup palette={palette} selected={selected} color={'white'} />
-      <ContrastGroup palette={palette} selected={selected} color={'black'} />
+      <ContrastGroup versusColor={tones[0]} />
+      <ContrastGroup versusColor={'white'} />
+      <ContrastGroup versusColor={'black'} />
     </ContrastStack>
   )
 }
@@ -30,21 +23,18 @@ const ContrastStack = styled.div`
   gap: 16px;
 `
 
-const ContrastGroup: FC<ColorInfoProps & { color: string }> = props => {
-  const [hueId, toneId] = props.selected
-  const { colors, tones, hues } = props.palette
-  const selectedLch = colors[hueId][toneId]
-  const hex = toHex(selectedLch)
-  const [colorInput, setColorInput] = useState(props.color)
-  const [additionalColor, setAdditionalColor] = useState(
-    toHex(colors[hueId][0])
-  )
+const ContrastGroup: FC<{ versusColor: string }> = props => {
+  const { color, hueId, toneId } = useStore(selectedStore)
+  const { colors, tones, hues } = useStore(paletteStore)
+  const hex = color.hex
+  const [colorInput, setColorInput] = useState(props.versusColor)
+  const [additionalColor, setAdditionalColor] = useState(colors[hueId][0].hex)
   const name = hues[hueId] + '-' + tones[toneId]
 
   useEffect(() => {
     const i = tones.indexOf(colorInput)
     if (i >= 0) {
-      setAdditionalColor(toHex(colors[hueId][i]))
+      setAdditionalColor(colors[hueId][i].hex)
     } else if (valid(colorInput)) {
       setAdditionalColor(colorInput)
     }

@@ -1,72 +1,14 @@
-import { cielch as lch } from './color2'
-import { reorder } from './utils'
-import { HexPalette, Palette, LCH, TokenExport } from './types'
-
-const { fromHex, toHex } = lch
-
-const fillerColor = '#000'
-
-export function parsePalette(raw: HexPalette): Palette {
-  const hues = raw.hues.filter(hue => hue?.colors?.length)
-  const hueNames = hues.map(hue => hue.name || '???')
-  const maxTones = hues
-    .map(hue => hue.colors.length)
-    .reduce((prev, curr) => Math.max(curr, prev), 0)
-  const toneNames = Array.from(Array(maxTones)).map(
-    (v, idx) => raw?.tones?.[idx] || (idx * 100).toString()
-  )
-  const colors = hues.map(hue =>
-    toneNames.map((v, idx) => fromHex(hue.colors[idx] || fillerColor))
-  )
-
-  return {
-    name: raw.name || 'Loaded palette',
-    hues: hueNames,
-    tones: toneNames,
-    colors,
-  }
-}
-
-export function validatePalette(palette: Palette | null): boolean {
-  if (!palette) return false
-  if (!palette.hues?.length) return false
-  if (!palette.tones?.length) return false
-  if (!palette.colors?.length) return false
-  return true
-}
-
-export function paletteToHex(palette: Palette): HexPalette {
-  return {
-    name: palette.name,
-    hues: palette.hues.map((hue, i) => ({
-      name: hue,
-      colors: palette.colors[i].map(toHex),
-    })),
-    tones: [...palette.tones],
-  }
-}
-
-export function paletteToTokens(palette: Palette): TokenExport {
-  let tokens: TokenExport = {}
-  let { tones, hues, colors } = palette
-  hues.forEach((hue, hueIdx) => {
-    if (!tokens[hue]) tokens[hue] = {}
-    tones.forEach((tone, toneIdx) => {
-      const color = colors[hueIdx][toneIdx]
-      tokens[hue][tone] = {
-        value: toHex(color),
-        type: 'color',
-      }
-    })
-  })
-  return tokens
-}
+import { colorSpaces, TSpaceName } from '../color2'
+import { reorder } from '../utils'
+import { Palette, LCH, TColor } from '../types'
 
 export function addHue(palette: Palette, hueName: string = 'Gray'): Palette {
+  const { lch2color, ranges } = colorSpaces[palette.mode]
+  const lMax = ranges.l.max
   const length = palette.tones.length
-  const hueSequence: LCH[] = Array(length)
+  const hueSequence: TColor[] = Array(length)
     .fill(0)
-    .map((_, i) => [(100 / (length + 1)) * (length - i), 0, 0])
+    .map((_, i) => lch2color([(lMax / (length + 1)) * (length - i), 0, 0]))
   return {
     ...palette,
     hues: [...palette.hues, hueName],
@@ -183,10 +125,13 @@ export function renameTone(
 
 export function setColor(
   palette: Palette,
-  color: LCH,
+  lch: LCH,
   hue: number,
   tone: number
 ): Palette {
+  const { lch2color } = colorSpaces[palette.mode]
+  const color = lch2color(lch)
+  console.log('Setting color', lch, color)
   return {
     ...palette,
     colors: palette.colors.map((tones, hueId) =>
@@ -202,11 +147,12 @@ export function setToneLuminance(
   luminance: number,
   tone: number
 ): Palette {
+  const { lch2color } = colorSpaces[palette.mode]
   return {
     ...palette,
     colors: palette.colors.map(colors =>
-      colors.map((lch, toneId) =>
-        toneId === tone ? [luminance, lch[1], lch[2]] : lch
+      colors.map((color, toneId) =>
+        toneId === tone ? lch2color([luminance, color.c, color.h]) : color
       )
     ),
   }
@@ -217,23 +163,43 @@ export function setHueHue(
   hueValue: number,
   hueId: number
 ): Palette {
+  const { lch2color } = colorSpaces[palette.mode]
   return {
     ...palette,
     colors: palette.colors.map((colors, id) =>
-      id === hueId ? colors.map(([l, c]) => [l, c, hueValue]) : colors
+      id === hueId
+        ? colors.map(({ l, c }) => lch2color([l, c, hueValue]))
+        : colors
     ),
   }
 }
 
 export function clampColorsToRgb(palette: Palette): Palette {
+  const { hex2color } = colorSpaces[palette.mode]
   return {
     ...palette,
     colors: palette.colors.map(shades =>
       shades.map(color => {
-        const { r, g, b, undisplayable } = lch.toClampedRgb(color)
-        if (!undisplayable) return color
-        console.log('Color converted')
-        return lch.fromRgb([r, g, b])
+        if (color.displayable) return color
+        const clamped = hex2color(color.hex)
+        if (!clamped) {
+          console.error('Invalid hex while parsing color', color)
+        }
+        return clamped || color
+      })
+    ),
+  }
+}
+
+export function convertToMode(palette: Palette, mode: TSpaceName): Palette {
+  const { hex2color } = colorSpaces[mode]
+  return {
+    ...palette,
+    mode,
+    colors: palette.colors.map(colors =>
+      colors.map(color => {
+        let newColor = hex2color(color.hex)
+        return newColor || color
       })
     ),
   }
