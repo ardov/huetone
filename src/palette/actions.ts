@@ -129,9 +129,9 @@ export function setColor(
   hue: number,
   tone: number
 ): Palette {
+  // TODO: clamp LCH values
   const { lch2color } = colorSpaces[palette.mode]
   const color = lch2color(lch)
-  console.log('Setting color', lch, color)
   return {
     ...palette,
     colors: palette.colors.map((tones, hueId) =>

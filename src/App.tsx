@@ -17,6 +17,7 @@ import { ColorInfo } from './components/ColorInfo'
 import { Help } from './components/Help'
 import { Button, ControlGroup, Select } from './components/inputs'
 import { ThemeButton } from './components/ThemeButton'
+import { KeyPressHandler } from './components/KeyPressHandler'
 import { useKeyPress } from './hooks/useKeyPress'
 import { PaletteSelect } from './components/DropdownMenu'
 import { CopyButton } from './components/CopyButton'
@@ -44,6 +45,7 @@ export default function App() {
 
   return (
     <Wrapper>
+      <KeyPressHandler />
       <PaletteSection>
         <PaletteSelect currentIdx={paletteIdx} />
         <ControlRow>
