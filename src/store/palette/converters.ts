@@ -59,7 +59,6 @@ export function parseHexPalette(
   )
 
   return {
-    id: hexPalette.id,
     name: hexPalette.name || 'Loaded palette',
     mode,
     hues: hueNames,

@@ -54,7 +54,6 @@ export type TLchSpace = {
 }
 
 export type Palette = {
-  id?: number
   mode: TSpaceName
   name: string
   hues: string[]
