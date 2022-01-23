@@ -8,7 +8,7 @@ import {
   removeTone,
   renameHue,
   renameTone,
-} from '../palette'
+} from '../store/palette'
 import { useKeyPress } from '../hooks/useKeyPress'
 import { Button, InvisibleInput } from './inputs'
 import { useStore } from '@nanostores/react'

@@ -6,7 +6,7 @@ type TVersus = 'selected' | string
 
 export const overlayStore = map<{ mode: TOverlayMode; versus: TVersus }>({
   mode: 'APCA',
-  versus: 'selected',
+  versus: 'white',
 })
 
 export const versusColorStore = computed(

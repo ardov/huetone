@@ -1,5 +1,5 @@
 import { getMostContrast } from '../../color'
-import { Channel, TColor } from '../../types'
+import { Channel, LCH, TColor } from '../../types'
 import styled from 'styled-components'
 import { Canvas } from './Chart/Canvas'
 import { useStore } from '@nanostores/react'
@@ -12,7 +12,7 @@ type ScaleProps = {
   height?: number
   width?: number
   onSelect: (idx: number) => void
-  onColorChange: (idx: number, value: TColor) => void
+  onColorChange: (idx: number, lch: LCH) => void
 }
 
 export function Scale({
@@ -24,7 +24,7 @@ export function Scale({
   onSelect,
   onColorChange,
 }: ScaleProps) {
-  const { lch2color, ranges } = useStore(colorSpaceStore)
+  const { ranges } = useStore(colorSpaceStore)
   if (!colors?.length) return null
   const sectionWidth = width / colors.length
   return (
@@ -80,9 +80,9 @@ export function Scale({
               onChange={e => {
                 const { l, c, h } = color
                 const value = +e.target.value
-                if (channel === 'l') onColorChange(i, lch2color([value, c, h]))
-                if (channel === 'c') onColorChange(i, lch2color([l, value, h]))
-                if (channel === 'h') onColorChange(i, lch2color([l, c, value]))
+                if (channel === 'l') onColorChange(i, [value, c, h])
+                if (channel === 'c') onColorChange(i, [l, value, h])
+                if (channel === 'h') onColorChange(i, [l, c, value])
               }}
               onClick={() => onSelect(i)}
               isSelected={i === selected}

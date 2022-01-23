@@ -1,12 +1,12 @@
 import LZString from 'lz-string'
-import { colorSpaces, TSpaceName } from '../color2'
+import { colorSpaces, TSpaceName } from '../../color2'
 import {
   HexPalette,
   OldLchPalette,
   Palette,
   TColor,
   TokenExport,
-} from '../types'
+} from '../../types'
 
 export const fillerColor: TColor = {
   r: 0,
@@ -59,6 +59,7 @@ export function parseHexPalette(
   )
 
   return {
+    id: hexPalette.id,
     name: hexPalette.name || 'Loaded palette',
     mode,
     hues: hueNames,
@@ -69,22 +70,18 @@ export function parseHexPalette(
 
 /** Converter for old LCH palettes which still can be stored in localStorage.
  *  @param OldLchPalette
- *  @param mode color mode "cielch" or "oklch"
  */
-export function parseOldLchPalette(
-  lchPalette: OldLchPalette,
-  mode: TSpaceName
-): Palette {
-  const colors = lchPalette.colors.map(hue =>
-    hue.map(lch => {
-      const color = colorSpaces.cielch.lch2color(lch)
-      if (mode === 'cielch') return color
-      const { hex2color } = colorSpaces[mode]
-      return hex2color(color.hex) || fillerColor
-    })
-  )
-
-  return { ...lchPalette, mode, colors }
+export function parseOldLchPalette(lchPalette: OldLchPalette): HexPalette {
+  return {
+    name: lchPalette.name,
+    tones: lchPalette.tones,
+    hues: lchPalette.hues.map((name, hueId) => ({
+      name,
+      colors: lchPalette.colors[hueId].map(
+        lch => colorSpaces.cielch.lch2color(lch).hex
+      ),
+    })),
+  }
 }
 
 /** Checks if the given palette is valid and can be used */

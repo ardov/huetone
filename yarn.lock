@@ -1512,6 +1512,11 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
+"@nanostores/persistent@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@nanostores/persistent/-/persistent-0.5.1.tgz#2b5f1e4cd2380250edced9fa3585a6f3ee5eccb3"
+  integrity sha512-LtumEEbDtnsDi2P+/ewtBEAsCOCXYbTVHN/8xtxomoE2wXGvkp6+N3dW2RhLyKDIc7rfRZpqpPe+LMjpqh6Ijg==
+
 "@nanostores/react@^0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@nanostores/react/-/react-0.1.5.tgz#a783083ad18bd4988c1cc3c0321416ec79473c7e"

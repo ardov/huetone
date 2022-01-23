@@ -1,4 +1,4 @@
-import { HexPalette } from '../types'
+import { HexPalette } from '../../types'
 import { exportToHexPalette } from './converters'
 import { parseHexPalette } from './index'
 

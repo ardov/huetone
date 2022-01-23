@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@nanostores/persistent": "^0.5.1",
     "@nanostores/react": "^0.1.5",
     "@radix-ui/react-dropdown-menu": "^0.1.4",
     "apca-w3": "^0.0.98-g-4g.2",

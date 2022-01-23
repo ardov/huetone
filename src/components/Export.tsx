@@ -1,6 +1,10 @@
 import React, { FC, useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
-import { exportToHexPalette, exportToTokens, parseHexPalette } from '../palette'
+import {
+  exportToHexPalette,
+  exportToTokens,
+  parseHexPalette,
+} from '../store/palette'
 import { Button, TextArea } from './inputs'
 import { useStore } from '@nanostores/react'
 import { paletteStore, setPalette } from '../store/palette'

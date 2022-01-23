@@ -1,6 +1,6 @@
-import { colorSpaces, TSpaceName } from '../color2'
-import { reorder } from '../utils'
-import { Palette, LCH, TColor } from '../types'
+import { colorSpaces, TSpaceName } from '../../color2'
+import { reorder } from '../../utils'
+import { Palette, LCH, TColor } from '../../types'
 
 export function addHue(palette: Palette, hueName: string = 'Gray'): Palette {
   const { lch2color, ranges } = colorSpaces[palette.mode]

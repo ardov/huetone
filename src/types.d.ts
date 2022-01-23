@@ -14,6 +14,9 @@ export type HexPalette = {
     name: string
     colors: string[]
   }[]
+
+  // Used only locally
+  isPreset?: boolean
 }
 
 type ColorToken = {
@@ -51,6 +54,7 @@ export type TLchSpace = {
 }
 
 export type Palette = {
+  id?: number
   mode: TSpaceName
   name: string
   hues: string[]

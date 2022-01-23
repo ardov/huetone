@@ -5,7 +5,7 @@ import {
   reorderHues,
   reorderTones,
   setColor,
-} from '../palette'
+} from '../store/palette'
 import { LCH } from '../types'
 import { useKeyPress } from '../hooks/useKeyPress'
 import { useStore } from '@nanostores/react'
