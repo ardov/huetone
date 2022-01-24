@@ -44,6 +44,19 @@ export const initialPalette: Palette = {
   hues: ['Hue1'],
   tones: ['100'],
   colors: [
-    [{ r: 0, g: 0, b: 0, hex: '#000000', l: 0, c: 0, h: 0, displayable: true }],
+    [
+      {
+        r: 0,
+        g: 0,
+        b: 0,
+        hex: '#000000',
+        l: 0,
+        c: 0,
+        h: 0,
+        within_sRGB: true,
+        within_P3: true,
+        within_Rec2020: true,
+      },
+    ],
   ],
 }

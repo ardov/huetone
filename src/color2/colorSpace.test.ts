@@ -16,7 +16,7 @@ test('Both sides converting CIE', () => {
     let { l, c, h } = color
     let transformed = lch2color([l, c, h])
     expect(transformed?.hex).toEqual(original)
-    expect(transformed?.displayable).toBeTruthy()
+    expect(transformed?.within_sRGB).toBeTruthy()
   })
 })
 
@@ -27,6 +27,6 @@ test('Both sides converting OK', () => {
     let { l, c, h } = color
     let transformed = lch2color([l, c, h])
     expect(transformed?.hex).toEqual(original)
-    expect(transformed?.displayable).toBeTruthy()
+    expect(transformed?.within_sRGB).toBeTruthy()
   })
 })

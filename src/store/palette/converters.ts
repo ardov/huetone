@@ -16,7 +16,9 @@ export const fillerColor: TColor = {
   c: 0,
   h: 0,
   hex: '#000000',
-  displayable: true,
+  within_sRGB: true,
+  within_P3: true,
+  within_Rec2020: true,
 }
 
 export function jsonToHexPalette(json: string | null): HexPalette | null {

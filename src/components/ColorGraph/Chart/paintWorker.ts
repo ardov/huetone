@@ -38,10 +38,10 @@ function drawLuminosityChart({
 
     for (let y = height; y >= 0; y--) {
       let l = sycledLerp(ranges.l.max, ranges.l.min, y / height)
-      const { r, g, b, displayable } = lch2color([l, c, h])
+      const { r, g, b, within_sRGB } = lch2color([l, c, h])
       // Luminosity chart only have colors in the middle. So if the current color is undisplayable and we already had displayable colors, there will be no more displayable colors.
-      if (!displayable && hadColors) break
-      if (displayable) {
+      if (!within_sRGB && hadColors) break
+      if (within_sRGB) {
         hadColors = true
         pixels.setPixel(
           x,
@@ -87,9 +87,9 @@ function drawChromaChart({
 
     for (let y = height; y >= 0; y--) {
       let c = sycledLerp(ranges.c.max, ranges.c.min, y / height)
-      const { r, g, b, displayable } = lch2color([l, c, h])
+      const { r, g, b, within_sRGB } = lch2color([l, c, h])
       // If color with this chroma is undisplayable, then all colors with higher chroma also will be undisplayable so we can just finish with this column.
-      if (!displayable) break
+      if (!within_sRGB) break
       pixels.setPixel(
         x,
         y,
@@ -127,8 +127,8 @@ function drawHueChart({
 
     for (let y = height; y >= 0; y--) {
       let h = sycledLerp(ranges.h.max, ranges.h.min, y / height)
-      const { r, g, b, displayable } = lch2color([l, c, h])
-      if (displayable) {
+      const { r, g, b, within_sRGB } = lch2color([l, c, h])
+      if (within_sRGB) {
         pixels.setPixel(
           x,
           y,

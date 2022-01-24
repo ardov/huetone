@@ -20,17 +20,23 @@ function makeColorFuncs(colorSpace: TLchSpace): TColorSpace {
   const { rgb2lch, lch2rgb, rgbTreshold, ranges, name } = colorSpace
   return {
     name,
+    ranges,
     hex2color: (hex: string): TColor | null => {
       const rgb = hex2rgb(hex)
       if (!rgb) return null
       let [r, g, b] = rgb
       let [l, c, h] = rgb2lch(rgb)
-      // prettier-ignore
       return {
-        l, c, h,
-        r, g, b,
+        l,
+        c,
+        h,
+        r,
+        g,
+        b,
         hex: rgb2hex([r, g, b]),
-        displayable: true,
+        within_sRGB: true,
+        within_P3: true,
+        within_Rec2020: true,
       }
     },
     lch2color: ([l, c, h]: LCH): TColor => {
@@ -43,11 +49,12 @@ function makeColorFuncs(colorSpace: TLchSpace): TColorSpace {
         g: clamp(g, 0, 255),
         b: clamp(b, 0, 255),
         hex: rgb2hex([r, g, b]),
-        displayable:
+        within_sRGB:
           Math.min(r, g, b) >= rgbTreshold.min &&
           Math.max(r, g, b) <= rgbTreshold.max,
+        within_P3: false,
+        within_Rec2020: false,
       }
     },
-    ranges,
   }
 }

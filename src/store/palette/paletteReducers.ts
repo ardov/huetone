@@ -180,7 +180,7 @@ export function clampColorsToRgb(palette: Palette): Palette {
     ...palette,
     colors: palette.colors.map(shades =>
       shades.map(color => {
-        if (color.displayable) return color
+        if (color.within_sRGB) return color
         const clamped = hex2color(color.hex)
         if (!clamped) {
           console.error('Invalid hex while parsing color', color)

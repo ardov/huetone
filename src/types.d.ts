@@ -38,7 +38,9 @@ export type TColor = {
   g: number
   b: number
   hex: string
-  displayable: boolean
+  within_sRGB: boolean
+  within_P3: boolean
+  within_Rec2020: boolean
 }
 
 export type TLchSpace = {

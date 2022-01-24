@@ -12,7 +12,7 @@ type ColorEditorProps = {
 
 export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
   const { lch2color, hex2color, ranges } = useStore(colorSpaceStore)
-  const { l, c, h, hex, displayable } = color
+  const { l, c, h, hex, within_sRGB } = color
   const [isFocused, setIsFocused] = useState(false)
   const [colorInput, setColorInput] = useState(hex)
 
@@ -57,7 +57,7 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
       </ChannelInputWrapper>
       <HexInput
         value={colorInput}
-        style={{ color: displayable ? 'inherit' : 'red' }}
+        style={{ color: within_sRGB ? 'inherit' : 'red' }}
         onFocus={() => setIsFocused(true)}
         onBlur={() => {
           setIsFocused(false)
