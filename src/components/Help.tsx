@@ -35,6 +35,9 @@ const Hotkeys = () => {
       <h3>Hotkeys</h3>
       <List role="list">
         <li>
+          <Key>1</Key> - <Key>9</Key> — switch palette
+        </li>
+        <li>
           <Key>↑</Key> <Key>↓</Key> <Key>→</Key> <Key>←</Key> — select another
           color
         </li>
@@ -91,8 +94,14 @@ const Credits = () => (
       under the hood.
     </p>
     <p>
-      Advanced Perceptual Contrast Algorithm (APCA) by Andrew Somers is a WCAG 3
-      working draft and may change later. To learn more visit{' '}
+      Special thanks for{' '}
+      <Link href="https://twitter.com/LeaVerou">Lea Verou</Link>,{' '}
+      <Link href="https://twitter.com/svgeesus">Chris Lilley</Link> and the CSS
+      working group for providing all the essential code for color conversions.
+    </p>
+    <p>
+      Accessible Perceptual Contrast Algorithm (APCA) by Andrew Somers is a
+      WCAG 3 working draft and may change later. To learn more visit{' '}
       <Link href="https://www.w3.org/WAI/GL/task-forces/silver/wiki/Visual_Contrast_of_Text_Subgroup">
         this page
       </Link>{' '}

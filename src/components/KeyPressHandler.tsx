@@ -5,6 +5,7 @@ import {
   reorderHues,
   reorderTones,
   setColor,
+  switchPalette,
 } from '../store/palette'
 import { LCH } from '../types'
 import { useKeyPress } from '../hooks/useKeyPress'
@@ -28,6 +29,9 @@ export const KeyPressHandler: FC = () => {
       const metaPressed = metaKey || ctrlKey
       if (!filterInput(e)) return
 
+      // Switch palette
+      if (!isNaN(+key)) return switchPalette(+key - 1)
+
       const noDefault = (func: () => any) => {
         e.preventDefault()
         func()
@@ -48,15 +52,18 @@ export const KeyPressHandler: FC = () => {
           if (lPress) l += 0.5
           if (cPress) c += 0.5
           if (hPress) h += 0.5
+          setPalette(
+            setColor(palette, [l, c, h], selected.hueId, selected.toneId)
+          )
         }
         if (key === 'ArrowDown') {
           if (lPress) l -= 0.5
           if (cPress) c -= 0.5
           if (hPress) h -= 0.5
+          setPalette(
+            setColor(palette, [l, c, h], selected.hueId, selected.toneId)
+          )
         }
-        setPalette(
-          setColor(palette, [l, c, h], selected.hueId, selected.toneId)
-        )
         return
       }
 

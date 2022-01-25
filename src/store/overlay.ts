@@ -1,7 +1,7 @@
 import { action, computed, map } from 'nanostores'
 import { selectedStore } from './currentPosition'
 
-type TOverlayMode = 'APCA' | 'WCAG' | 'NONE'
+export type TOverlayMode = 'APCA' | 'WCAG' | 'NONE' | 'DELTA_E'
 type TVersus = 'selected' | string
 
 export const overlayStore = map<{ mode: TOverlayMode; versus: TVersus }>({

@@ -1,6 +1,6 @@
 import { Palette } from '../../types'
 import { computed, map, onMount } from 'nanostores'
-import { colorSpaces } from '../../color2'
+import { colorSpaces } from '../../colorFuncs'
 import { parseHexPalette } from '.'
 import { persistentAtom } from '@nanostores/persistent'
 import { PRESETS } from '../../presets'

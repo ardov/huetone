@@ -1,4 +1,4 @@
-import { TSpaceName } from './color2'
+import { TSpaceName } from './colorFuncs'
 
 export type XYZ = [number, number, number]
 export type LAB = [number, number, number]
@@ -43,7 +43,7 @@ export type TColor = {
   within_Rec2020: boolean
 }
 
-export type TLchSpace = {
+export type TLchModel = {
   name: TSpaceName
   rgb2lch: (rgb: RGB) => LCH
   lch2rgb: (lch: LCH) => RGB

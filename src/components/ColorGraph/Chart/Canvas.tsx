@@ -7,9 +7,10 @@ import * as Comlink from 'comlink'
 import { Channel, TColor } from '../../../types'
 import debounce from 'lodash/debounce'
 import styled from 'styled-components'
-import { TSpaceName } from '../../../color2'
+import { TSpaceName } from '../../../colorFuncs'
 import { useStore } from '@nanostores/react'
 import { paletteStore } from '../../../store/palette'
+import { chartSettingsStore } from '../../../store/chartSettings'
 
 const worker = new Worker()
 const { drawChromaChart, drawHueChart, drawLuminosityChart } =
@@ -27,9 +28,10 @@ export function Canvas(props: {
   channel: Channel
   colors: TColor[]
 }) {
+  const settings = useStore(chartSettingsStore)
+  const { mode } = useStore(paletteStore)
   const { width, height, channel, colors } = props
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const { mode } = useStore(paletteStore)
 
   const debouncedRepaint = useMemo(() => {
     return debounce(async (colors: TColor[], mode: TSpaceName) => {
@@ -37,17 +39,21 @@ export function Canvas(props: {
       const canvas = canvasRef.current
       const ctx = canvas?.getContext('2d')
       if (!ctx) return
-      const pixels = await funcs[channel]({ width, height, colors, mode })
+      const pixels = await funcs[channel]({
+        width,
+        height,
+        colors,
+        mode,
+        ...settings,
+      })
       const imageData = new ImageData(pixels, width, height)
       ctx.putImageData(imageData, 0, 0)
     }, 200)
-  }, [channel, height, width])
+  }, [channel, height, settings, width])
 
   useEffect(() => {
     debouncedRepaint(colors, mode)
-    return () => {
-      debouncedRepaint.cancel()
-    }
+    return () => debouncedRepaint.cancel()
   }, [colors, debouncedRepaint, mode])
   return (
     <Wrapper>
@@ -55,7 +61,7 @@ export function Canvas(props: {
         ref={canvasRef}
         width={width}
         height={height}
-        style={{ filter: 'var(--canvas-filter)' }}
+        style={{ filter: settings.showColors ? '' : 'var(--canvas-filter)' }}
       />
     </Wrapper>
   )
@@ -64,6 +70,8 @@ export function Canvas(props: {
 const Wrapper = styled.div`
   --c-1: var(--c-bg-card);
   --c-2: var(--c-divider);
+  --c-1: rgb(136, 136, 136);
+  --c-2: rgb(120, 120, 120);
   overflow: hidden;
   border-radius: 0 0 8px 8px;
   background-color: var(--c-2);

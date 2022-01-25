@@ -1,15 +1,10 @@
 import { colorSpaces } from '.'
 import { TColor } from '../types'
-import { hex2rgb } from './common'
-
-test('Hex parser', () => {
-  expect(hex2rgb('#Ff0')).toEqual([255, 255, 0])
-})
 
 const { cielch, oklch } = colorSpaces
 const colors = ['#fffa02', '#000000', '#ff00ff', '#ffffff', '#ff0001']
 
-test('Both sides converting CIE', () => {
+test('Both sides converting CIELCH', () => {
   const { hex2color, lch2color } = cielch
   colors.forEach(original => {
     let color = hex2color(original) as TColor
@@ -20,7 +15,7 @@ test('Both sides converting CIE', () => {
   })
 })
 
-test('Both sides converting OK', () => {
+test('Both sides converting OKLCH', () => {
   const { hex2color, lch2color } = oklch
   colors.forEach(original => {
     let color = hex2color(original) as TColor

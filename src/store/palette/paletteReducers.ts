@@ -1,4 +1,4 @@
-import { colorSpaces, TSpaceName } from '../../color2'
+import { colorSpaces, TSpaceName } from '../../colorFuncs'
 import { reorder } from '../../utils'
 import { Palette, LCH, TColor } from '../../types'
 

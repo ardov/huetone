@@ -7,15 +7,26 @@ import { ThemeButton } from './ThemeButton'
 import { PaletteSelect } from './PaletteSelect'
 import { CopyButton } from '../CopyButton'
 import { Link } from '../../icons/Link'
-import { paletteStore, toggleColorSpace } from '../../store/palette'
+import { paletteStore } from '../../store/palette'
 import {
   overlayStore,
   setOverlayMode,
   setVersusColor,
+  TOverlayMode,
 } from '../../store/overlay'
 import { ColorEditor } from './ColorEditor'
 import { ColorActions } from './ColorActions'
 import { selectedStore } from '../../store/currentPosition'
+import { ChartSettings } from './ChartSettings'
+
+const modes: TOverlayMode[] = ['APCA', 'WCAG', 'NONE', 'DELTA_E']
+
+const texts = {
+  APCA: 'APCA contrast',
+  WCAG: 'WCAG contrast',
+  NONE: 'Without overlay',
+  DELTA_E: 'Delta E distance',
+}
 
 export function Header() {
   const palette = useStore(paletteStore)
@@ -40,31 +51,35 @@ export function Header() {
       </ControlRow>
 
       <ControlRow>
-        <Button onClick={toggleColorSpace}>{palette.mode}</Button>
-
         <ControlGroup>
           <Button
-            onClick={() =>
-              setOverlayMode(overlay.mode === 'APCA' ? 'WCAG' : 'APCA')
-            }
+            onClick={() => {
+              // Cycle through modes
+              const idx = modes.findIndex(mode => overlay.mode === mode) + 1
+              setOverlayMode(modes[idx % modes.length])
+            }}
           >
-            {overlay.mode} contrast
+            {texts[overlay.mode]}
           </Button>
-          <Button
-            onClick={() =>
-              setVersusColor(
-                overlay.versus === 'selected' ? 'white' : 'selected'
-              )
-            }
-          >
-            vs. {overlay.versus}
-          </Button>
+          {overlay.mode !== 'NONE' && (
+            <Button
+              onClick={() =>
+                setVersusColor(
+                  overlay.versus === 'selected' ? 'white' : 'selected'
+                )
+              }
+            >
+              vs. {overlay.versus}
+            </Button>
+          )}
         </ControlGroup>
 
         <CopyButton getContent={() => getPaletteLink(palette)}>
           <Link />
           Copy link
         </CopyButton>
+
+        <ChartSettings />
 
         <ThemeButton />
       </ControlRow>

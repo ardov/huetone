@@ -1,5 +1,5 @@
 import LZString from 'lz-string'
-import { colorSpaces, TSpaceName } from '../../color2'
+import { colorSpaces, TSpaceName } from '../../colorFuncs'
 import {
   HexPalette,
   OldLchPalette,

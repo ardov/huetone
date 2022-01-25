@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { Canvas } from './Chart/Canvas'
 import { useStore } from '@nanostores/react'
 import { colorSpaceStore } from '../../store/palette'
+import { chartSettingsStore } from '../../store/chartSettings'
 
 type ScaleProps = {
   colors: TColor[]
@@ -24,6 +25,7 @@ export function Scale({
   onSelect,
   onColorChange,
 }: ScaleProps) {
+  const { showColors } = useStore(chartSettingsStore)
   const { ranges } = useStore(colorSpaceStore)
   if (!colors?.length) return null
   const sectionWidth = width / colors.length
@@ -65,17 +67,13 @@ export function Scale({
         />
 
         {colors.map((color, i) => {
+          const contrast = getMostContrast(color.hex, ['#fff', '#000'])
           return (
             <Knob
               key={i}
-              min={0}
-              max={
-                channel === 'l'
-                  ? ranges.l.max
-                  : channel === 'c'
-                  ? ranges.c.max
-                  : ranges.h.max
-              }
+              min={ranges[channel].min}
+              max={ranges[channel].max}
+              step={ranges[channel].step}
               value={color[channel]}
               onChange={e => {
                 const { l, c, h } = color
@@ -88,7 +86,8 @@ export function Scale({
               isSelected={i === selected}
               style={{
                 // @ts-ignore
-                '--bg': color.hex,
+                '--contrast': contrast,
+                '--bg': showColors ? contrast : color.hex,
               }}
               canvasHeight={height}
               left={sectionWidth * i + sectionWidth / 2}
@@ -157,7 +156,7 @@ const Knob = styled.input.attrs({ type: 'range' })<{
     transform: ${p => (p.isSelected ? 'scale(1)' : 'scale(0.75)')};
     border: ${p => (p.isSelected ? '5px' : '8px')} solid var(--bg, gray);
     border-radius: 13px;
-    box-shadow: 0 0 0 1px var(--c-divider);
+    box-shadow: 0 0 2px 0px var(--contrast);
     cursor: grab;
     transition: 100ms ease-in-out;
     -webkit-appearance: none;

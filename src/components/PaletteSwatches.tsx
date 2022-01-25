@@ -1,6 +1,11 @@
 import React, { FC, Fragment, useCallback } from 'react'
 import styled from 'styled-components'
-import { getMostContrast, wcagContrast, apcaContrast } from '../color'
+import {
+  getMostContrast,
+  wcagContrast,
+  apcaContrast,
+  deltaEContrast,
+} from '../color'
 import {
   addHue,
   addTone,
@@ -19,6 +24,7 @@ import { overlayStore, versusColorStore } from '../store/overlay'
 const contrast = {
   WCAG: wcagContrast,
   APCA: apcaContrast,
+  DELTA_E: deltaEContrast,
   NONE: () => undefined,
 }
 

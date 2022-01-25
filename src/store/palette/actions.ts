@@ -1,6 +1,6 @@
 import { HexPalette, LCH, Palette } from '../../types'
 import { action } from 'nanostores'
-import { TSpaceName } from '../../color2'
+import { TSpaceName } from '../../colorFuncs'
 import { convertToMode } from './paletteReducers'
 import { paletteStore, paletteIdStore, paletteListStore } from './stores'
 import {
@@ -13,6 +13,7 @@ import { selectedStore } from '../currentPosition'
 import { colorSpaceStore, exportToHexPalette, savedPalettesStore } from '.'
 
 export const switchPalette = (id: number) => {
+  if (id === paletteIdStore.get()) return
   const paletteList = paletteListStore.get()
   if (!paletteList[id]) return
   paletteIdStore.set(id)

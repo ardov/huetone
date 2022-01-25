@@ -1,6 +1,5 @@
 import { HexPalette } from '../../types'
-import { exportToHexPalette } from './converters'
-import { parseHexPalette } from './index'
+import { exportToHexPalette, parseHexPalette } from './converters'
 
 const hexPalette: HexPalette = {
   name: 'Test palette',
