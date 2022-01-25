@@ -5,24 +5,33 @@ import {
   exportToTokens,
   parseHexPalette,
 } from '../store/palette'
-import { Button, TextArea } from './inputs'
+import { TextArea } from './inputs'
 import { useStore } from '@nanostores/react'
 import { paletteStore, setPalette } from '../store/palette'
+import { CopyButton } from './CopyButton'
+import { exportToCSS } from '../store/palette/converters'
 
 export const TokenExportButton: FC = () => {
   const palette = useStore(paletteStore)
-  const [copied, setCopied] = useState(false)
-  const onCopy = () => {
-    const tokens = exportToTokens(palette)
-    const json = JSON.stringify(tokens, null, 2)
-    navigator.clipboard.writeText(json)
-    setCopied(true)
-  }
-  useEffect(() => {
-    const timer = setTimeout(() => setCopied(false), 1500)
-    return () => clearTimeout(timer)
-  }, [copied])
-  return <Button onClick={onCopy}>{copied ? 'Copied!' : 'Copy tokens'}</Button>
+  return (
+    <CopyButton
+      getContent={() => {
+        const tokens = exportToTokens(palette)
+        return JSON.stringify(tokens, null, 2)
+      }}
+    >
+      Copy tokens
+    </CopyButton>
+  )
+}
+
+export const CSSExportButton: FC = () => {
+  const palette = useStore(paletteStore)
+  return (
+    <CopyButton getContent={() => exportToCSS(palette)}>
+      Copy CSS variables
+    </CopyButton>
+  )
 }
 
 export const ExportField: FC = () => {

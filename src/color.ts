@@ -5,10 +5,12 @@ export const wcagContrast = (backgroundHex: string, textHex: string): number =>
   chroma.contrast(backgroundHex, textHex)
 
 export const apcaContrast = (backgroundHex: string, textHex: string): number =>
-  Math.abs(
-    APCAcontrast(
-      sRGBtoY(chroma(textHex).hex()),
-      sRGBtoY(chroma(backgroundHex).hex())
+  Math.round(
+    Math.abs(
+      +APCAcontrast(
+        sRGBtoY(chroma(textHex).rgb()),
+        sRGBtoY(chroma(backgroundHex).rgb())
+      )
     )
   )
 

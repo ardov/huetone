@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import styled from 'styled-components'
-import { TokenExportButton } from './Export'
+import { CSSExportButton, TokenExportButton } from './Export'
 
 export const Help: FC = () => (
   <Wrapper>
@@ -12,17 +12,20 @@ export const Help: FC = () => (
 
 const Export: FC = () => (
   <Section>
-    <h3>Export to Figma</h3>
+    <h3>Exports</h3>
 
     <p>
-      Install{' '}
+      <b>Figma.</b> Install{' '}
       <Link href="https://www.figma.com/community/plugin/843461159747178978/Figma-Tokens">
         Figma Tokens
-      </Link>{' '}
+      </Link>
       . Run the plugin and open JSON tab. Copy tokens and paste there.
     </p>
     <p>
       <TokenExportButton />
+    </p>
+    <p>
+      <CSSExportButton />
     </p>
   </Section>
 )

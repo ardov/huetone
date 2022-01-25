@@ -127,6 +127,23 @@ export function exportToTokens(palette: Palette): TokenExport {
   return tokens
 }
 
+/** Convert local palette to CSS varibles
+ *  @param palette
+ */
+export function exportToCSS(palette: Palette): string {
+  let { tones, hues, colors, name } = palette
+  let strings: string[] = [`/* ${name} color palette */`]
+  hues.forEach((hue, hueIdx) => {
+    strings.push('')
+    strings.push('/* ' + hue + ' */')
+    tones.forEach((tone, toneIdx) => {
+      const color = colors[hueIdx][toneIdx]
+      strings.push(`--${hue}-${tone}: ${color.hex};`)
+    })
+  })
+  return strings.join('\n')
+}
+
 /** Get palette permalink
  *  @param palette
  */

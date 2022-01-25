@@ -6,7 +6,7 @@
     "@nanostores/persistent": "^0.5.1",
     "@nanostores/react": "^0.1.5",
     "@radix-ui/react-dropdown-menu": "^0.1.4",
-    "apca-w3": "^0.0.98-g-4g.2",
+    "apca-w3": "^0.1.1",
     "chroma-js": "^2.1.2",
     "comlink": "^4.3.1",
     "dart-sass": "^1.25.0",
