@@ -15,9 +15,9 @@ type DrawChartProps = {
 }
 
 const getSrgbPixel = (): TPixelData => [255, 255, 255, 255]
-const getP3pixel = (x: number, y: number): TPixelData => [222, 227, 228, 255]
+const getP3pixel = (x: number, y: number): TPixelData => [198, 198, 198, 255]
 const getRec2020pixel = (x: number, y: number): TPixelData => [
-  154, 159, 160, 255,
+  171, 171, 171, 255,
 ]
 // const getSrgbPixel = (): TPixelData => [255, 255, 255, 255]
 // const getP3pixel = (x: number, y: number): TPixelData => [

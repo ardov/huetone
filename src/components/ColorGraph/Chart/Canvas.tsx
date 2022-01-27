@@ -68,10 +68,8 @@ export function Canvas(props: {
 }
 
 const Wrapper = styled.div`
-  --c-1: var(--c-bg-card);
-  --c-2: var(--c-divider);
-  --c-1: rgb(136, 136, 136);
-  --c-2: rgb(120, 120, 120);
+  --c-1: hsl(0, 0%, 85%);
+  --c-2: hsl(0, 0%, 94%);
   overflow: hidden;
   border-radius: 0 0 8px 8px;
   background-color: var(--c-2);
