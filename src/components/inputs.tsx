@@ -6,6 +6,7 @@ export const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 8px;
   color: var(--c-text-secondary);
   border-radius: var(--radius-m);
   background-color: var(--c-btn-bg);
@@ -23,6 +24,14 @@ export const Button = styled.button`
     background-color: var(--c-btn-bg-active);
     transform: translateY(1px);
     transition: 100ms ease-out;
+  }
+
+  :focus {
+    outline: 1px solid var(--c-text-primary);
+    outline-offset: 3px;
+  }
+  :focus:not(:focus-visible) {
+    outline: none;
   }
 `
 

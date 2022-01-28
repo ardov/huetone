@@ -1,18 +1,19 @@
-import { getMostContrast, MAX_C, MAX_H, MAX_L, toHex } from '../../color'
-import { Channel, LCH } from '../../types'
+import { getMostContrast } from '../../color'
+import { Channel, LCH, TColor } from '../../types'
 import styled from 'styled-components'
 import { Canvas } from './Chart/Canvas'
-
-const channelIndexes = { l: 0, c: 1, h: 2 }
+import { useStore } from '@nanostores/react'
+import { colorSpaceStore } from '../../store/palette'
+import { chartSettingsStore } from '../../store/chartSettings'
 
 type ScaleProps = {
-  colors: LCH[]
+  colors: TColor[]
   selected: number
   channel: Channel
   height?: number
   width?: number
   onSelect: (idx: number) => void
-  onColorChange: (idx: number, value: LCH) => void
+  onColorChange: (idx: number, lch: LCH) => void
 }
 
 export function Scale({
@@ -24,6 +25,8 @@ export function Scale({
   onSelect,
   onColorChange,
 }: ScaleProps) {
+  const { showColors } = useStore(chartSettingsStore)
+  const { ranges } = useStore(colorSpaceStore)
   if (!colors?.length) return null
   const sectionWidth = width / colors.length
   return (
@@ -41,9 +44,9 @@ export function Scale({
           overflow: 'hidden',
         }}
       >
-        {colors.map((lch, i) => (
-          <Value key={i} color={toHex(lch)} onClick={() => onSelect(i)}>
-            {+lch[channelIndexes[channel]].toFixed(1)}
+        {colors.map((color, i) => (
+          <Value key={i} color={color.hex} onClick={() => onSelect(i)}>
+            {+color[channel].toFixed(1)}
           </Value>
         ))}
       </div>
@@ -63,17 +66,17 @@ export function Scale({
           colors={colors}
         />
 
-        {colors.map((lch, i) => {
+        {colors.map((color, i) => {
+          const contrast = getMostContrast(color.hex, ['#fff', '#000'])
           return (
             <Knob
               key={i}
-              min={0}
-              max={channel === 'l' ? MAX_L : channel === 'c' ? MAX_C : MAX_H}
-              value={
-                channel === 'l' ? lch[0] : channel === 'c' ? lch[1] : lch[2]
-              }
+              min={ranges[channel].min}
+              max={ranges[channel].max}
+              step={ranges[channel].step}
+              value={color[channel]}
               onChange={e => {
-                const [l, c, h] = lch
+                const { l, c, h } = color
                 const value = +e.target.value
                 if (channel === 'l') onColorChange(i, [value, c, h])
                 if (channel === 'c') onColorChange(i, [l, value, h])
@@ -83,7 +86,8 @@ export function Scale({
               isSelected={i === selected}
               style={{
                 // @ts-ignore
-                '--bg': toHex(lch),
+                '--contrast': contrast,
+                '--bg': showColors ? contrast : color.hex,
               }}
               canvasHeight={height}
               left={sectionWidth * i + sectionWidth / 2}
@@ -152,7 +156,7 @@ const Knob = styled.input.attrs({ type: 'range' })<{
     transform: ${p => (p.isSelected ? 'scale(1)' : 'scale(0.75)')};
     border: ${p => (p.isSelected ? '5px' : '8px')} solid var(--bg, gray);
     border-radius: 13px;
-    box-shadow: 0 0 0 1px var(--c-divider);
+    box-shadow: 0 0 2px 0px var(--contrast);
     cursor: grab;
     transition: 100ms ease-in-out;
     -webkit-appearance: none;

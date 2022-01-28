@@ -1,29 +1,31 @@
 import { FC } from 'react'
 import styled from 'styled-components'
-import { Palette } from '../types'
-import { TokenExportButton } from './Export'
+import { CSSExportButton, TokenExportButton } from './Export'
 
-export const Help: FC<{ palette: Palette }> = props => (
+export const Help: FC = () => (
   <Wrapper>
-    <Export palette={props.palette} />
+    <Export />
     <Hotkeys />
     <Credits />
   </Wrapper>
 )
 
-const Export: FC<{ palette: Palette }> = props => (
+const Export: FC = () => (
   <Section>
-    <h3>Export to Figma</h3>
+    <h3>Exports</h3>
 
     <p>
-      Install{' '}
+      <b>Figma.</b> Install{' '}
       <Link href="https://www.figma.com/community/plugin/843461159747178978/Figma-Tokens">
         Figma Tokens
-      </Link>{' '}
+      </Link>
       . Run the plugin and open JSON tab. Copy tokens and paste there.
     </p>
     <p>
-      <TokenExportButton palette={props.palette} />
+      <TokenExportButton />
+    </p>
+    <p>
+      <CSSExportButton />
     </p>
   </Section>
 )
@@ -35,6 +37,9 @@ const Hotkeys = () => {
     <Section>
       <h3>Hotkeys</h3>
       <List role="list">
+        <li>
+          <Key>1</Key> - <Key>9</Key> — switch palette
+        </li>
         <li>
           <Key>↑</Key> <Key>↓</Key> <Key>→</Key> <Key>←</Key> — select another
           color
@@ -92,8 +97,14 @@ const Credits = () => (
       under the hood.
     </p>
     <p>
-      Advanced Perceptual Contrast Algorithm (APCA) by Andrew Somers is a WCAG 3
-      working draft and may change later. To learn more visit{' '}
+      Special thanks for{' '}
+      <Link href="https://twitter.com/LeaVerou">Lea Verou</Link>,{' '}
+      <Link href="https://twitter.com/svgeesus">Chris Lilley</Link> and the CSS
+      working group for providing all the essential code for color conversions.
+    </p>
+    <p>
+      Accessible Perceptual Contrast Algorithm (APCA) by Andrew Somers is a
+      WCAG 3 working draft and may change later. To learn more visit{' '}
       <Link href="https://www.w3.org/WAI/GL/task-forces/silver/wiki/Visual_Contrast_of_Text_Subgroup">
         this page
       </Link>{' '}

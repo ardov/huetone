@@ -1,103 +1,172 @@
-import { MAX_C, MAX_H, MAX_L, displayable } from '../../../color'
+import { colorSpaces, TSpaceName } from '../../../colorFuncs'
 import * as Comlink from 'comlink'
-import { LCH } from '../../../types'
-
-const domains = {
-  l: [MAX_L, 0] as [number, number],
-  c: [MAX_C, 0] as [number, number],
-  h: [MAX_H, 0] as [number, number],
-}
+import { TColor } from '../../../types'
+import { Pixels, TPixelData } from './Pixels'
+import { paddedScale, sycledLerp } from './interpolation'
 
 type DrawChartProps = {
   width: number
   height: number
-  colors: LCH[]
-  channel: 'l' | 'c' | 'h'
+  colors: TColor[]
+  mode: TSpaceName
+  showColors?: boolean
+  showP3?: boolean
+  showRec2020?: boolean
 }
 
-function drawChart({ width, height, colors, channel }: DrawChartProps) {
-  let pixels = new Uint8ClampedArray(width * height * 4)
+const getSrgbPixel = (): TPixelData => [255, 255, 255, 255]
+const getP3pixel = (x: number, y: number): TPixelData => [198, 198, 198, 255]
+const getRec2020pixel = (x: number, y: number): TPixelData => [
+  171, 171, 171, 255,
+]
+// const getSrgbPixel = (): TPixelData => [255, 255, 255, 255]
+// const getP3pixel = (x: number, y: number): TPixelData => [
+//   x % 3 || y % 3 ? 255 : 80,
+//   x % 3 || y % 3 ? 255 : 80,
+//   x % 3 || y % 3 ? 255 : 80,
+//   255,
+// ]
+// const getRec2020pixel = (x: number, y: number): TPixelData => [
+//   255,
+//   x % 2 || y % 3 ? 255 : 80,
+//   x % 2 || y % 3 ? 255 : 80,
+//   255,
+// ]
 
-  const channelValues = {
-    l: colors.map(c => c[0]),
-    c: colors.map(c => c[1]),
-    h: colors.map(c => c[2]),
-  }
-
-  const horizontalScales = {
-    l: paddedScale(channelValues.l, width),
-    c: paddedScale(channelValues.c, width),
-    h: paddedScale(channelValues.h, width), //, MAX_H),
-  }
+function drawLuminosityChart(props: DrawChartProps) {
+  const { width, height, colors, mode, showColors, showP3, showRec2020 } = props
+  const { ranges, lch2color } = colorSpaces[mode]
+  let pixels = new Pixels(width, height)
+  let chromaScale = paddedScale(
+    width,
+    colors.map(color => color.c)
+  )
+  let hueScale = paddedScale(
+    width,
+    colors.map(color => color.h),
+    ranges.h.max
+  )
 
   for (let x = 0; x < width; x++) {
-    let value = {
-      l: horizontalScales.l(x),
-      c: horizontalScales.c(x),
-      h: horizontalScales.h(x),
-    }
+    let c = chromaScale(x)
+    let h = hueScale(x)
+    let hadColors = false
 
-    for (let y = 0; y < height; y++) {
-      value[channel] = scaleValue(y, [0, height], domains[channel])
-      const { r, g, b, a } = displayable([value.l, value.c, value.h])
-        ? { r: 255, g: 255, b: 255, a: 255 }
-        : { r: 0, g: 0, b: 0, a: 0 }
+    for (let y = height; y >= 0; y--) {
+      let l = sycledLerp(ranges.l.max, ranges.l.min, y / height)
+      const { r, g, b, within_sRGB, within_P3, within_Rec2020 } = lch2color([
+        l,
+        c,
+        h,
+      ])
+      const displayable = showRec2020
+        ? within_Rec2020
+        : showP3
+        ? within_P3
+        : within_sRGB
+      // Luminosity chart only have colors in the middle. So if the current color is undisplayable and we already had displayable colors, there will be no more displayable colors.
+      if (!displayable && hadColors) break
 
-      const displacement = y * width * 4 + x * 4
-      pixels[displacement] = r
-      pixels[displacement + 1] = g
-      pixels[displacement + 2] = b
-      pixels[displacement + 3] = a
-    }
-  }
-  return pixels
-}
-
-const paddedScale = (stops: number[], width: number, max?: number) => {
-  const columnWidth = width / stops.length
-  const padStart = columnWidth / 2
-  const padEnd = columnWidth / 2
-  const scale = linearScale(stops, width - padEnd - padStart, max)
-  return (value: number) => {
-    if (value <= padStart) return stops[0]
-    if (value >= width - padEnd) return stops[stops.length - 1]
-    return scale(value - padStart)
-  }
-}
-
-const linearScale = (stops: number[], width: number, max?: number) => {
-  if (stops.length === 1) return () => stops[0]
-  const sections = stops.length - 1
-  const sectionWidth = width / sections
-  return (value: number) => {
-    if (value <= 0) return stops[0]
-    if (value >= width) return stops[stops.length - 1]
-    const idxFrom = Math.floor(value / sectionWidth)
-    const localValue = value % sectionWidth
-    const from = stops[idxFrom]
-    const to = stops[idxFrom + 1]
-
-    if (!max || Math.abs(from - to) <= max / 2) {
-      return scaleValue(localValue, [0, sectionWidth], [from, to])
-    }
-    if (from > max / 2) {
-      return scaleValue(localValue, [0, sectionWidth], [from, to + max]) & max
-    } else {
-      return scaleValue(localValue, [0, sectionWidth], [from + max, to]) & max
+      if (within_sRGB) {
+        hadColors = true
+        pixels.setPixel(x, y, showColors ? [r, g, b, 255] : getSrgbPixel())
+      } else if (showP3 && within_P3) {
+        pixels.setPixel(x, y, getP3pixel(x, y))
+      } else if (showRec2020 && within_Rec2020) {
+        // const v = ((Math.sin((x + y * -0.8) * 1.5) + 1) / 2) * 55 + 200
+        pixels.setPixel(x, y, getRec2020pixel(x, y))
+      }
     }
   }
+
+  return pixels.array
 }
 
-const scaleValue = (
-  value: number,
-  from: [number, number],
-  to: [number, number]
-) => {
-  const ratio = (to[1] - to[0]) / (from[1] - from[0])
-  const change = (value - from[0]) * ratio
-  return to[0] + change
+function drawChromaChart(props: DrawChartProps) {
+  const { width, height, colors, mode, showColors, showP3, showRec2020 } = props
+  const { ranges, lch2color } = colorSpaces[mode]
+  let pixels = new Pixels(width, height)
+  let luminostyScale = paddedScale(
+    width,
+    colors.map(color => color.l)
+  )
+  let hueScale = paddedScale(
+    width,
+    colors.map(color => color.h),
+    ranges.h.max
+  )
+
+  for (let x = 0; x < width; x++) {
+    let l = luminostyScale(x)
+    let h = hueScale(x)
+
+    // TODO: it will be a good optimisation to remember previous L H values and return the same column if they haven't changed
+
+    // TODO: another good optimisation is to remember previous last displayable color and start from it. Or even combine it with binary search.
+
+    for (let y = height; y >= 0; y--) {
+      let c = sycledLerp(ranges.c.max, ranges.c.min, y / height)
+      const { r, g, b, within_sRGB, within_P3, within_Rec2020 } = lch2color([
+        l,
+        c,
+        h,
+      ])
+      const displayable = showRec2020
+        ? within_Rec2020
+        : showP3
+        ? within_P3
+        : within_sRGB
+      // If color with this chroma is undisplayable, then all colors with higher chroma also will be undisplayable so we can just finish with this column.
+      if (!displayable) break
+
+      if (within_sRGB) {
+        pixels.setPixel(x, y, showColors ? [r, g, b, 255] : getSrgbPixel())
+      } else if (showP3 && within_P3) {
+        pixels.setPixel(x, y, getP3pixel(x, y))
+      } else if (showRec2020 && within_Rec2020) {
+        pixels.setPixel(x, y, getRec2020pixel(x, y))
+      }
+    }
+  }
+  return pixels.array
 }
 
-const obj = { drawChart }
+function drawHueChart(props: DrawChartProps) {
+  const { width, height, colors, mode, showColors, showP3, showRec2020 } = props
+  const { ranges, lch2color } = colorSpaces[mode]
+  let pixels = new Pixels(width, height)
+  let luminostyScale = paddedScale(
+    width,
+    colors.map(color => color.l)
+  )
+  let chromaScale = paddedScale(
+    width,
+    colors.map(color => color.c)
+  )
+
+  for (let x = 0; x < width; x++) {
+    let l = luminostyScale(x)
+    let c = chromaScale(x)
+
+    for (let y = height; y >= 0; y--) {
+      let h = sycledLerp(ranges.h.max, ranges.h.min, y / height)
+      const { r, g, b, within_sRGB, within_P3, within_Rec2020 } = lch2color([
+        l,
+        c,
+        h,
+      ])
+      if (within_sRGB) {
+        pixels.setPixel(x, y, showColors ? [r, g, b, 255] : getSrgbPixel())
+      } else if (showP3 && within_P3) {
+        pixels.setPixel(x, y, getP3pixel(x, y))
+      } else if (showRec2020 && within_Rec2020) {
+        pixels.setPixel(x, y, getRec2020pixel(x, y))
+      }
+    }
+  }
+  return pixels.array
+}
+
+const obj = { drawChromaChart, drawLuminosityChart, drawHueChart }
 export type WorkerObj = typeof obj
 Comlink.expose(obj)

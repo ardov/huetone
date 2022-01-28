@@ -1,7 +1,7 @@
-import { useColorScheme } from '../useColorScheme'
-import { Button } from './inputs'
-import { MoonIcon } from '../icons/Moon'
-import { SunIcon } from '../icons/Sun'
+import { useColorScheme } from '../../hooks/useColorScheme'
+import { Button } from '../inputs'
+import { MoonIcon } from '../../icons/Moon'
+import { SunIcon } from '../../icons/Sun'
 
 export function ThemeButton() {
   const [scheme, toggle] = useColorScheme()

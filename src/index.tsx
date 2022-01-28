@@ -1,11 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App'
+import App from './components/App'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
-import GlobalStyles from './GlobalStyles'
+import GlobalStyles from './components/GlobalStyles'
 import './styles.scss'
-import { ColorSchemeProvider } from './useColorScheme'
+import { ColorSchemeProvider } from './hooks/useColorScheme'
 
 ReactDOM.render(
   <React.StrictMode>
