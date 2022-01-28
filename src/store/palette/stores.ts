@@ -66,21 +66,3 @@ export const colorSpaceStore = computed(
   paletteStore,
   palette => colorSpaces[palette.mode]
 )
-
-// onSet(paletteStore, ({ abort, newValue }) => {
-//   const oldValue = paletteStore //.get()
-//   console.log('onSet', oldValue, newValue)
-// })
-
-function logChanges() {
-  const makeListener = (s: string) => (value: any) => {
-    console.log(s + ' updated', value)
-  }
-  paletteIdStore.listen(makeListener('🔢 paletteIdStore'))
-  savedPalettesStore.listen(makeListener('💾 savedPalettesStore'))
-  paletteListStore.listen(makeListener('📝paletteListStore'))
-  paletteStore.listen(makeListener('🌈 paletteStore'))
-  colorSpaceStore.listen(makeListener('👾 colorSpaceStore'))
-}
-
-logChanges()

@@ -71,8 +71,21 @@ const PaletteSelectComponent = () => {
   return (
     <Menu.Root>
       <Menu.Trigger asChild>
-        <Button>
-          {paletteList[currentIdx].name} <ChevronDown />
+        <Button
+          title={paletteList[currentIdx].name}
+          style={{ width: 200, justifyContent: 'space-between' }}
+        >
+          <span
+            style={{
+              minWidth: 80,
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {paletteList[currentIdx].name}
+          </span>
+          <ChevronDown />
         </Button>
       </Menu.Trigger>
 
