@@ -70,7 +70,7 @@ export const duplicatePalette = (idx: number) => {
           : palette
       )
     )
-    paletteIdStore.set(idx + 1)
+    switchPalette(idx + 1)
   }
 }
 
