@@ -2,6 +2,7 @@ import { useStore } from '@nanostores/react'
 import * as Menu from '../DropdownMenu'
 import {
   deletePalette,
+  duplicatePalette,
   paletteIdStore,
   paletteListStore,
   paletteStore,
@@ -11,6 +12,7 @@ import {
 import { Button, ControlGroup, Input } from '../inputs'
 import { ChevronDown } from '../../icons/ChevronDown'
 import { Trash } from '../../icons/Trash'
+import { Copy } from '../../icons/Copy'
 import { Edit } from '../../icons/Edit'
 import { Check } from '../../icons/Check'
 import { FC, useState } from 'react'
@@ -84,12 +86,20 @@ const PaletteSelectComponent = () => {
           >
             {p.name}
             {!p.isPreset && (
-              <Trash
-                onClick={e => {
-                  e.preventDefault()
-                  deletePalette(i)
-                }}
-              />
+              <span style={{ display: 'flex', gap: 8 }}>
+                <Copy
+                  onClick={e => {
+                    e.preventDefault()
+                    duplicatePalette(i)
+                  }}
+                />
+                <Trash
+                  onClick={e => {
+                    e.preventDefault()
+                    deletePalette(i)
+                  }}
+                />
+              </span>
             )}
           </Menu.Item>
         ))}

@@ -59,6 +59,21 @@ export const deletePalette = (idx: number) => {
   if (currentId === idx) switchPalette(currentId)
 }
 
+export const duplicatePalette = (idx: number) => {
+  const savedPalettes = savedPalettesStore.get()
+  if (savedPalettes[idx]) {
+    // Duplicating user palette
+    savedPalettesStore.set(
+      savedPalettes.flatMap((palette, i) =>
+        i === idx
+          ? [palette, { ...palette, name: palette.name + ' copy' }]
+          : palette
+      )
+    )
+    paletteIdStore.set(idx + 1)
+  }
+}
+
 // Color space actions
 
 export const toggleColorSpace = action(

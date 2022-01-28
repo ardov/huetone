@@ -1,6 +1,6 @@
 import { LCH, RGB, TColor, XYZ } from '../types'
 import { clamp } from '../utils'
-import { oklch, cielch } from './colorSpaces'
+import { oklch, cielch } from './colorModels'
 import {
   isWithinGamut,
   forceIntoGamut,

@@ -35,7 +35,13 @@ export function Header() {
 
   return (
     <Wrapper>
-      <PaletteSelect />
+      <ControlRow>
+        <PaletteSelect />
+        <CopyButton getContent={() => getPaletteLink(palette)}>
+          <Link />
+          Copy link
+        </CopyButton>
+      </ControlRow>
 
       <ControlRow>
         <ColorEditor
@@ -73,11 +79,6 @@ export function Header() {
             </Button>
           )}
         </ControlGroup>
-
-        <CopyButton getContent={() => getPaletteLink(palette)}>
-          <Link />
-          Copy link
-        </CopyButton>
 
         <ChartSettings />
 
