@@ -39,7 +39,7 @@ export function Canvas(props: {
 
       const drawPartialImage = (bmp: ImageBitmap, from: number, to: number) => {
         ctx.clearRect(from, 0, to - from, height)
-        ctx.drawImage(bmp, 0, 0, width, height)
+        ctx.drawImage(bmp, from, 0, to - from, height)
       }
 
       const renderParams = { width, height, mode, colors, ...settings }

@@ -82,7 +82,7 @@ function drawLuminosityChart(props: DrawChartProps) {
     }
   }
 
-  return pixels.array
+  return bakeBitmap(pixels)
 }
 
 function drawChromaChart(props: DrawChartProps) {
@@ -132,7 +132,8 @@ function drawChromaChart(props: DrawChartProps) {
       }
     }
   }
-  return pixels.array
+
+  return bakeBitmap(pixels)
 }
 
 function drawHueChart(props: DrawChartProps) {
@@ -170,7 +171,13 @@ function drawHueChart(props: DrawChartProps) {
       }
     }
   }
-  return pixels.array
+
+  return bakeBitmap(pixels)
+}
+
+async function bakeBitmap(pixels: Pixels) {
+  // if super-sampling becomes a viable option, scaling also can be performed with bitmap options here
+  return createImageBitmap(new ImageData(pixels.array, pixels.width, pixels.height))
 }
 
 const obj = { drawChromaChart, drawLuminosityChart, drawHueChart }

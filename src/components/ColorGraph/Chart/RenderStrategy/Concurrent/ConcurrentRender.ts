@@ -23,7 +23,7 @@ export const render: RenderStrategy = (
     const widthFrom = drawingAreas[areaIndex]
     const widthTo = drawingAreas[areaIndex + 1]
 
-    const pixels = await funcs[channel]({
+    const bitmap = await funcs[channel]({
       ...restRenderProps,
       width: renderWidth,
       height: renderHeight,
@@ -32,9 +32,6 @@ export const render: RenderStrategy = (
     })
 
     if (!cancelled) {
-      const image = new ImageData(pixels, widthTo - widthFrom, renderHeight)
-      const bitmap = await createImageBitmap(image)
-
       const intrinsicWidthFrom = widthFrom / scale
       const intrinsicWidthTo = widthTo / scale
       drawRegion(bitmap, intrinsicWidthFrom, intrinsicWidthTo)
