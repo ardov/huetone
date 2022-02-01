@@ -4,9 +4,11 @@ import { TColor } from '../../../types'
 import { Pixels, TPixelData } from './Pixels'
 import { paddedScale, sycledLerp } from './interpolation'
 
-type DrawChartProps = {
+export type DrawChartProps = {
   width: number
   height: number
+  widthFrom?: number,
+  widthTo?: number,
   colors: TColor[]
   mode: TSpaceName
   showColors?: boolean
@@ -34,9 +36,9 @@ const getRec2020pixel = (x: number, y: number): TPixelData => [
 // ]
 
 function drawLuminosityChart(props: DrawChartProps) {
-  const { width, height, colors, mode, showColors, showP3, showRec2020 } = props
+  const { width, height, colors, mode, showColors, showP3, showRec2020, widthFrom = 0, widthTo = width } = props
   const { ranges, lch2color } = colorSpaces[mode]
-  let pixels = new Pixels(width, height)
+  let pixels = new Pixels(widthTo - widthFrom, height)
   let chromaScale = paddedScale(
     width,
     colors.map(color => color.c)
@@ -47,7 +49,7 @@ function drawLuminosityChart(props: DrawChartProps) {
     ranges.h.max
   )
 
-  for (let x = 0; x < width; x++) {
+  for (let x = widthFrom; x < widthTo; x++) {
     let c = chromaScale(x)
     let h = hueScale(x)
     let hadColors = false
@@ -67,14 +69,15 @@ function drawLuminosityChart(props: DrawChartProps) {
       // Luminosity chart only have colors in the middle. So if the current color is undisplayable and we already had displayable colors, there will be no more displayable colors.
       if (!displayable && hadColors) break
 
+      const dx = x - widthFrom
       if (within_sRGB) {
         hadColors = true
-        pixels.setPixel(x, y, showColors ? [r, g, b, 255] : getSrgbPixel())
+        pixels.setPixel(dx, y, showColors ? [r, g, b, 255] : getSrgbPixel())
       } else if (showP3 && within_P3) {
-        pixels.setPixel(x, y, getP3pixel(x, y))
+        pixels.setPixel(dx, y, getP3pixel(dx, y))
       } else if (showRec2020 && within_Rec2020) {
         // const v = ((Math.sin((x + y * -0.8) * 1.5) + 1) / 2) * 55 + 200
-        pixels.setPixel(x, y, getRec2020pixel(x, y))
+        pixels.setPixel(dx, y, getRec2020pixel(dx, y))
       }
     }
   }
@@ -83,9 +86,9 @@ function drawLuminosityChart(props: DrawChartProps) {
 }
 
 function drawChromaChart(props: DrawChartProps) {
-  const { width, height, colors, mode, showColors, showP3, showRec2020 } = props
+  const { width, height, colors, mode, showColors, showP3, showRec2020, widthFrom = 0, widthTo = width } = props
   const { ranges, lch2color } = colorSpaces[mode]
-  let pixels = new Pixels(width, height)
+  let pixels = new Pixels(widthTo - widthFrom, height)
   let luminostyScale = paddedScale(
     width,
     colors.map(color => color.l)
@@ -96,7 +99,7 @@ function drawChromaChart(props: DrawChartProps) {
     ranges.h.max
   )
 
-  for (let x = 0; x < width; x++) {
+  for (let x = widthFrom; x < widthTo; x++) {
     let l = luminostyScale(x)
     let h = hueScale(x)
 
@@ -119,12 +122,13 @@ function drawChromaChart(props: DrawChartProps) {
       // If color with this chroma is undisplayable, then all colors with higher chroma also will be undisplayable so we can just finish with this column.
       if (!displayable) break
 
+      const dx = x - widthFrom
       if (within_sRGB) {
-        pixels.setPixel(x, y, showColors ? [r, g, b, 255] : getSrgbPixel())
+        pixels.setPixel(dx, y, showColors ? [r, g, b, 255] : getSrgbPixel())
       } else if (showP3 && within_P3) {
-        pixels.setPixel(x, y, getP3pixel(x, y))
+        pixels.setPixel(dx, y, getP3pixel(dx, y))
       } else if (showRec2020 && within_Rec2020) {
-        pixels.setPixel(x, y, getRec2020pixel(x, y))
+        pixels.setPixel(dx, y, getRec2020pixel(dx, y))
       }
     }
   }
@@ -132,9 +136,9 @@ function drawChromaChart(props: DrawChartProps) {
 }
 
 function drawHueChart(props: DrawChartProps) {
-  const { width, height, colors, mode, showColors, showP3, showRec2020 } = props
+  const { width, height, colors, mode, showColors, showP3, showRec2020, widthFrom = 0, widthTo = width } = props
   const { ranges, lch2color } = colorSpaces[mode]
-  let pixels = new Pixels(width, height)
+  let pixels = new Pixels(widthTo - widthFrom, height)
   let luminostyScale = paddedScale(
     width,
     colors.map(color => color.l)
@@ -144,7 +148,7 @@ function drawHueChart(props: DrawChartProps) {
     colors.map(color => color.c)
   )
 
-  for (let x = 0; x < width; x++) {
+  for (let x = widthFrom; x < widthTo; x++) {
     let l = luminostyScale(x)
     let c = chromaScale(x)
 
@@ -155,12 +159,14 @@ function drawHueChart(props: DrawChartProps) {
         c,
         h,
       ])
+
+      const dx = x - widthFrom
       if (within_sRGB) {
-        pixels.setPixel(x, y, showColors ? [r, g, b, 255] : getSrgbPixel())
+        pixels.setPixel(dx, y, showColors ? [r, g, b, 255] : getSrgbPixel())
       } else if (showP3 && within_P3) {
-        pixels.setPixel(x, y, getP3pixel(x, y))
+        pixels.setPixel(dx, y, getP3pixel(dx, y))
       } else if (showRec2020 && within_Rec2020) {
-        pixels.setPixel(x, y, getRec2020pixel(x, y))
+        pixels.setPixel(dx, y, getRec2020pixel(dx, y))
       }
     }
   }
