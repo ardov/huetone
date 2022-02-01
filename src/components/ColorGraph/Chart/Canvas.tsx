@@ -11,6 +11,8 @@ import {
   // Using singleton worker pool shared between Canvases ensuring total pool size
   channelFuncs,
   BasicRender,
+  ConcurrentRender,
+  ConcurrentSpreadRender,
   RenderStrategyType
 } from './RenderStrategy'
 
@@ -43,9 +45,13 @@ export function Canvas(props: {
       const renderParams = { width, height, mode, colors, ...settings }
 
       switch (renderStrategy) {
-        default:
         case 'basic':
           return BasicRender(channelFuncs, channel, renderParams, drawPartialImage, SUPERSAMPLING_RATIO)
+        case 'concurrent':
+          return ConcurrentRender(channelFuncs, channel, renderParams, drawPartialImage, SUPERSAMPLING_RATIO)
+        default:
+        case 'spread':
+          return ConcurrentSpreadRender(channelFuncs, channel, renderParams, drawPartialImage, SUPERSAMPLING_RATIO)
       }
     }, 200)
   }, [channel, height, settings, width, renderStrategy])

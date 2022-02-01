@@ -4,7 +4,7 @@ import { DrawChartProps } from '../paintWorker'
 import { ChannelFuncs } from './WorkerPool'
 
 export type RenderStrategyParams = Omit<DrawChartProps, 'widthTo' | 'widthFrom'>
-export type RenderStrategyType = 'basic'
+export type RenderStrategyType = 'basic' | 'concurrent' | 'spread'
 
 export type DrawPartialFn = (data: ImageBitmap, widthFrom: number, widthTo: number) => void
 export type RenderStrategy<ExtraParams = {}>
@@ -17,5 +17,5 @@ export type RenderStrategy<ExtraParams = {}>
 ) => Promise<unknown>
 
 export * from './Basic'
-
+export * from './Concurrent'
 export * from './WorkerPool'
