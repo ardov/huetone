@@ -14,7 +14,10 @@ export type RenderStrategy<ExtraParams = {}>
   params: ExtraParams & TSettings & RenderStrategyParams,
   drawPartialRegion: DrawPartialFn,
   scale?: number
-) => Promise<unknown>
+) => {
+  progress: Promise<unknown>,
+  abort: () => void
+}
 
 export * from './Basic'
 export * from './Concurrent'

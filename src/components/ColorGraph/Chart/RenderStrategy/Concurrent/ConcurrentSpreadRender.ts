@@ -17,6 +17,8 @@ export const render: RenderStrategy<{ spread?: number }> = (
   drawRegion,
   scale = 1,
 ) => {
+  let cancelled = false
+
   const renderWidth = intrinsicWidth * scale
   const renderHeight = intrinsicHeight * scale
 
@@ -43,22 +45,31 @@ export const render: RenderStrategy<{ spread?: number }> = (
       widthFrom,
       widthTo,
     })
-    const image = new ImageData(pixels, widthTo - widthFrom, renderHeight)
-    const bitmap = await createImageBitmap(image)
 
-    const intrinsicWidthFrom = widthFrom / scale
-    const intrinsicWidthTo = widthTo / scale
-    drawRegion(bitmap, intrinsicWidthFrom, intrinsicWidthTo)
+    if (!cancelled) {
+      // commit partial
+      const image = new ImageData(pixels, widthTo - widthFrom, renderHeight)
+      const bitmap = await createImageBitmap(image)
 
-    // continue promise-chains until all areas are processed
-    if (areaQueueIndex < spread) {
-      return queueNextFramePartial(funcs)
-    } // else render is complete
+      const intrinsicWidthFrom = widthFrom / scale
+      const intrinsicWidthTo = widthTo / scale
+      drawRegion(bitmap, intrinsicWidthFrom, intrinsicWidthTo)
+
+      // continue promise-chains until all areas are processed
+      if (areaQueueIndex < spread) {
+        return queueNextFramePartial(funcs)
+      } // else render is complete
+    } // else abort
   }
 
   // Launch recursive promise-chains render pipeline on the worker pool
   // Compute {SPREAD_AREAS_AMOUNT} frame partials using {funcsPool.length} concurrently running jobs
-  return Promise.all(funcsPool.map(queueNextFramePartial))
+  const rendering = Promise.all(funcsPool.map(queueNextFramePartial))
+  return {
+    /** Concurrent Spread Strategy is multi-frame multi-worker operation, therefore it has many abort-boundaries */
+    abort: () => { cancelled = true },
+    progress: rendering
+  }
 }
 
 function unbiasedOptimalShuffle<T>(array: T[]) {

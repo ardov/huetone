@@ -58,7 +58,11 @@ export function Canvas(props: {
 
   useEffect(() => {
     debouncedRepaint(colors, mode)
-    return () => debouncedRepaint.cancel()
+    return () => {
+      // get previously fired render operation to shortcut execution and to abort any bitmap commits from it
+      debouncedRepaint(colors, mode)?.abort()
+      debouncedRepaint.cancel()
+    }
   }, [colors, debouncedRepaint, mode])
   return (
     <Wrapper>

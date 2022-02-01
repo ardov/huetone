@@ -12,6 +12,8 @@ export const render: RenderStrategy = (
   drawRegion,
   scale = 1,
 ) => {
+  let cancelled = false
+
   const renderWidth = intrinsicWidth * scale
   const renderHeight = intrinsicHeight * scale
 
@@ -28,14 +30,23 @@ export const render: RenderStrategy = (
       widthFrom,
       widthTo,
     })
-    const image = new ImageData(pixels, widthTo - widthFrom, renderHeight)
-    const bitmap = await createImageBitmap(image)
 
-    const intrinsicWidthFrom = widthFrom / scale
-    const intrinsicWidthTo = widthTo / scale
-    drawRegion(bitmap, intrinsicWidthFrom, intrinsicWidthTo)
+    if (!cancelled) {
+      const image = new ImageData(pixels, widthTo - widthFrom, renderHeight)
+      const bitmap = await createImageBitmap(image)
+
+      const intrinsicWidthFrom = widthFrom / scale
+      const intrinsicWidthTo = widthTo / scale
+      drawRegion(bitmap, intrinsicWidthFrom, intrinsicWidthTo)
+    }
   }
 
   // compute one frame composed of {funcsPool.length} partials
-  return Promise.all(funcsPool.map(drawFramePartial))
+  const rendering = Promise.all(funcsPool.map(drawFramePartial))
+
+  return {
+    /** Concurrent Strategy is single-frame multi-worker operation, therefore only result commits are cancellable */
+    abort: () => { cancelled = true },
+    progress: rendering
+  }
 }

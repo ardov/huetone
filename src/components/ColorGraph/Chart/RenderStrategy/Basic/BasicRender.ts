@@ -1,6 +1,6 @@
 import { RenderStrategy } from '../'
 
-export const render: RenderStrategy = async (
+export const render: RenderStrategy = (
   funcsPool,
   channel,
   {
@@ -11,18 +11,30 @@ export const render: RenderStrategy = async (
   drawRegion,
   scale = 1,
 ) => {
+  let cancelled = false
+
   const channelFuncs = funcsPool[0]
 
   const renderWidth = intrinsicWidth * scale
   const renderHeight = intrinsicHeight * scale
 
-  const pixels = await channelFuncs[channel]({
-    ...restRenderProps,
-    width: renderWidth,
-    height: renderHeight,
-  })
-  const image = new ImageData(pixels, renderWidth, renderHeight)
-  const bitmap = await createImageBitmap(image)
+  async function renderFrame() {
+    const pixels = await channelFuncs[channel]({
+      ...restRenderProps,
+      width: renderWidth,
+      height: renderHeight,
+    })
 
-  drawRegion(bitmap, 0, intrinsicWidth)
+    if (!cancelled) {
+      const image = new ImageData(pixels, renderWidth, renderHeight)
+      const bitmap = await createImageBitmap(image)
+      drawRegion(bitmap, 0, intrinsicWidth)
+    }
+  }
+
+  return {
+    /** Basic Strategy is single-frame single-worker operation, therefore only result commit is cancellable */
+    abort: () => { cancelled = true },
+    progress: renderFrame()
+  }
 }
