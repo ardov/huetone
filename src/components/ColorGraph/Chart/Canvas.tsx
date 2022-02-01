@@ -1,9 +1,4 @@
 import { useEffect, useMemo, useRef } from 'react'
-// @ts-ignore Module not found
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import Worker from 'worker-loader!./paintWorker'
-import { WorkerObj } from './paintWorker'
-import * as Comlink from 'comlink'
 import { Channel, TColor } from '../../../types'
 import debounce from 'lodash/debounce'
 import styled from 'styled-components'
@@ -12,44 +7,48 @@ import { useStore } from '@nanostores/react'
 import { paletteStore } from '../../../store/palette'
 import { chartSettingsStore } from '../../../store/chartSettings'
 
-const worker = new Worker()
-const { drawChromaChart, drawHueChart, drawLuminosityChart } =
-  Comlink.wrap<WorkerObj>(worker)
+import {
+  // Using singleton worker pool shared between Canvases ensuring total pool size
+  channelFuncs,
+  BasicRender,
+  RenderStrategyType
+} from './RenderStrategy'
 
-const funcs = {
-  l: drawLuminosityChart,
-  c: drawChromaChart,
-  h: drawHueChart,
-}
+export const SUPERSAMPLING_RATIO = 1
 
 export function Canvas(props: {
   width: number
   height: number
   channel: Channel
   colors: TColor[]
+  renderStrategy?: RenderStrategyType
 }) {
   const settings = useStore(chartSettingsStore)
   const { mode } = useStore(paletteStore)
-  const { width, height, channel, colors } = props
+  const { width, height, channel, colors, renderStrategy } = props
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   const debouncedRepaint = useMemo(() => {
-    return debounce(async (colors: TColor[], mode: TSpaceName) => {
+    return debounce((colors: TColor[], mode: TSpaceName) => {
       console.log('🖼 Repaint canvas')
       const canvas = canvasRef.current
       const ctx = canvas?.getContext('2d')
       if (!ctx) return
-      const pixels = await funcs[channel]({
-        width,
-        height,
-        colors,
-        mode,
-        ...settings,
-      })
-      const imageData = new ImageData(pixels, width, height)
-      ctx.putImageData(imageData, 0, 0)
+
+      const drawPartialImage = (bmp: ImageBitmap, from: number, to: number) => {
+        ctx.clearRect(from, 0, to - from, height)
+        ctx.drawImage(bmp, 0, 0, width, height)
+      }
+
+      const renderParams = { width, height, mode, colors, ...settings }
+
+      switch (renderStrategy) {
+        default:
+        case 'basic':
+          return BasicRender(channelFuncs, channel, renderParams, drawPartialImage, SUPERSAMPLING_RATIO)
+      }
     }, 200)
-  }, [channel, height, settings, width])
+  }, [channel, height, settings, width, renderStrategy])
 
   useEffect(() => {
     debouncedRepaint(colors, mode)
