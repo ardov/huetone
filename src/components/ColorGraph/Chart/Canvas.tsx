@@ -39,7 +39,14 @@ export function Canvas(props: {
       const ctx = canvas?.getContext('2d')
       if (!ctx) return
 
-      const drawPartialImage: DrawPartialFn = (image, from, to) => drawImageOnCanvasSafe(ctx, image, from, to, height)
+      let firstPaintComplete = false
+      const drawPartialImage: DrawPartialFn = (image, from, to) => {
+        if (!firstPaintComplete) {
+          ctx.clearRect(0, 0, width, height)
+          firstPaintComplete = true
+        }
+        drawImageOnCanvasSafe(ctx, image, from, to, height)
+      }
       const renderParams = { width, height, mode, colors, ...settings }
 
       switch (renderStrategy) {

@@ -41,7 +41,6 @@ const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent)
  */
 export function drawImageOnCanvasSafe(ctx: CanvasRenderingContext2D, image: PaintResult, from: number, to: number, height: number) {
   const redrawWidth = to - from
-  ctx.clearRect(from, 0, redrawWidth, height)
 
   if (image instanceof ImageBitmap) {
     // Worker was able to prepare a bitmap
