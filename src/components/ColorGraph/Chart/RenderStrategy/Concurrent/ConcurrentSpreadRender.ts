@@ -1,21 +1,22 @@
 import { buildDrawingAreas } from './buildDrawingAreas'
 import { ChannelFuncs } from '../WorkerPool'
-import { RenderStrategy } from '../'
+import { RenderStrategy, RenderStrategyParams } from '../'
 
-/** 100 is kind of optimal repaint ratio (1% per 'frame-column'). More areas cause more worker overhead */
-export const SPREAD_AREAS_AMOUNT = 100
 
-export const render: RenderStrategy<{ spread?: number }> = (
+export type ConcurrentSpreadStrategyParams = RenderStrategyParams<{ spread?: number, scale?: number }>
+export type ConcurrentSpreadStrategy = RenderStrategy<ConcurrentSpreadStrategyParams>
+
+export const render: ConcurrentSpreadStrategy = (
   funcsPool,
   channel,
   {
-    spread = SPREAD_AREAS_AMOUNT,
+    spread = 100,
+    scale = 1,
     width: intrinsicWidth,
     height: intrinsicHeight,
     ...restRenderProps
   },
   drawRegion,
-  scale = 1,
 ) => {
   let cancelled = false
 
@@ -32,6 +33,9 @@ export const render: RenderStrategy<{ spread?: number }> = (
   // Create recursive pool queue over the shuffled areas
   let areaQueueIndex = 0
   const queueNextFramePartial = async (funcs: ChannelFuncs): Promise<unknown> => {
+    // avoid overpaint in case {funcsPool.length > spread}
+    if (areaQueueIndex >= spread) return
+
     // pick next uniformly random area
     const areaIndex = shuffledAreas[areaQueueIndex++]
     const widthFrom = drawingAreas[areaIndex]

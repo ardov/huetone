@@ -10,14 +10,15 @@ import { chartSettingsStore } from '../../../store/chartSettings'
 import {
   // Using singleton worker pool shared between Canvases ensuring total pool size
   channelFuncs,
-  BasicRender,
-  ConcurrentRender,
   ConcurrentSpreadRender,
   RenderStrategyType,
   DrawPartialFn,
+  ConcurrentSpreadStrategyParams,
 } from './RenderStrategy'
 import { drawImageOnCanvasSafe } from './drawImageOnCanvasSafe'
 
+/** 100 is kind of optimal repaint ratio (1% per 'frame-column'). More areas cause more worker overhead */
+export const OPTIMAL_SPREAD_AREAS_AMOUNT = 100
 export const SUPERSAMPLING_RATIO = 1
 
 const RENDER_STRATEGY_DEBOUNCE: { [K in RenderStrategyType]: number } = {
@@ -25,7 +26,11 @@ const RENDER_STRATEGY_DEBOUNCE: { [K in RenderStrategyType]: number } = {
   'concurrent': 50,
   'spread': 0,
 }
-
+const RENDER_STRATEGY_SPREAD: { [K in RenderStrategyType]: number } = {
+  'basic': 1,
+  'concurrent': channelFuncs.length,
+  'spread': OPTIMAL_SPREAD_AREAS_AMOUNT
+}
 
 export function Canvas(props: {
   width: number
@@ -40,6 +45,9 @@ export function Canvas(props: {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   const debouncedRepaint = useMemo(() => {
+    const debounceRate = RENDER_STRATEGY_DEBOUNCE[renderStrategy]
+    const renderSpread = RENDER_STRATEGY_SPREAD[renderStrategy]
+
     return debounce((colors: TColor[], mode: TSpaceName) => {
       console.log('🖼 Repaint canvas')
       const canvas = canvasRef.current
@@ -54,18 +62,15 @@ export function Canvas(props: {
         }
         drawImageOnCanvasSafe(ctx, image, from, to, height)
       }
-      const renderParams = { width, height, mode, colors, ...settings }
 
-      switch (renderStrategy) {
-        case 'basic':
-          return BasicRender(channelFuncs, channel, renderParams, drawPartialImage, SUPERSAMPLING_RATIO)
-        case 'concurrent':
-          return ConcurrentRender(channelFuncs, channel, renderParams, drawPartialImage, SUPERSAMPLING_RATIO)
-        default:
-        case 'spread':
-          return ConcurrentSpreadRender(channelFuncs, channel, renderParams, drawPartialImage, SUPERSAMPLING_RATIO)
+      const renderParams: ConcurrentSpreadStrategyParams = {
+        width, height, mode, colors, ...settings,
+        spread: renderSpread,
+        scale: SUPERSAMPLING_RATIO,
       }
-    }, RENDER_STRATEGY_DEBOUNCE[renderStrategy])
+
+      return ConcurrentSpreadRender(channelFuncs, channel, renderParams, drawPartialImage)
+    }, debounceRate)
   }, [channel, height, settings, width, renderStrategy])
 
   useEffect(() => {

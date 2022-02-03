@@ -1,2 +1,2 @@
-export { render as ConcurrentRender } from './ConcurrentRender'
+export type { ConcurrentSpreadStrategyParams, ConcurrentSpreadStrategy } from './ConcurrentSpreadRender'
 export { render as ConcurrentSpreadRender } from './ConcurrentSpreadRender'
