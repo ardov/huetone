@@ -38,7 +38,7 @@ export const render: RenderStrategy<{ spread?: number }> = (
     const widthTo = drawingAreas[areaIndex + 1]
 
     // perform calcs on the area
-    const bitmap = await funcs[channel]({
+    const image = await funcs[channel]({
       ...restRenderProps,
       width: renderWidth,
       height: renderHeight,
@@ -50,7 +50,7 @@ export const render: RenderStrategy<{ spread?: number }> = (
       // commit partial
       const intrinsicWidthFrom = widthFrom / scale
       const intrinsicWidthTo = widthTo / scale
-      drawRegion(bitmap, intrinsicWidthFrom, intrinsicWidthTo)
+      drawRegion(image, intrinsicWidthFrom, intrinsicWidthTo)
 
       // continue promise-chains until all areas are processed
       if (areaQueueIndex < spread) {

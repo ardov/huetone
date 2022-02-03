@@ -13,8 +13,10 @@ import {
   BasicRender,
   ConcurrentRender,
   ConcurrentSpreadRender,
-  RenderStrategyType
+  RenderStrategyType,
+  DrawPartialFn,
 } from './RenderStrategy'
+import { drawImageOnCanvasSafe } from './drawImageOnCanvasSafe'
 
 export const SUPERSAMPLING_RATIO = 1
 
@@ -37,11 +39,7 @@ export function Canvas(props: {
       const ctx = canvas?.getContext('2d')
       if (!ctx) return
 
-      const drawPartialImage = (bmp: ImageBitmap, from: number, to: number) => {
-        ctx.clearRect(from, 0, to - from, height)
-        ctx.drawImage(bmp, from, 0, to - from, height)
-      }
-
+      const drawPartialImage: DrawPartialFn = (image, from, to) => drawImageOnCanvasSafe(ctx, image, from, to, height)
       const renderParams = { width, height, mode, colors, ...settings }
 
       switch (renderStrategy) {

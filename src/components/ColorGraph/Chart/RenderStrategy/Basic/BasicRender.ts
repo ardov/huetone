@@ -19,14 +19,14 @@ export const render: RenderStrategy = (
   const renderHeight = intrinsicHeight * scale
 
   async function renderFrame() {
-    const bitmap = await channelFuncs[channel]({
+    const image = await channelFuncs[channel]({
       ...restRenderProps,
       width: renderWidth,
       height: renderHeight,
     })
 
     if (!cancelled) {
-      drawRegion(bitmap, 0, intrinsicWidth)
+      drawRegion(image, 0, intrinsicWidth)
     }
   }
 

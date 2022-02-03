@@ -6,7 +6,8 @@ import { Channel } from '../../../../../types'
 import PaintWorker from 'worker-loader!../../paintWorker'
 import * as Comlink from 'comlink'
 
-export type ExecutableFunc = (props: DrawChartProps) => ImageBitmap
+export type PaintResult = ImageBitmap | ImageData
+export type ExecutableFunc = (props: DrawChartProps) => PaintResult
 export type ChannelFuncs = {
   [K in Channel]: Comlink.Remote<ExecutableFunc>
 }

@@ -176,8 +176,15 @@ function drawHueChart(props: DrawChartProps) {
 }
 
 async function bakeBitmap(pixels: Pixels) {
-  // if super-sampling becomes a viable option, scaling also can be performed with bitmap options here
-  return createImageBitmap(new ImageData(pixels.array, pixels.width, pixels.height))
+  const imageData = new ImageData(pixels.array, pixels.width, pixels.height)
+
+  // Safari has very sketchy ImageBitmap implementation
+  if ('createImageBitmap' in self) { // eslint-disable-line no-restricted-globals
+    // if super-sampling becomes a viable option, scaling also can be performed with bitmap options here
+    return createImageBitmap(imageData)
+  } else {
+    return imageData
+  }
 }
 
 const obj = { drawChromaChart, drawLuminosityChart, drawHueChart }
