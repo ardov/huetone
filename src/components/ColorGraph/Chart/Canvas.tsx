@@ -20,6 +20,13 @@ import { drawImageOnCanvasSafe } from './drawImageOnCanvasSafe'
 
 export const SUPERSAMPLING_RATIO = 1
 
+const RENDER_STRATEGY_DEBOUNCE: { [K in RenderStrategyType]: number } = {
+  'basic': 200,
+  'concurrent': 50,
+  'spread': 0,
+}
+
+
 export function Canvas(props: {
   width: number
   height: number
@@ -29,7 +36,7 @@ export function Canvas(props: {
 }) {
   const settings = useStore(chartSettingsStore)
   const { mode } = useStore(paletteStore)
-  const { width, height, channel, colors, renderStrategy } = props
+  const { width, height, channel, colors, renderStrategy = 'spread' } = props
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   const debouncedRepaint = useMemo(() => {
@@ -58,7 +65,7 @@ export function Canvas(props: {
         case 'spread':
           return ConcurrentSpreadRender(channelFuncs, channel, renderParams, drawPartialImage, SUPERSAMPLING_RATIO)
       }
-    }, 200)
+    }, RENDER_STRATEGY_DEBOUNCE[renderStrategy])
   }, [channel, height, settings, width, renderStrategy])
 
   useEffect(() => {
