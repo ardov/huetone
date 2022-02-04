@@ -5,19 +5,27 @@ import { ChannelFuncs, PaintResult } from './WorkerPool'
 
 export type RenderStrategyType = 'basic' | 'concurrent' | 'spread'
 
-export type DrawPartialFn = (data: PaintResult, widthFrom: number, widthTo: number) => void
+export type DrawPartialFn = (
+  data: PaintResult,
+  widthFrom: number,
+  widthTo: number
+) => void
 
-type InternalRenderStrategyParams = Omit<DrawChartProps, 'widthTo' | 'widthFrom'>
-export type RenderStrategyParams<ExtraParams = {}> = ExtraParams & TSettings & InternalRenderStrategyParams
+type InternalRenderStrategyParams = Omit<
+  DrawChartProps,
+  'widthTo' | 'widthFrom'
+>
+export type RenderStrategyParams<ExtraParams = {}> = ExtraParams &
+  TSettings &
+  InternalRenderStrategyParams
 
-export type RenderStrategy<ExtraParams = { scale: number}>
-  = (
+export type RenderStrategy<ExtraParams = { scale: number }> = (
   funcsPool: ChannelFuncs[],
   channel: Channel,
   params: RenderStrategyParams<ExtraParams>,
-  drawPartialRegion: DrawPartialFn,
+  drawPartialRegion: DrawPartialFn
 ) => {
-  progress: Promise<unknown>,
+  progress: Promise<unknown>
   abort: () => void
 }
 

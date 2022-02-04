@@ -19,7 +19,10 @@ export default function App() {
   const palette = useStore(paletteStore)
   const selected = useStore(selectedStore)
 
-  const hueColors = useMemo(() => palette.colors.map(hue => hue[selected.toneId]), [palette.colors, selected.toneId])
+  const hueColors = useMemo(
+    () => palette.colors.map(hue => hue[selected.toneId]),
+    [palette.colors, selected.toneId]
+  )
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>

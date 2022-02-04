@@ -34,7 +34,9 @@ const logicalCores = navigator.hardwareConcurrency || 1
 // todo maybe perform actual short perf test to determine physical cores count
 const physicalCores = logicalCores / 2
 
-export function convertWorkerToFuncs(worker: Comlink.Remote<WorkerObj>): ChannelFuncs {
+export function convertWorkerToFuncs(
+  worker: Comlink.Remote<WorkerObj>
+): ChannelFuncs {
   return {
     l: worker.drawLuminosityChart,
     c: worker.drawChromaChart,
@@ -43,7 +45,10 @@ export function convertWorkerToFuncs(worker: Comlink.Remote<WorkerObj>): Channel
 }
 
 class CanvasWorkerPool {
-  static readonly optimalPoolSize = Math.max(1, Math.floor(physicalCores * OPTIMAL_GAIN_CORES_RATIO))
+  static readonly optimalPoolSize = Math.max(
+    1,
+    Math.floor(physicalCores * OPTIMAL_GAIN_CORES_RATIO)
+  )
 
   private readonly workers: Worker[]
   private readonly comlinks: Comlink.Remote<WorkerObj>[]
@@ -60,7 +65,7 @@ class CanvasWorkerPool {
   }
 
   get channelFuncs(): ChannelFuncs[] {
-    if(this.funcs.length > 0) {
+    if (this.funcs.length > 0) {
       return this.funcs
     } else {
       throw new Error('Worker pool has been released')

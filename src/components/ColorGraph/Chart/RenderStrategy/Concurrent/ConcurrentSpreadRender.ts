@@ -2,9 +2,12 @@ import { buildDrawingAreas } from './buildDrawingAreas'
 import { ChannelFuncs } from '../WorkerPool'
 import { RenderStrategy, RenderStrategyParams } from '../'
 
-
-export type ConcurrentSpreadStrategyParams = RenderStrategyParams<{ spread?: number, scale?: number }>
-export type ConcurrentSpreadStrategy = RenderStrategy<ConcurrentSpreadStrategyParams>
+export type ConcurrentSpreadStrategyParams = RenderStrategyParams<{
+  spread?: number
+  scale?: number
+}>
+export type ConcurrentSpreadStrategy =
+  RenderStrategy<ConcurrentSpreadStrategyParams>
 
 export const render: ConcurrentSpreadStrategy = (
   funcsPool,
@@ -16,7 +19,7 @@ export const render: ConcurrentSpreadStrategy = (
     height: intrinsicHeight,
     ...restRenderProps
   },
-  drawRegion,
+  drawRegion
 ) => {
   let cancelled = false
 
@@ -32,7 +35,9 @@ export const render: ConcurrentSpreadStrategy = (
 
   // Create recursive pool queue over the shuffled areas
   let areaQueueIndex = 0
-  const queueNextFramePartial = async (funcs: ChannelFuncs): Promise<unknown> => {
+  const queueNextFramePartial = async (
+    funcs: ChannelFuncs
+  ): Promise<unknown> => {
     // avoid overpaint in case {funcsPool.length > spread}
     if (areaQueueIndex >= spread) return
 
@@ -68,8 +73,10 @@ export const render: ConcurrentSpreadStrategy = (
   const rendering = Promise.all(funcsPool.map(queueNextFramePartial))
   return {
     /** Concurrent Spread Strategy is multi-frame multi-worker operation, therefore it has many abort-boundaries */
-    abort: () => { cancelled = true },
-    progress: rendering
+    abort: () => {
+      cancelled = true
+    },
+    progress: rendering,
   }
 }
 

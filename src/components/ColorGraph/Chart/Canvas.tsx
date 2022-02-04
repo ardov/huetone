@@ -22,14 +22,14 @@ export const OPTIMAL_SPREAD_AREAS_AMOUNT = 100
 export const SUPERSAMPLING_RATIO = 1
 
 const RENDER_STRATEGY_DEBOUNCE: { [K in RenderStrategyType]: number } = {
-  'basic': 200,
-  'concurrent': 50,
-  'spread': 0,
+  basic: 200,
+  concurrent: 50,
+  spread: 0,
 }
 const RENDER_STRATEGY_SPREAD: { [K in RenderStrategyType]: number } = {
-  'basic': 1,
-  'concurrent': channelFuncs.length,
-  'spread': OPTIMAL_SPREAD_AREAS_AMOUNT
+  basic: 1,
+  concurrent: channelFuncs.length,
+  spread: OPTIMAL_SPREAD_AREAS_AMOUNT,
 }
 
 export function Canvas(props: {
@@ -64,12 +64,21 @@ export function Canvas(props: {
       }
 
       const renderParams: ConcurrentSpreadStrategyParams = {
-        width, height, mode, colors, ...settings,
+        width,
+        height,
+        mode,
+        colors,
+        ...settings,
         spread: renderSpread,
         scale: SUPERSAMPLING_RATIO,
       }
 
-      return ConcurrentSpreadRender(channelFuncs, channel, renderParams, drawPartialImage)
+      return ConcurrentSpreadRender(
+        channelFuncs,
+        channel,
+        renderParams,
+        drawPartialImage
+      )
     }, debounceRate)
   }, [channel, height, settings, width, renderStrategy])
 

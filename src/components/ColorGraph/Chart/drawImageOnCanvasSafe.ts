@@ -39,22 +39,26 @@ const isSafari = /.*Version.*Safari.*/.test(navigator.userAgent)
  * * offscreen to screen:        100μs on Main
  *
  */
-export function drawImageOnCanvasSafe(ctx: CanvasRenderingContext2D, image: PaintResult, from: number, to: number, height: number) {
+export function drawImageOnCanvasSafe(
+  ctx: CanvasRenderingContext2D,
+  image: PaintResult,
+  from: number,
+  to: number,
+  height: number
+) {
   const redrawWidth = to - from
 
   if (image instanceof ImageBitmap) {
     // Worker was able to prepare a bitmap
     ctx.drawImage(image, from, 0, redrawWidth, height)
-  } else
+  } else if (image.height === height) {
 
-    /** An assumption on whether scaling of rendered image to intrinsic canvas size is required */
-  if (image.height === height) {
+  /** An assumption on whether scaling of rendered image to intrinsic canvas size is required */
     // putImageData if fastest for non-scale ImageData render
     ctx.putImageData(image, from, 0)
-  } else
+  } else if ('createImageBitmap' in window && !isSafari) {
 
-    /** Fallback area for scaling and obsolete user-agents */
-  if ('createImageBitmap' in window && !isSafari) {
+  /** Fallback area for scaling and obsolete user-agents */
     // Safari lacks proper Canvas and ImageBitmap implementation
     // https://bugs.webkit.org/show_bug.cgi?id=182424
     void createImageBitmap(image)
@@ -67,7 +71,13 @@ export function drawImageOnCanvasSafe(ctx: CanvasRenderingContext2D, image: Pain
   }
 }
 
-function offscreenRenderFallback(ctx: CanvasRenderingContext2D, image: ImageData, from: number, to: number, height: number) {
+function offscreenRenderFallback(
+  ctx: CanvasRenderingContext2D,
+  image: ImageData,
+  from: number,
+  to: number,
+  height: number
+) {
   const offscreenCanvas = document.createElement('canvas')
   const offscreenContext = offscreenCanvas.getContext('2d')
   if (!offscreenContext) return

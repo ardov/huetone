@@ -7,8 +7,8 @@ import { paddedScale, sycledLerp } from './interpolation'
 export type DrawChartProps = {
   width: number
   height: number
-  widthFrom?: number,
-  widthTo?: number,
+  widthFrom?: number
+  widthTo?: number
   colors: TColor[]
   mode: TSpaceName
   showColors?: boolean
@@ -36,7 +36,17 @@ const getRec2020pixel = (x: number, y: number): TPixelData => [
 // ]
 
 function drawLuminosityChart(props: DrawChartProps) {
-  const { width, height, colors, mode, showColors, showP3, showRec2020, widthFrom = 0, widthTo = width } = props
+  const {
+    width,
+    height,
+    colors,
+    mode,
+    showColors,
+    showP3,
+    showRec2020,
+    widthFrom = 0,
+    widthTo = width,
+  } = props
   const { ranges, lch2color } = colorSpaces[mode]
   let pixels = new Pixels(widthTo - widthFrom, height)
   let chromaScale = paddedScale(
@@ -86,7 +96,17 @@ function drawLuminosityChart(props: DrawChartProps) {
 }
 
 function drawChromaChart(props: DrawChartProps) {
-  const { width, height, colors, mode, showColors, showP3, showRec2020, widthFrom = 0, widthTo = width } = props
+  const {
+    width,
+    height,
+    colors,
+    mode,
+    showColors,
+    showP3,
+    showRec2020,
+    widthFrom = 0,
+    widthTo = width,
+  } = props
   const { ranges, lch2color } = colorSpaces[mode]
   let pixels = new Pixels(widthTo - widthFrom, height)
   let luminostyScale = paddedScale(
@@ -137,7 +157,17 @@ function drawChromaChart(props: DrawChartProps) {
 }
 
 function drawHueChart(props: DrawChartProps) {
-  const { width, height, colors, mode, showColors, showP3, showRec2020, widthFrom = 0, widthTo = width } = props
+  const {
+    width,
+    height,
+    colors,
+    mode,
+    showColors,
+    showP3,
+    showRec2020,
+    widthFrom = 0,
+    widthTo = width,
+  } = props
   const { ranges, lch2color } = colorSpaces[mode]
   let pixels = new Pixels(widthTo - widthFrom, height)
   let luminostyScale = paddedScale(
@@ -179,7 +209,8 @@ async function bakeBitmap(pixels: Pixels) {
   const imageData = new ImageData(pixels.array, pixels.width, pixels.height)
 
   // Safari has very sketchy ImageBitmap implementation
-  if ('createImageBitmap' in self) { // eslint-disable-line no-restricted-globals
+  // eslint-disable-next-line no-restricted-globals
+  if ('createImageBitmap' in self) {
     // if super-sampling becomes a viable option, scaling also can be performed with bitmap options here
     return createImageBitmap(imageData)
   } else {
