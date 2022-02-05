@@ -1,5 +1,5 @@
 import { useStore } from '@nanostores/react'
-import React, { FC } from 'react'
+import React, { FC, useMemo } from 'react'
 import styled from 'styled-components'
 import { Scale } from './ColorGraph'
 import { PaletteSwatches } from './PaletteSwatches'
@@ -18,6 +18,11 @@ const chartWidth = 400
 export default function App() {
   const palette = useStore(paletteStore)
   const selected = useStore(selectedStore)
+
+  const hueColors = useMemo(
+    () => palette.colors.map(hue => hue[selected.toneId]),
+    [palette.colors, selected.toneId]
+  )
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -50,7 +55,7 @@ export default function App() {
               width={chartWidth}
               selected={selected.hueId}
               channel="l"
-              colors={palette.colors.map(hue => hue[selected.toneId])}
+              colors={hueColors}
               onSelect={i => setSelected([i, selected.toneId])}
               onColorChange={(i, lch) => {
                 setSelected([i, selected.toneId])
@@ -74,7 +79,7 @@ export default function App() {
               width={chartWidth}
               selected={selected.hueId}
               channel="c"
-              colors={palette.colors.map(hue => hue[selected.toneId])}
+              colors={hueColors}
               onSelect={i => setSelected([i, selected.toneId])}
               onColorChange={(i, lch) => {
                 setSelected([i, selected.toneId])
@@ -98,7 +103,7 @@ export default function App() {
               width={chartWidth}
               selected={selected.hueId}
               channel="h"
-              colors={palette.colors.map(hue => hue[selected.toneId])}
+              colors={hueColors}
               onSelect={i => setSelected([i, selected.toneId])}
               onColorChange={(i, lch) => {
                 setSelected([i, selected.toneId])

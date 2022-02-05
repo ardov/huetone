@@ -1,9 +1,4 @@
 import { useEffect, useMemo, useRef } from 'react'
-// @ts-ignore Module not found
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import Worker from 'worker-loader!./paintWorker'
-import { WorkerObj } from './paintWorker'
-import * as Comlink from 'comlink'
 import { Channel, TColor } from '../../../types'
 import debounce from 'lodash/debounce'
 import styled from 'styled-components'
@@ -12,14 +7,29 @@ import { useStore } from '@nanostores/react'
 import { paletteStore } from '../../../store/palette'
 import { chartSettingsStore } from '../../../store/chartSettings'
 
-const worker = new Worker()
-const { drawChromaChart, drawHueChart, drawLuminosityChart } =
-  Comlink.wrap<WorkerObj>(worker)
+import {
+  // Using singleton worker pool shared between Canvases ensuring total pool size
+  channelFuncs,
+  ConcurrentSpreadRender,
+  RenderStrategyType,
+  DrawPartialFn,
+  ConcurrentSpreadStrategyParams,
+} from './RenderStrategy'
+import { drawImageOnCanvasSafe } from './drawImageOnCanvasSafe'
 
-const funcs = {
-  l: drawLuminosityChart,
-  c: drawChromaChart,
-  h: drawHueChart,
+/** 100 is kind of optimal repaint ratio (1% per 'frame-column'). More areas cause more worker overhead */
+export const OPTIMAL_SPREAD_AREAS_AMOUNT = 100
+export const SUPERSAMPLING_RATIO = 1
+
+const RENDER_STRATEGY_DEBOUNCE: { [K in RenderStrategyType]: number } = {
+  basic: 200,
+  concurrent: 50,
+  spread: 0,
+}
+const RENDER_STRATEGY_SPREAD: { [K in RenderStrategyType]: number } = {
+  basic: 1,
+  concurrent: channelFuncs.length,
+  spread: OPTIMAL_SPREAD_AREAS_AMOUNT,
 }
 
 export function Canvas(props: {
@@ -27,33 +37,60 @@ export function Canvas(props: {
   height: number
   channel: Channel
   colors: TColor[]
+  renderStrategy?: RenderStrategyType
 }) {
   const settings = useStore(chartSettingsStore)
   const { mode } = useStore(paletteStore)
-  const { width, height, channel, colors } = props
+  const {
+    width,
+    height,
+    channel,
+    colors,
+    renderStrategy = 'concurrent',
+  } = props
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   const debouncedRepaint = useMemo(() => {
-    return debounce(async (colors: TColor[], mode: TSpaceName) => {
+    const debounceRate = RENDER_STRATEGY_DEBOUNCE[renderStrategy]
+    const renderSpread = RENDER_STRATEGY_SPREAD[renderStrategy]
+
+    return debounce((colors: TColor[], mode: TSpaceName) => {
       console.log('🖼 Repaint canvas')
       const canvas = canvasRef.current
       const ctx = canvas?.getContext('2d')
       if (!ctx) return
-      const pixels = await funcs[channel]({
+
+      const drawPartialImage: DrawPartialFn = (image, from, to) => {
+        ctx.clearRect(from, 0, to - from, height)
+        drawImageOnCanvasSafe(ctx, image, from, to, height)
+      }
+
+      const renderParams: ConcurrentSpreadStrategyParams = {
         width,
         height,
-        colors,
         mode,
+        colors,
         ...settings,
-      })
-      const imageData = new ImageData(pixels, width, height)
-      ctx.putImageData(imageData, 0, 0)
-    }, 200)
-  }, [channel, height, settings, width])
+        spread: renderSpread,
+        scale: SUPERSAMPLING_RATIO,
+      }
+
+      return ConcurrentSpreadRender(
+        channelFuncs,
+        channel,
+        renderParams,
+        drawPartialImage
+      )
+    }, debounceRate)
+  }, [channel, height, settings, width, renderStrategy])
 
   useEffect(() => {
     debouncedRepaint(colors, mode)
-    return () => debouncedRepaint.cancel()
+    return () => {
+      // get previously fired render operation to shortcut execution and to abort any bitmap commits from it
+      debouncedRepaint(colors, mode)?.abort()
+      debouncedRepaint.cancel()
+    }
   }, [colors, debouncedRepaint, mode])
   return (
     <Wrapper>
