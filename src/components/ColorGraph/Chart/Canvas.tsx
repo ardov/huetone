@@ -41,7 +41,13 @@ export function Canvas(props: {
 }) {
   const settings = useStore(chartSettingsStore)
   const { mode } = useStore(paletteStore)
-  const { width, height, channel, colors, renderStrategy = 'spread' } = props
+  const {
+    width,
+    height,
+    channel,
+    colors,
+    renderStrategy = 'concurrent',
+  } = props
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   const debouncedRepaint = useMemo(() => {
@@ -54,12 +60,8 @@ export function Canvas(props: {
       const ctx = canvas?.getContext('2d')
       if (!ctx) return
 
-      let firstPaintComplete = false
       const drawPartialImage: DrawPartialFn = (image, from, to) => {
-        if (!firstPaintComplete) {
-          ctx.clearRect(0, 0, width, height)
-          firstPaintComplete = true
-        }
+        ctx.clearRect(from, 0, to - from, height)
         drawImageOnCanvasSafe(ctx, image, from, to, height)
       }
 
