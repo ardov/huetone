@@ -55,6 +55,7 @@ function colorSpaceMaker(colorSpace: TLchModel): TColorSpace {
 
     // prettier-ignore
     return {
+      mode: name,
       l, c, h,
       r, g, b,
       get hex () {
@@ -82,6 +83,7 @@ function colorSpaceMaker(colorSpace: TLchModel): TColorSpace {
 
     // prettier-ignore
     return {
+      mode: name,
       l, c, h,
       r, g, b,
       hex: srgb2hex(rgb),

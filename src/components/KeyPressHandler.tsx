@@ -7,7 +7,6 @@ import {
   setColor,
   switchPalette,
 } from '../store/palette'
-import { LCH } from '../types'
 import { useKeyPress } from '../hooks/useKeyPress'
 import { useStore } from '@nanostores/react'
 import { colorSpaceStore, paletteStore, setPalette } from '../store/palette'
@@ -20,7 +19,6 @@ export const KeyPressHandler: FC = () => {
   const lPress = useKeyPress('KeyL')
   const cPress = useKeyPress('KeyC')
   const hPress = useKeyPress('KeyH')
-  const [copiedColor, setCopiedColor] = useState<LCH>([0, 0, 0])
   const { hues, tones } = palette
 
   useEffect(() => {
@@ -37,7 +35,8 @@ export const KeyPressHandler: FC = () => {
         func()
       }
 
-      if (metaPressed && code === 'KeyC') return copyCurrent()
+      if (shiftKey && metaPressed && code === 'KeyC') return copyCurrentLCH()
+      if (metaPressed && code === 'KeyC') return copyCurrentHex()
       if (metaPressed && code === 'KeyV') return pasteToCurrent()
       if (code === 'Escape') {
         // @ts-ignore
@@ -89,28 +88,23 @@ export const KeyPressHandler: FC = () => {
       if (key === 'ArrowLeft') return noDefault(selectLeft)
       if (key === 'ArrowRight') return noDefault(selectRight)
 
-      function copyCurrent() {
+      function copyCurrentLCH() {
         e.preventDefault()
-        let toCopy = selected.color.hex
-        let { l, c, h } = selected.color
-        setCopiedColor([l, c, h] as LCH)
-        navigator.clipboard.writeText(toCopy)
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(toCopy)
-        } else {
-          // text area method
-          let textArea = document.createElement('textarea')
-          textArea.value = toCopy
-          // make the textarea out of viewport
-          textArea.style.position = 'absolute'
-          textArea.style.opacity = '0'
-          document.body.appendChild(textArea)
-          textArea.focus()
-          textArea.select()
-          document.execCommand('copy')
-          textArea.remove()
+        let { mode, l, c, h } = selected.color
+        if (mode === 'cielch') {
+          let str = `lch(${round(l)}% ${round(c, 3)} ${round(h)})`
+          copyToClipboard(str)
+        } else if (mode === 'oklch') {
+          // In Feb 2022 it's only available in Safari TP
+          let str = `oklch(${round(l)}% ${round(c, 3)} ${round(h)})`
+          copyToClipboard(str)
         }
       }
+      function copyCurrentHex() {
+        e.preventDefault()
+        copyToClipboard(selected.color.hex)
+      }
+
       function pasteToCurrent() {
         navigator.clipboard.readText().then(hex => {
           let color = hex2color(hex)
@@ -185,7 +179,6 @@ export const KeyPressHandler: FC = () => {
     lPress,
     cPress,
     hPress,
-    copiedColor,
     hues.length,
     palette,
     selected,
@@ -213,4 +206,26 @@ function filterInput(event: KeyboardEvent) {
   // Skip menu items
   if (target?.getAttribute?.('role') === 'menuitem') return false
   return true
+}
+
+function round(v: number, exp = 2) {
+  return Math.round(v * 10 ** exp) / 10 ** exp
+}
+
+function copyToClipboard(str: string) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(str)
+  } else {
+    // text area method
+    let textArea = document.createElement('textarea')
+    textArea.value = str
+    // make the textarea out of viewport
+    textArea.style.position = 'absolute'
+    textArea.style.opacity = '0'
+    document.body.appendChild(textArea)
+    textArea.focus()
+    textArea.select()
+    document.execCommand('copy')
+    textArea.remove()
+  }
 }

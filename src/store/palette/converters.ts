@@ -8,19 +8,6 @@ import {
   TokenExport,
 } from '../../types'
 
-export const fillerColor: TColor = {
-  r: 0,
-  g: 0,
-  b: 0,
-  l: 0,
-  c: 0,
-  h: 0,
-  hex: '#000000',
-  within_sRGB: true,
-  within_P3: true,
-  within_Rec2020: true,
-}
-
 export function jsonToHexPalette(json: string | null): HexPalette | null {
   if (!json) return null
   let palette
@@ -57,7 +44,9 @@ export function parseHexPalette(
     (v, idx) => hexPalette?.tones?.[idx] || (idx * 100).toString()
   )
   const colors = hues.map(hue =>
-    toneNames.map((v, idx) => hex2color(hue.colors[idx]) || fillerColor)
+    toneNames.map(
+      (v, idx) => hex2color(hue.colors[idx]) || (hex2color('#000') as TColor)
+    )
   )
 
   return {

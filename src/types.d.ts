@@ -31,6 +31,7 @@ export type TokenExport = {
 }
 
 export type TColor = {
+  mode: TSpaceName
   l: number
   c: number
   h: number

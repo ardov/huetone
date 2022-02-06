@@ -46,6 +46,7 @@ export const initialPalette: Palette = {
   colors: [
     [
       {
+        mode: 'cielch',
         r: 0,
         g: 0,
         b: 0,

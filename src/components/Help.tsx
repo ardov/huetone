@@ -65,8 +65,11 @@ const Hotkeys = () => {
           color
         </li>
         <li>
-          <MetaKey /> + <Key>C</Key> — copy selected color. You can even paste
-          it somewhere as HEX
+          <MetaKey /> + <Key>C</Key> — copy selected color as hex.
+        </li>
+        <li>
+          <MetaKey /> + <Key>⇧</Key> + <Key>C</Key> — copy selected color in
+          lch() format (only supported by Safari).
         </li>
         <li>
           <MetaKey /> + <Key>V</Key> — paste color. Just copy color in any
