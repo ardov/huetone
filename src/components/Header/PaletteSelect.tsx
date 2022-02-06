@@ -77,7 +77,7 @@ const PaletteSelectComponent = () => {
         >
           <span
             style={{
-              minWidth: 80,
+              minWidth: 0,
               overflow: 'hidden',
               whiteSpace: 'nowrap',
               textOverflow: 'ellipsis',
