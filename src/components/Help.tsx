@@ -68,8 +68,9 @@ const Hotkeys = () => {
           <MetaKey /> + <Key>C</Key> — copy selected color as hex.
         </li>
         <li>
-          <MetaKey /> + <Key>⇧</Key> + <Key>C</Key> — copy selected color in
-          lch() format (only supported by Safari).
+          <MetaKey /> + <Key>⇧</Key> + <Key>C</Key> — copy selected color in{' '}
+          <Code>lch()</Code> format. Note that it has limited{' '}
+          <Link href="https://caniuse.com/css-lch-lab">browser support</Link>.
         </li>
         <li>
           <MetaKey /> + <Key>V</Key> — paste color. Just copy color in any
@@ -160,4 +161,12 @@ const Link = styled.a`
     color: var(--c-text-primary);
     text-decoration: none;
   }
+`
+
+const Code = styled.code`
+  /* background-color: #eee; */
+  border: 1px solid var(--c-divider);
+  border-radius: var(--radius-m);
+  font-family: courier, monospace;
+  padding: 0 3px;
 `
