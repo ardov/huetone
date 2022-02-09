@@ -11,6 +11,7 @@ import { useKeyPress } from '../hooks/useKeyPress'
 import { useStore } from '@nanostores/react'
 import { colorSpaceStore, paletteStore, setPalette } from '../store/palette'
 import { selectedStore, setSelected } from '../store/currentPosition'
+import { colorToLchString } from '../color'
 
 export const KeyPressHandler: FC = () => {
   const { hex2color } = useStore(colorSpaceStore)
@@ -90,15 +91,7 @@ export const KeyPressHandler: FC = () => {
 
       function copyCurrentLCH() {
         e.preventDefault()
-        let { mode, l, c, h } = selected.color
-        if (mode === 'cielch') {
-          let str = `lch(${round(l)}% ${round(c, 3)} ${round(h)})`
-          copyToClipboard(str)
-        } else if (mode === 'oklch') {
-          // In Feb 2022 it's only available in Safari TP
-          let str = `oklch(${round(l)}% ${round(c, 3)} ${round(h)})`
-          copyToClipboard(str)
-        }
+        copyToClipboard(colorToLchString(selected.color))
       }
       function copyCurrentHex() {
         e.preventDefault()
@@ -206,10 +199,6 @@ function filterInput(event: KeyboardEvent) {
   // Skip menu items
   if (target?.getAttribute?.('role') === 'menuitem') return false
   return true
-}
-
-function round(v: number, exp = 2) {
-  return Math.round(v * 10 ** exp) / 10 ** exp
 }
 
 function copyToClipboard(str: string) {

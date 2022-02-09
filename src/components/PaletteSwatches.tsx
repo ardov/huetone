@@ -5,6 +5,7 @@ import {
   wcagContrast,
   apcaContrast,
   deltaEContrast,
+  colorToLchString,
 } from '../color'
 import {
   addHue,
@@ -72,7 +73,7 @@ export const PaletteSwatches: FC = () => {
               setPalette(renameHue(palette, hueId, e.target.value))
             }
           />
-          {hueColors.map(({ hex, l }, toneId) => {
+          {hueColors.map((color, toneId) => {
             const isSelected =
               hueId === selected.hueId && toneId === selected.toneId
             return (
@@ -80,17 +81,23 @@ export const PaletteSwatches: FC = () => {
                 key={toneId + '-' + hueId}
                 onClick={() => setSelected([hueId, toneId])}
                 style={{
+                  // @ts-ignore
+                  '--c-bg': !bPress
+                    ? color.hex
+                    : colorSpace.lch2color([color.l, 0, 0]).hex,
+                  // Trying to show `lch()` color first.
+                  // If browser doesn't support it it will use hex value from '--c-bg'
                   background: !bPress
-                    ? hex
-                    : colorSpace.lch2color([l, 0, 0]).hex,
-                  color: getMostContrast(hex, ['#000', '#fff']),
+                    ? colorToLchString(color)
+                    : colorSpace.lch2color([color.l, 0, 0]).hex,
+                  color: getMostContrast(color.hex, ['#000', '#fff']),
                   borderRadius: isSelected ? 'var(--radius-m)' : 0,
                   transform: isSelected ? 'scale(1.25)' : 'scale(1)',
                   zIndex: isSelected ? 3 : 0,
                   fontWeight: isSelected ? 900 : 400,
                 }}
               >
-                <span>{getCR(hex)}</span>
+                <span>{getCR(color.hex)}</span>
               </Swatch>
             )
           })}
@@ -131,6 +138,8 @@ const ToneInput = styled(InvisibleInput)`
 `
 
 const Swatch = styled.button`
+  background: var(--c-bg);
+  /* background: var(--c-lch-bg); */
   cursor: pointer;
   display: flex;
   position: relative;

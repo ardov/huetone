@@ -7,6 +7,7 @@ import { ThemeButton } from './ThemeButton'
 import { PaletteSelect } from './PaletteSelect'
 import { CopyButton } from '../CopyButton'
 import { Link } from '../../icons/Link'
+import { GitHub } from '../../icons/GitHub'
 import { paletteStore } from '../../store/palette'
 import {
   overlayStore,
@@ -83,6 +84,9 @@ export function Header() {
         <ChartSettings />
 
         <ThemeButton />
+        <Button as="a" href="https://github.com/ardov/huetone">
+          <GitHub />
+        </Button>
       </ControlRow>
     </Wrapper>
   )
