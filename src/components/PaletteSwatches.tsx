@@ -5,7 +5,6 @@ import {
   wcagContrast,
   apcaContrast,
   deltaEContrast,
-  colorToLchString,
 } from '../color'
 import {
   addHue,
@@ -81,14 +80,8 @@ export const PaletteSwatches: FC = () => {
                 key={toneId + '-' + hueId}
                 onClick={() => setSelected([hueId, toneId])}
                 style={{
-                  // @ts-ignore
-                  '--c-bg': !bPress
-                    ? color.hex
-                    : colorSpace.lch2color([color.l, 0, 0]).hex,
-                  // Trying to show `lch()` color first.
-                  // If browser doesn't support it it will use hex value from '--c-bg'
                   background: !bPress
-                    ? colorToLchString(color)
+                    ? color.hex
                     : colorSpace.lch2color([color.l, 0, 0]).hex,
                   color: getMostContrast(color.hex, ['#000', '#fff']),
                   borderRadius: isSelected ? 'var(--radius-m)' : 0,
@@ -138,8 +131,6 @@ const ToneInput = styled(InvisibleInput)`
 `
 
 const Swatch = styled.button`
-  background: var(--c-bg);
-  /* background: var(--c-lch-bg); */
   cursor: pointer;
   display: flex;
   position: relative;
