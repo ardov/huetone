@@ -5,7 +5,7 @@ import example from './example.json'
 import github from './github.json'
 import google from './google.json'
 import ibm from './ibm.json'
-import semrush_old from './semrush_old.json'
+import semrush from './semrush.json'
 import stripe from './stripe.json'
 import uswds from './uswds.json'
 import chakra_ui from './chakra_ui.json'
@@ -15,6 +15,7 @@ import tailwind from './tailwind.json'
 
 export const PRESETS: HexPalette[] = [
   example,
+  semrush,
   stripe,
   chakra_ui,
   radix_ui_dark,
@@ -26,5 +27,4 @@ export const PRESETS: HexPalette[] = [
   google,
   github,
   antDesign,
-  semrush_old,
 ]
