@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { TColor } from '../../types'
+import { TColor } from '../../shared/types'
 import { ControlGroup, Input } from '../inputs'
 import { useStore } from '@nanostores/react'
 import { colorSpaceStore } from '../../store/palette'

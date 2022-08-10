@@ -1,4 +1,4 @@
-import { HexPalette } from '../types'
+import { HexPalette } from '../shared/types'
 import antDesign from './ant_design.json'
 import evergreen from './evergreen.json'
 import example from './example.json'

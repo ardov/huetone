@@ -5,7 +5,7 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
 import GlobalStyles from './components/GlobalStyles'
 import './styles.scss'
-import { ColorSchemeProvider } from './hooks/useColorScheme'
+import { ColorSchemeProvider } from './shared/hooks/useColorScheme'
 
 ReactDOM.render(
   <React.StrictMode>

@@ -7,7 +7,7 @@ import {
   setColor,
   switchPalette,
 } from '../store/palette'
-import { useKeyPress } from '../hooks/useKeyPress'
+import { useKeyPress } from '../shared/hooks/useKeyPress'
 import { useStore } from '@nanostores/react'
 import { colorSpaceStore, paletteStore, setPalette } from '../store/palette'
 import { selectedStore, setSelected } from '../store/currentPosition'

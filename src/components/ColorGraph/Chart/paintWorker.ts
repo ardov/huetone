@@ -1,6 +1,6 @@
-import { colorSpaces, TSpaceName } from '../../../colorFuncs'
 import * as Comlink from 'comlink'
-import { TColor } from '../../../types'
+import { TColor } from 'shared/types'
+import { colorSpaces, TSpaceName } from 'shared/colorFuncs'
 import { Pixels, TPixelData } from './Pixels'
 import { paddedScale, sycledLerp } from './interpolation'
 

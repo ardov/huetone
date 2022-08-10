@@ -1,6 +1,6 @@
 import chroma from 'chroma-js'
 import { LCH, RGB, TColor, XYZ } from '../types'
-import { clamp } from '../utils'
+import { clamp } from '../../utils'
 import { oklch, cielch } from './colorModels'
 import {
   isWithinGamut,

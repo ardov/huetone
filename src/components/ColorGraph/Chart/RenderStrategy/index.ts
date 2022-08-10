@@ -1,5 +1,5 @@
 import { TSettings } from '../../../../store/chartSettings'
-import { Channel } from '../../../../types'
+import { Channel } from '../../../../shared/types'
 import { DrawChartProps } from '../paintWorker'
 import { ChannelFuncs, PaintResult } from './WorkerPool'
 

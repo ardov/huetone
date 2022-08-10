@@ -1,12 +1,12 @@
 import LZString from 'lz-string'
-import { colorSpaces, TSpaceName } from '../../colorFuncs'
+import { colorSpaces, TSpaceName } from '../../shared/colorFuncs'
 import {
   HexPalette,
   OldLchPalette,
   Palette,
   TColor,
   TokenExport,
-} from '../../types'
+} from '../../shared/types'
 
 export function jsonToHexPalette(json: string | null): HexPalette | null {
   if (!json) return null

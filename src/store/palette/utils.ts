@@ -1,6 +1,6 @@
-import { Palette } from '../../types'
+import { Palette } from '../../shared/types'
 import LZString from 'lz-string'
-import { HexPalette } from '../../types'
+import { HexPalette } from '../../shared/types'
 import { PALETTE_KEY } from '../../constants'
 import { jsonToHexPalette, parseOldLchPalette } from './converters'
 

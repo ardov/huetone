@@ -1,6 +1,6 @@
 import chroma from 'chroma-js'
 import { APCAcontrast, sRGBtoY } from 'apca-w3'
-import { TColor } from './types'
+import { TColor } from './shared/types'
 
 export const wcagContrast = (backgroundHex: string, textHex: string): number =>
   chroma.contrast(backgroundHex, textHex)

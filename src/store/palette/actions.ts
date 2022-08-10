@@ -1,6 +1,6 @@
-import { HexPalette, LCH, Palette } from '../../types'
+import { HexPalette, LCH, Palette } from '../../shared/types'
 import { action } from 'nanostores'
-import { TSpaceName } from '../../colorFuncs'
+import { TSpaceName } from '../../shared/colorFuncs'
 import { convertToMode } from './paletteReducers'
 import { paletteStore, paletteIdStore, paletteListStore } from './stores'
 import {

@@ -14,7 +14,7 @@ import {
   renameHue,
   renameTone,
 } from '../store/palette'
-import { useKeyPress } from '../hooks/useKeyPress'
+import { useKeyPress } from '../shared/hooks/useKeyPress'
 import { Button, InvisibleInput } from './inputs'
 import { useStore } from '@nanostores/react'
 import { colorSpaceStore, paletteStore, setPalette } from '../store/palette'

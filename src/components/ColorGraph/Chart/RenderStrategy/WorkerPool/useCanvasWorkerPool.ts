@@ -4,7 +4,7 @@ import { WorkerObj } from '../../paintWorker'
 
 // @ts-ignore Module not found
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import PaintWorker from 'worker-loader!../../paintWorker?name=PaintWorker'
+import PaintWorker from 'workerize-loader!../../paintWorker?name=PaintWorker'
 import * as Comlink from 'comlink'
 
 /** Use singleton pool for app-agnostic compute handling. Use hook if app will introduce routing */

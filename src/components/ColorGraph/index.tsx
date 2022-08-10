@@ -1,5 +1,5 @@
 import { getMostContrast } from '../../color'
-import { Channel, LCH, TColor } from '../../types'
+import { Channel, LCH, TColor } from '../../shared/types'
 import styled from 'styled-components'
 import { Canvas } from './Chart/Canvas'
 import { useStore } from '@nanostores/react'
