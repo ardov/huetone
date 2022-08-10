@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useRef } from 'react'
-import { Channel, TColor } from '../../../shared/types'
-import debounce from 'lodash/debounce'
 import styled from 'styled-components'
-import { TSpaceName } from '../../../shared/colorFuncs'
+import debounce from 'lodash/debounce'
 import { useStore } from '@nanostores/react'
-import { paletteStore } from '../../../store/palette'
-import { chartSettingsStore } from '../../../store/chartSettings'
+import { Channel, spaceName, TColor } from 'shared/types'
+import { paletteStore } from 'store/palette'
+import { chartSettingsStore } from 'store/chartSettings'
 
 import {
   // Using singleton worker pool shared between Canvases ensuring total pool size
@@ -54,7 +53,7 @@ export function Canvas(props: {
     const debounceRate = RENDER_STRATEGY_DEBOUNCE[renderStrategy]
     const renderSpread = RENDER_STRATEGY_SPREAD[renderStrategy]
 
-    return debounce((colors: TColor[], mode: TSpaceName) => {
+    return debounce((colors: TColor[], mode: spaceName) => {
       console.log('🖼 Repaint canvas')
       const canvas = canvasRef.current
       const ctx = canvas?.getContext('2d')

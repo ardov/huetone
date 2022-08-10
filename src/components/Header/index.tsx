@@ -6,8 +6,8 @@ import { Button, ControlGroup } from '../inputs'
 import { ThemeButton } from './ThemeButton'
 import { PaletteSelect } from './PaletteSelect'
 import { CopyButton } from '../CopyButton'
-import { Link } from '../../icons/Link'
-import { GitHub } from '../../icons/GitHub'
+import { Link } from '../../shared/icons/Link'
+import { GitHub } from '../../shared/icons/GitHub'
 import { paletteStore } from '../../store/palette'
 import {
   overlayStore,

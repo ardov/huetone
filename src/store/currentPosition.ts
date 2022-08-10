@@ -1,6 +1,6 @@
-import { paletteStore } from './palette'
 import { atom, computed, action } from 'nanostores'
-import { clamp } from '../utils'
+import { clamp } from 'shared/utils'
+import { paletteStore } from './palette'
 
 export type TPosition = [number, number]
 

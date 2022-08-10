@@ -1,9 +1,9 @@
 import * as Menu from '../DropdownMenu'
 import { Button } from '../inputs'
-import { More } from '../../icons/More'
-import { EqualizeH } from '../../icons/EqualizeH'
-import { EqualizeL } from '../../icons/EqualizeL'
-import { Minimize } from '../../icons/Minimize'
+import { More } from '../../shared/icons/More'
+import { EqualizeH } from '../../shared/icons/EqualizeH'
+import { EqualizeL } from '../../shared/icons/EqualizeL'
+import { Minimize } from '../../shared/icons/Minimize'
 import {
   currentHueToRow,
   currentLuminanceToColumn,

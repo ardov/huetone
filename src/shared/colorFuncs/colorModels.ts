@@ -1,4 +1,4 @@
-import { LCH, XYZ } from '../types'
+import { LCH, spaceName, XYZ } from '../types'
 import { TLchModel } from '.'
 import {
   D65_to_D50,
@@ -14,7 +14,7 @@ import {
 } from './colorMath/conversions'
 
 export const cielch: TLchModel = {
-  name: 'cielch',
+  name: spaceName.cielch,
   lch2xyz: (lch: LCH) => D50_to_D65(Lab_to_XYZ(LCH_to_Lab(lch))),
   xyz2lch: (xyz: XYZ) => Lab_to_LCH(XYZ_to_Lab(D65_to_D50(xyz))),
   ranges: {
@@ -25,7 +25,7 @@ export const cielch: TLchModel = {
 }
 
 export const oklch: TLchModel = {
-  name: 'oklch',
+  name: spaceName.oklch,
   lch2xyz: (lch: LCH): XYZ =>
     OKLab_to_XYZ(OKLCH_to_OKLab(fromDisplayOKLCH(lch))),
   xyz2lch: (xyz: XYZ): LCH => toDisplayOKLCH(OKLab_to_OKLCH(XYZ_to_OKLab(xyz))),

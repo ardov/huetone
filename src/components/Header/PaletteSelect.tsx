@@ -10,11 +10,11 @@ import {
   switchPalette,
 } from '../../store/palette'
 import { Button, ControlGroup, Input } from '../inputs'
-import { ChevronDown } from '../../icons/ChevronDown'
-import { Trash } from '../../icons/Trash'
-import { Copy } from '../../icons/Copy'
-import { Edit } from '../../icons/Edit'
-import { Check } from '../../icons/Check'
+import { ChevronDown } from '../../shared/icons/ChevronDown'
+import { Trash } from '../../shared/icons/Trash'
+import { Copy } from '../../shared/icons/Copy'
+import { Edit } from '../../shared/icons/Edit'
+import { Check } from '../../shared/icons/Check'
 import { FC, useState } from 'react'
 
 export const PaletteSelect = () => {

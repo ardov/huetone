@@ -5,7 +5,7 @@ import {
   wcagContrast,
   apcaContrast,
   deltaEContrast,
-} from '../color'
+} from '../shared/color'
 import {
   addHue,
   addTone,

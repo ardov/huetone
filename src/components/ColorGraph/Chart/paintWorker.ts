@@ -1,6 +1,6 @@
 import * as Comlink from 'comlink'
-import { TColor } from 'shared/types'
-import { colorSpaces, TSpaceName } from 'shared/colorFuncs'
+import { spaceName, TColor } from 'shared/types'
+import { colorSpaces } from 'shared/colorFuncs'
 import { Pixels, TPixelData } from './Pixels'
 import { paddedScale, sycledLerp } from './interpolation'
 
@@ -10,7 +10,7 @@ export type DrawChartProps = {
   widthFrom?: number
   widthTo?: number
   colors: TColor[]
-  mode: TSpaceName
+  mode: spaceName
   showColors?: boolean
   showP3?: boolean
   showRec2020?: boolean

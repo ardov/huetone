@@ -1,12 +1,13 @@
 import LZString from 'lz-string'
-import { colorSpaces, TSpaceName } from '../../shared/colorFuncs'
+import { colorSpaces } from 'shared/colorFuncs'
 import {
   HexPalette,
   OldLchPalette,
   Palette,
+  spaceName,
   TColor,
   TokenExport,
-} from '../../shared/types'
+} from 'shared/types'
 
 export function jsonToHexPalette(json: string | null): HexPalette | null {
   if (!json) return null
@@ -32,7 +33,7 @@ export function jsonToHexPalette(json: string | null): HexPalette | null {
  */
 export function parseHexPalette(
   hexPalette: HexPalette,
-  mode: TSpaceName
+  mode: spaceName
 ): Palette {
   const { hex2color } = colorSpaces[mode]
   const hues = hexPalette.hues.filter(hue => hue?.colors?.length)

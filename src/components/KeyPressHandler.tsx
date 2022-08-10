@@ -11,7 +11,7 @@ import { useKeyPress } from '../shared/hooks/useKeyPress'
 import { useStore } from '@nanostores/react'
 import { colorSpaceStore, paletteStore, setPalette } from '../store/palette'
 import { selectedStore, setSelected } from '../store/currentPosition'
-import { colorToLchString } from '../color'
+import { colorToLchString } from '../shared/color'
 
 export const KeyPressHandler: FC = () => {
   const { hex2color } = useStore(colorSpaceStore)

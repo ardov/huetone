@@ -1,6 +1,6 @@
 import * as Menu from '../DropdownMenu'
 import { Button } from '../inputs'
-import { Settings } from '../../icons/Settings'
+import { Settings } from '../../shared/icons/Settings'
 import {
   chartSettingsStore,
   toggleShowColors,
