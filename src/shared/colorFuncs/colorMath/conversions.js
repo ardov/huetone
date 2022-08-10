@@ -2,11 +2,6 @@
 
 import { multiplyMatrices } from './multiply-matrices'
 
-if (process.env.NODE_ENV !== 'production') {
-  global.$RefreshReg$ = () => {}
-  global.$RefreshSig$ = () => () => {}
-}
-
 // Sample code for color conversions
 // Conversion can also be done using ICC profiles and a Color Management System
 // For clarity, a library is used for matrix multiplication (multiply-matrices.js)

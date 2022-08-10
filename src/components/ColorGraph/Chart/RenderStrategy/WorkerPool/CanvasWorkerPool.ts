@@ -1,9 +1,9 @@
-import { DrawChartProps, WorkerObj } from '../../paintWorker'
-import { Channel } from '../../../../../shared/types'
+import { DrawChartProps, WorkerObj } from 'worker/paintWorker'
+import { Channel } from 'shared/types'
 
 // @ts-ignore Module not found
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import PaintWorker from 'workerize-loader!../../paintWorker'
+import PaintWorker from 'worker/paintWorker?worker&inline'
 import * as Comlink from 'comlink'
 
 export type PaintResult = ImageBitmap | ImageData
@@ -59,7 +59,6 @@ class CanvasWorkerPool {
     const comlinks = workers.map(w => Comlink.wrap<WorkerObj>(w))
 
     const funcs = comlinks.map(convertWorkerToFuncs)
-    console.log({ funcs })
 
     this.workers = workers
     this.comlinks = comlinks

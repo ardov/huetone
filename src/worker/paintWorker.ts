@@ -218,6 +218,6 @@ async function bakeBitmap(pixels: Pixels) {
   }
 }
 
-const obj = { drawChromaChart, drawLuminosityChart, drawHueChart }
+export const obj = { drawChromaChart, drawLuminosityChart, drawHueChart }
 export type WorkerObj = typeof obj
-Comlink.expose(obj)
+export default Comlink.expose(obj)
