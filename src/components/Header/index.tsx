@@ -1,23 +1,23 @@
 import { useStore } from '@nanostores/react'
 import React from 'react'
 import styled from 'styled-components'
-import { getPaletteLink, setColor, setPalette } from '../../store/palette'
+import { getPaletteLink, setColor, setPalette } from 'store/palette'
 import { Button, ControlGroup } from '../inputs'
 import { ThemeButton } from './ThemeButton'
 import { PaletteSelect } from './PaletteSelect'
 import { CopyButton } from '../CopyButton'
-import { Link } from '../../shared/icons/Link'
-import { GitHub } from '../../shared/icons/GitHub'
-import { paletteStore } from '../../store/palette'
+import { Link } from 'shared/icons/Link'
+import { GitHub } from 'shared/icons/GitHub'
+import { paletteStore } from 'store/palette'
 import {
   overlayStore,
   setOverlayMode,
   setVersusColor,
   TOverlayMode,
-} from '../../store/overlay'
+} from 'store/overlay'
 import { ColorEditor } from './ColorEditor'
 import { ColorActions } from './ColorActions'
-import { selectedStore } from '../../store/currentPosition'
+import { selectedStore } from 'store/currentPosition'
 import { ChartSettings } from './ChartSettings'
 
 const modes: TOverlayMode[] = ['APCA', 'WCAG', 'NONE', 'DELTA_E']

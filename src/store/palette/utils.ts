@@ -1,7 +1,7 @@
-import { Palette, spaceName } from '../../shared/types'
+import { Palette, spaceName } from 'shared/types'
 import LZString from 'lz-string'
-import { HexPalette } from '../../shared/types'
-import { PALETTE_KEY } from '../../shared/constants'
+import { HexPalette } from 'shared/types'
+import { PALETTE_KEY } from 'shared/constants'
 import { jsonToHexPalette, parseOldLchPalette } from './converters'
 
 /** Parse string from localStorage into HexPalette */

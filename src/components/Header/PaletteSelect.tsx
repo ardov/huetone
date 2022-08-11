@@ -1,5 +1,5 @@
+import { FC, useState } from 'react'
 import { useStore } from '@nanostores/react'
-import * as Menu from '../DropdownMenu'
 import {
   deletePalette,
   duplicatePalette,
@@ -8,14 +8,14 @@ import {
   paletteStore,
   renamePalette,
   switchPalette,
-} from '../../store/palette'
+} from 'store/palette'
+import { ChevronDown } from 'shared/icons/ChevronDown'
+import { Trash } from 'shared/icons/Trash'
+import { Copy } from 'shared/icons/Copy'
+import { Edit } from 'shared/icons/Edit'
+import { Check } from 'shared/icons/Check'
+import * as Menu from '../DropdownMenu'
 import { Button, ControlGroup, Input } from '../inputs'
-import { ChevronDown } from '../../shared/icons/ChevronDown'
-import { Trash } from '../../shared/icons/Trash'
-import { Copy } from '../../shared/icons/Copy'
-import { Edit } from '../../shared/icons/Edit'
-import { Check } from '../../shared/icons/Check'
-import { FC, useState } from 'react'
 
 export const PaletteSelect = () => {
   const [renameState, setRenameState] = useState(false)

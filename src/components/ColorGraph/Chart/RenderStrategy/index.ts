@@ -1,6 +1,6 @@
-import { TSettings } from '../../../../store/chartSettings'
-import { Channel } from '../../../../shared/types'
-import { DrawChartProps } from '../paintWorker'
+import { TSettings } from 'store/chartSettings'
+import { Channel } from 'shared/types'
+import { DrawChartProps } from 'worker/paintWorker'
 import { ChannelFuncs, PaintResult } from './WorkerPool'
 
 export type RenderStrategyType = 'basic' | 'concurrent' | 'spread'

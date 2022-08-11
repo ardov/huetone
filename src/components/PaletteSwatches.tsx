@@ -5,7 +5,7 @@ import {
   wcagContrast,
   apcaContrast,
   deltaEContrast,
-} from '../shared/color'
+} from 'shared/color'
 import {
   addHue,
   addTone,
@@ -13,13 +13,13 @@ import {
   removeTone,
   renameHue,
   renameTone,
-} from '../store/palette'
-import { useKeyPress } from '../shared/hooks/useKeyPress'
+} from 'store/palette'
+import { useKeyPress } from 'shared/hooks/useKeyPress'
 import { Button, InvisibleInput } from './inputs'
 import { useStore } from '@nanostores/react'
-import { colorSpaceStore, paletteStore, setPalette } from '../store/palette'
-import { selectedStore, setSelected } from '../store/currentPosition'
-import { overlayStore, versusColorStore } from '../store/overlay'
+import { colorSpaceStore, paletteStore, setPalette } from 'store/palette'
+import { selectedStore, setSelected } from 'store/currentPosition'
+import { overlayStore, versusColorStore } from 'store/overlay'
 
 const contrast = {
   WCAG: wcagContrast,

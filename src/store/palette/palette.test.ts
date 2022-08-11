@@ -1,4 +1,4 @@
-import { HexPalette, spaceName } from '../../shared/types'
+import { HexPalette, spaceName } from 'shared/types'
 import { exportToHexPalette, parseHexPalette } from './converters'
 
 const hexPalette: HexPalette = {

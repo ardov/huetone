@@ -1,9 +1,9 @@
+import React, { FC, useEffect, useState } from 'react'
 import { useStore } from '@nanostores/react'
 import { valid } from 'chroma-js'
-import React, { FC, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { selectedStore } from '../../store/currentPosition'
-import { paletteStore } from '../../store/palette'
+import { selectedStore } from 'store/currentPosition'
+import { paletteStore } from 'store/palette'
 import { Input } from '../inputs'
 import { ContrastBadgeAPCA, ContrastBadgeWCAG } from './ContrastBadge'
 

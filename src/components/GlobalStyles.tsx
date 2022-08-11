@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components'
-import { useColorScheme } from '../shared/hooks/useColorScheme'
+import { useColorScheme } from 'shared/hooks/useColorScheme'
 
 const LightStyles = createGlobalStyle`
   :root {
