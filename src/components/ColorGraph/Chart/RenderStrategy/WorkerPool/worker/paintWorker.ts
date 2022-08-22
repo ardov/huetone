@@ -1,7 +1,7 @@
 import * as Comlink from 'comlink'
 import { spaceName, TColor } from 'shared/types'
-import { colorSpaces } from 'shared/colorFuncs'
-import { paddedScale, sycledLerp } from 'shared/interpolation'
+import { colorSpaces } from '../../../../../../shared/colorFuncs'
+import { paddedScale, sycledLerp } from '../../../../../../shared/interpolation'
 import { Pixels, TPixelData } from './Pixels'
 
 export type DrawChartProps = {

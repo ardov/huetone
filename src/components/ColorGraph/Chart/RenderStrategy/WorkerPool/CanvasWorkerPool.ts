@@ -3,7 +3,7 @@ import { DrawChartProps, WorkerObj } from './worker/paintWorker'
 
 // @ts-ignore Module not found
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import PaintWorker from './worker/paintWorker?worker&inline'
+import PaintWorker from './worker/paintWorker?worker'
 import * as Comlink from 'comlink'
 
 export type PaintResult = ImageBitmap | ImageData

@@ -37,7 +37,7 @@ export const PaletteSwatches: FC = () => {
   const bPress = useKeyPress('KeyB')
   const { hues, tones, colors } = palette
   const getCR = useCallback(
-    hex => {
+    (hex: string) => {
       let cr = contrast[overlay.mode](versusColor, hex)
       return cr && Math.floor(cr * 10) / 10
     },
