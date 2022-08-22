@@ -59,7 +59,7 @@ export const paletteStore = map<Palette>(initialPalette)
 onMount(paletteStore, () => {
   const list = paletteListStore.get()
   const idx = paletteIdStore.get()
-  paletteStore.set(parseHexPalette(list[idx], spaceName.cielch))
+  paletteStore.set(parseHexPalette(list[idx], spaceName.oklch))
 })
 
 export const colorSpaceStore = computed(
