@@ -1,8 +1,8 @@
 import * as Comlink from 'comlink'
 import { spaceName, TColor } from 'shared/types'
 import { colorSpaces } from 'shared/colorFuncs'
+import { paddedScale, sycledLerp } from 'shared/interpolation'
 import { Pixels, TPixelData } from './Pixels'
-import { paddedScale, sycledLerp } from './interpolation'
 
 export type DrawChartProps = {
   width: number
@@ -21,19 +21,6 @@ const getP3pixel = (x: number, y: number): TPixelData => [198, 198, 198, 255]
 const getRec2020pixel = (x: number, y: number): TPixelData => [
   171, 171, 171, 255,
 ]
-// const getSrgbPixel = (): TPixelData => [255, 255, 255, 255]
-// const getP3pixel = (x: number, y: number): TPixelData => [
-//   x % 3 || y % 3 ? 255 : 80,
-//   x % 3 || y % 3 ? 255 : 80,
-//   x % 3 || y % 3 ? 255 : 80,
-//   255,
-// ]
-// const getRec2020pixel = (x: number, y: number): TPixelData => [
-//   255,
-//   x % 2 || y % 3 ? 255 : 80,
-//   x % 2 || y % 3 ? 255 : 80,
-//   255,
-// ]
 
 function drawLuminosityChart(props: DrawChartProps) {
   const {

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { convertWorkerToFuncs, ChannelFuncs } from './CanvasWorkerPool'
-import { WorkerObj } from 'worker/paintWorker'
+import { WorkerObj } from './worker/paintWorker'
 
 // @ts-ignore Module not found
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import PaintWorker from 'worker/paintWorker?name=PaintWorker?worker&inline'
+import PaintWorker from './worker/paintWorker?name=PaintWorker?worker&inline'
 import * as Comlink from 'comlink'
 
 /** Use singleton pool for app-agnostic compute handling. Use hook if app will introduce routing */
