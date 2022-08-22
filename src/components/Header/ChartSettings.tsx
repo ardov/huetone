@@ -22,20 +22,22 @@ export const ChartSettings = () => {
         </Button>
       </Menu.Trigger>
 
-      <Menu.Content align="center" sideOffset={4}>
-        <Menu.Item onSelect={toggleColorSpace}>
-          Use {nextMode} color model
-        </Menu.Item>
-        <Menu.Item onSelect={toggleShowColors}>
-          {showColors ? 'Hide' : 'Show'} colors on charts
-        </Menu.Item>
-        <Menu.Item onSelect={toggleShowP3}>
-          {showP3 ? 'Hide' : 'Show'} P3 color space
-        </Menu.Item>
-        <Menu.Item onSelect={toggleShowRec2020}>
-          {showRec2020 ? 'Hide' : 'Show'} Rec. 2020 color space
-        </Menu.Item>
-      </Menu.Content>
+      <Menu.Portal>
+        <Menu.Content align="center" sideOffset={4}>
+          <Menu.Item onSelect={toggleColorSpace}>
+            Use {nextMode} color model
+          </Menu.Item>
+          <Menu.Item onSelect={toggleShowColors}>
+            {showColors ? 'Hide' : 'Show'} colors on charts
+          </Menu.Item>
+          <Menu.Item onSelect={toggleShowP3}>
+            {showP3 ? 'Hide' : 'Show'} P3 color space
+          </Menu.Item>
+          <Menu.Item onSelect={toggleShowRec2020}>
+            {showRec2020 ? 'Hide' : 'Show'} Rec. 2020 color space
+          </Menu.Item>
+        </Menu.Content>
+      </Menu.Portal>
     </Menu.Root>
   )
 }

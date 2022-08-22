@@ -89,34 +89,36 @@ const PaletteSelectComponent = () => {
         </Button>
       </Menu.Trigger>
 
-      <Menu.Content align="start" sideOffset={4}>
-        <Menu.Label>Palettes</Menu.Label>
-        {paletteList.map((p, i) => (
-          <Menu.Item
-            key={i}
-            selected={i === currentIdx}
-            onSelect={() => switchPalette(i)}
-          >
-            {p.name}
-            {!p.isPreset && (
-              <span style={{ display: 'flex', gap: 8 }}>
-                <Copy
-                  onClick={e => {
-                    e.preventDefault()
-                    duplicatePalette(i)
-                  }}
-                />
-                <Trash
-                  onClick={e => {
-                    e.preventDefault()
-                    deletePalette(i)
-                  }}
-                />
-              </span>
-            )}
-          </Menu.Item>
-        ))}
-      </Menu.Content>
+      <Menu.Portal>
+        <Menu.Content align="start" sideOffset={4}>
+          <Menu.Label>Palettes</Menu.Label>
+          {paletteList.map((p, i) => (
+            <Menu.Item
+              key={i}
+              selected={i === currentIdx}
+              onSelect={() => switchPalette(i)}
+            >
+              {p.name}
+              {!p.isPreset && (
+                <span style={{ display: 'flex', gap: 8 }}>
+                  <Copy
+                    onClick={e => {
+                      e.preventDefault()
+                      duplicatePalette(i)
+                    }}
+                  />
+                  <Trash
+                    onClick={e => {
+                      e.preventDefault()
+                      deletePalette(i)
+                    }}
+                  />
+                </span>
+              )}
+            </Menu.Item>
+          ))}
+        </Menu.Content>
+      </Menu.Portal>
     </Menu.Root>
   )
 }

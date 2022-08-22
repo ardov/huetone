@@ -5,6 +5,8 @@ export const Root = Menu.Root
 
 export const Trigger = Menu.Trigger
 
+export const Portal = Menu.Portal
+
 export const Label = styled(Menu.Label)`
   color: var(--c-text-primary);
   font-size: 14px;
@@ -41,6 +43,7 @@ export const Item = styled(Menu.Item)<{ selected?: boolean }>`
 
 export const Content = styled(Menu.Content)`
   --c-bg: var(--c-bg-card);
+  z-index: 1000;
   padding: 8px 2px;
   border-radius: var(--radius-m);
   background-color: var(--c-bg);
