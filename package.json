@@ -1,23 +1,28 @@
 {
   "name": "huetone",
-  "version": "2.0.0",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "start": "vite",
+    "preview": "vite preview",
+    "build": "tsc && vite build"
+  },
   "dependencies": {
     "@nanostores/persistent": "^0.5.1",
     "@nanostores/react": "^0.1.5",
-    "@radix-ui/react-dropdown-menu": "^0.1.4",
+    "@radix-ui/react-dropdown-menu": "^1.0.0",
     "apca-w3": "^0.1.1",
     "chroma-js": "^2.1.2",
     "comlink": "^4.3.1",
-    "dart-sass": "^1.25.0",
     "lodash": "^4.17.21",
     "lz-string": "^1.4.4",
     "nanostores": "^0.5.8",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3",
-    "styled-components": "^5.3.0",
-    "typescript": "^4.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "styled-components": "^5.3.5",
+    "use-local-storage-state": "^10.0.0",
     "web-vitals": "^0.2.4",
     "workbox-background-sync": "^5.1.3",
     "workbox-broadcast-update": "^5.1.3",
@@ -32,16 +37,30 @@
     "workbox-strategies": "^5.1.3",
     "workbox-streams": "^5.1.3"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+  "devDependencies": {
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/chroma-js": "^2.1.3",
+    "@types/lodash": "^4.14.171",
+    "@types/lz-string": "^1.3.34",
+    "@types/node": "^12.0.0",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "@types/styled-components": "^5.1.26",
+    "@vitejs/plugin-react": "^2.0.0",
+    "sass": "^1.54.4",
+    "stylelint": "^13.13.1",
+    "stylelint-config-recommended": "^5.0.0",
+    "stylelint-config-styled-components": "^0.1.1",
+    "stylelint-processor-styled-components": "^1.10.0",
+    "typescript": "^4.6.4",
+    "vite": "^3.0.4",
+    "vite-tsconfig-paths": "^3.5.0",
+    "vitest": "^0.22.1"
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
@@ -55,25 +74,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/chroma-js": "^2.1.3",
-    "@types/jest": "^26.0.15",
-    "@types/lodash": "^4.14.171",
-    "@types/lz-string": "^1.3.34",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.9.53",
-    "@types/react-dom": "^16.9.8",
-    "@types/styled-components": "^5.1.11",
-    "sass": "^1.41.1",
-    "stylelint": "^13.13.1",
-    "stylelint-config-recommended": "^5.0.0",
-    "stylelint-config-styled-components": "^0.1.1",
-    "stylelint-processor-styled-components": "^1.10.0",
-    "use-local-storage-state": "^10.0.0",
-    "worker-loader": "^3.0.8"
   }
 }

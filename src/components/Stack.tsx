@@ -15,6 +15,7 @@ type StackProps = {
   ml?: number
   mr?: number
   style?: React.CSSProperties
+  children: React.ReactNode
 }
 
 export const Stack: FC<StackProps> = props => {

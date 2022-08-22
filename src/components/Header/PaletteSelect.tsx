@@ -1,5 +1,5 @@
+import { FC, useState } from 'react'
 import { useStore } from '@nanostores/react'
-import * as Menu from '../DropdownMenu'
 import {
   deletePalette,
   duplicatePalette,
@@ -8,14 +8,14 @@ import {
   paletteStore,
   renamePalette,
   switchPalette,
-} from '../../store/palette'
+} from 'store/palette'
+import { ChevronDown } from 'shared/icons/ChevronDown'
+import { Trash } from 'shared/icons/Trash'
+import { Copy } from 'shared/icons/Copy'
+import { Edit } from 'shared/icons/Edit'
+import { Check } from 'shared/icons/Check'
+import * as Menu from '../DropdownMenu'
 import { Button, ControlGroup, Input } from '../inputs'
-import { ChevronDown } from '../../icons/ChevronDown'
-import { Trash } from '../../icons/Trash'
-import { Copy } from '../../icons/Copy'
-import { Edit } from '../../icons/Edit'
-import { Check } from '../../icons/Check'
-import { FC, useState } from 'react'
 
 export const PaletteSelect = () => {
   const [renameState, setRenameState] = useState(false)
@@ -89,34 +89,36 @@ const PaletteSelectComponent = () => {
         </Button>
       </Menu.Trigger>
 
-      <Menu.Content align="start" sideOffset={4}>
-        <Menu.Label>Palettes</Menu.Label>
-        {paletteList.map((p, i) => (
-          <Menu.Item
-            key={i}
-            selected={i === currentIdx}
-            onSelect={() => switchPalette(i)}
-          >
-            {p.name}
-            {!p.isPreset && (
-              <span style={{ display: 'flex', gap: 8 }}>
-                <Copy
-                  onClick={e => {
-                    e.preventDefault()
-                    duplicatePalette(i)
-                  }}
-                />
-                <Trash
-                  onClick={e => {
-                    e.preventDefault()
-                    deletePalette(i)
-                  }}
-                />
-              </span>
-            )}
-          </Menu.Item>
-        ))}
-      </Menu.Content>
+      <Menu.Portal>
+        <Menu.Content align="start" sideOffset={4}>
+          <Menu.Label>Palettes</Menu.Label>
+          {paletteList.map((p, i) => (
+            <Menu.Item
+              key={i}
+              selected={i === currentIdx}
+              onSelect={() => switchPalette(i)}
+            >
+              {p.name}
+              {!p.isPreset && (
+                <span style={{ display: 'flex', gap: 8 }}>
+                  <Copy
+                    onClick={e => {
+                      e.preventDefault()
+                      duplicatePalette(i)
+                    }}
+                  />
+                  <Trash
+                    onClick={e => {
+                      e.preventDefault()
+                      deletePalette(i)
+                    }}
+                  />
+                </span>
+              )}
+            </Menu.Item>
+          ))}
+        </Menu.Content>
+      </Menu.Portal>
     </Menu.Root>
   )
 }

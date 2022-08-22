@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import styled from 'styled-components'
-import { apcaContrast, wcagContrast } from '../../color'
+import { apcaContrast, wcagContrast } from 'shared/color'
 
 export const ContrastBadgeAPCA: FC<{ background: string; color: string }> = ({
   background,

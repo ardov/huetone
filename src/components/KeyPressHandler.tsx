@@ -6,12 +6,12 @@ import {
   reorderTones,
   setColor,
   switchPalette,
-} from '../store/palette'
-import { useKeyPress } from '../hooks/useKeyPress'
+} from 'store/palette'
+import { useKeyPress } from 'shared/hooks/useKeyPress'
 import { useStore } from '@nanostores/react'
-import { colorSpaceStore, paletteStore, setPalette } from '../store/palette'
-import { selectedStore, setSelected } from '../store/currentPosition'
-import { colorToLchString } from '../color'
+import { colorSpaceStore, paletteStore, setPalette } from 'store/palette'
+import { selectedStore, setSelected } from 'store/currentPosition'
+import { colorToLchString } from 'shared/color'
 
 export const KeyPressHandler: FC = () => {
   const { hex2color } = useStore(colorSpaceStore)
@@ -20,7 +20,9 @@ export const KeyPressHandler: FC = () => {
   const lPress = useKeyPress('KeyL')
   const cPress = useKeyPress('KeyC')
   const hPress = useKeyPress('KeyH')
-  const { hues, tones } = palette
+  const { hues, tones, mode } = palette
+
+  const incrementC = mode === 'cielch' ? 0.5 : 0.005
 
   useEffect(() => {
     function handler(e: KeyboardEvent) {
@@ -50,7 +52,7 @@ export const KeyPressHandler: FC = () => {
         let { l, c, h } = selected.color
         if (key === 'ArrowUp') {
           if (lPress) l += 0.5
-          if (cPress) c += 0.5
+          if (cPress) c += incrementC
           if (hPress) h += 0.5
           setPalette(
             setColor(palette, [l, c, h], selected.hueId, selected.toneId)
@@ -58,7 +60,7 @@ export const KeyPressHandler: FC = () => {
         }
         if (key === 'ArrowDown') {
           if (lPress) l -= 0.5
-          if (cPress) c -= 0.5
+          if (cPress) c -= incrementC
           if (hPress) h -= 0.5
           setPalette(
             setColor(palette, [l, c, h], selected.hueId, selected.toneId)

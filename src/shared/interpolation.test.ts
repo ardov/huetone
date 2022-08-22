@@ -1,3 +1,4 @@
+import { test, expect } from 'vitest'
 import { paddedScale, linearScale, sycledLerp, lerp } from './interpolation'
 
 test('lerp', () => {

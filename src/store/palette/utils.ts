@@ -1,7 +1,7 @@
-import { Palette } from '../../types'
+import { Palette, spaceName } from 'shared/types'
 import LZString from 'lz-string'
-import { HexPalette } from '../../types'
-import { PALETTE_KEY } from '../../constants'
+import { HexPalette } from 'shared/types'
+import { PALETTE_KEY } from 'shared/constants'
 import { jsonToHexPalette, parseOldLchPalette } from './converters'
 
 /** Parse string from localStorage into HexPalette */
@@ -39,14 +39,14 @@ export function cleanURL() {
   window.history.replaceState('', '', url)
 }
 export const initialPalette: Palette = {
-  mode: 'cielch',
+  mode: spaceName.cielch,
   name: 'initial',
   hues: ['Hue1'],
   tones: ['100'],
   colors: [
     [
       {
-        mode: 'cielch',
+        mode: spaceName.cielch,
         r: 0,
         g: 0,
         b: 0,

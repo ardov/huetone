@@ -1,3 +1,4 @@
+import { test, expect } from 'vitest'
 import { colorSpaces } from '.'
 import { TColor } from '../types'
 

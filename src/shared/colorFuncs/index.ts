@@ -1,5 +1,5 @@
 import chroma from 'chroma-js'
-import { LCH, RGB, TColor, XYZ } from '../types'
+import { LCH, RGB, spaceName, TColor, XYZ } from '../types'
 import { clamp } from '../utils'
 import { oklch, cielch } from './colorModels'
 import {
@@ -14,14 +14,12 @@ import {
 } from './utils'
 
 export const colorSpaces = {
-  oklch: colorSpaceMaker(oklch),
-  cielch: colorSpaceMaker(cielch),
+  [spaceName.oklch]: colorSpaceMaker(oklch),
+  [spaceName.cielch]: colorSpaceMaker(cielch),
 }
 
-export type TSpaceName = keyof typeof colorSpaces
-
 export type TLchModel = {
-  name: TSpaceName
+  name: spaceName
   ranges: {
     l: { min: number; max: number; step: number }
     c: { min: number; max: number; step: number }

@@ -5,7 +5,7 @@ import {
   wcagContrast,
   apcaContrast,
   deltaEContrast,
-} from '../color'
+} from 'shared/color'
 import {
   addHue,
   addTone,
@@ -13,13 +13,13 @@ import {
   removeTone,
   renameHue,
   renameTone,
-} from '../store/palette'
-import { useKeyPress } from '../hooks/useKeyPress'
+} from 'store/palette'
+import { useKeyPress } from 'shared/hooks/useKeyPress'
 import { Button, InvisibleInput } from './inputs'
 import { useStore } from '@nanostores/react'
-import { colorSpaceStore, paletteStore, setPalette } from '../store/palette'
-import { selectedStore, setSelected } from '../store/currentPosition'
-import { overlayStore, versusColorStore } from '../store/overlay'
+import { colorSpaceStore, paletteStore, setPalette } from 'store/palette'
+import { selectedStore, setSelected } from 'store/currentPosition'
+import { overlayStore, versusColorStore } from 'store/overlay'
 
 const contrast = {
   WCAG: wcagContrast,
@@ -37,7 +37,7 @@ export const PaletteSwatches: FC = () => {
   const bPress = useKeyPress('KeyB')
   const { hues, tones, colors } = palette
   const getCR = useCallback(
-    hex => {
+    (hex: string) => {
       let cr = contrast[overlay.mode](versusColor, hex)
       return cr && Math.floor(cr * 10) / 10
     },

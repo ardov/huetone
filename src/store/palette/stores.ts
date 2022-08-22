@@ -1,11 +1,11 @@
-import { Palette } from '../../types'
+import { Palette, spaceName } from 'shared/types'
 import { computed, map, onMount } from 'nanostores'
-import { colorSpaces } from '../../colorFuncs'
+import { colorSpaces } from 'shared/colorFuncs'
 import { parseHexPalette } from '.'
 import { persistentAtom } from '@nanostores/persistent'
-import { PRESETS } from '../../presets'
-import { HexPalette } from '../../types'
-import { PALETTE_KEY } from '../../constants'
+import { PRESETS } from 'shared/presets'
+import { HexPalette } from 'shared/types'
+import { PALETTE_KEY } from 'shared/constants'
 import { atom } from 'nanostores'
 import { isEqual } from 'lodash'
 import {
@@ -59,7 +59,7 @@ export const paletteStore = map<Palette>(initialPalette)
 onMount(paletteStore, () => {
   const list = paletteListStore.get()
   const idx = paletteIdStore.get()
-  paletteStore.set(parseHexPalette(list[idx], 'cielch'))
+  paletteStore.set(parseHexPalette(list[idx], spaceName.oklch))
 })
 
 export const colorSpaceStore = computed(

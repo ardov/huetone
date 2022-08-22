@@ -1,4 +1,7 @@
-import { TSpaceName } from './colorFuncs'
+export enum spaceName {
+  oklch = 'oklch',
+  cielch = 'cielch',
+}
 
 export type XYZ = [number, number, number]
 export type LAB = [number, number, number]
@@ -31,7 +34,7 @@ export type TokenExport = {
 }
 
 export type TColor = {
-  mode: TSpaceName
+  mode: spaceName
   l: number
   c: number
   h: number
@@ -45,7 +48,7 @@ export type TColor = {
 }
 
 export type TLchModel = {
-  name: TSpaceName
+  name: spaceName
   rgb2lch: (rgb: RGB) => LCH
   lch2rgb: (lch: LCH) => RGB
   rgbTreshold: { min: number; max: number }
@@ -57,7 +60,7 @@ export type TLchModel = {
 }
 
 export type Palette = {
-  mode: TSpaceName
+  mode: spaceName
   name: string
   hues: string[]
   tones: string[]

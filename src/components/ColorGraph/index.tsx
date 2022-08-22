@@ -1,10 +1,10 @@
-import { getMostContrast } from '../../color'
-import { Channel, LCH, TColor } from '../../types'
 import styled from 'styled-components'
-import { Canvas } from './Chart/Canvas'
 import { useStore } from '@nanostores/react'
-import { colorSpaceStore } from '../../store/palette'
-import { chartSettingsStore } from '../../store/chartSettings'
+import { getMostContrast } from 'shared/color'
+import { Channel, LCH, TColor } from 'shared/types'
+import { colorSpaceStore } from 'store/palette'
+import { chartSettingsStore } from 'store/chartSettings'
+import { Canvas } from './Chart/Canvas'
 
 type ScaleProps = {
   colors: TColor[]

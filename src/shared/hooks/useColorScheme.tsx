@@ -15,7 +15,9 @@ const SchemeContext = createContext<[ColorScheme, () => void]>([
   () => {},
 ])
 
-export const ColorSchemeProvider: FC = ({ children }) => {
+export const ColorSchemeProvider: FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [scheme, setScheme] = useState(getCurrent())
 
   const toggle = useCallback(() => {

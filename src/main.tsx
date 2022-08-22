@@ -1,20 +1,20 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './components/App'
+import { createRoot } from 'react-dom/client'
+import { ColorSchemeProvider } from 'shared/hooks/useColorScheme'
+import GlobalStyles from 'components/GlobalStyles'
+import App from 'components/App'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
-import GlobalStyles from './components/GlobalStyles'
 import './styles.scss'
-import { ColorSchemeProvider } from './hooks/useColorScheme'
 
-ReactDOM.render(
+const container = document.getElementById('root')
+createRoot(container!).render(
   <React.StrictMode>
     <ColorSchemeProvider>
       <GlobalStyles />
       <App />
     </ColorSchemeProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 )
 
 // If you want your app to work offline and load faster, you can change

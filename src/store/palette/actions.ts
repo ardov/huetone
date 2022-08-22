@@ -1,6 +1,5 @@
-import { HexPalette, LCH, Palette } from '../../types'
+import { HexPalette, LCH, Palette, spaceName } from 'shared/types'
 import { action } from 'nanostores'
-import { TSpaceName } from '../../colorFuncs'
 import { convertToMode } from './paletteReducers'
 import { paletteStore, paletteIdStore, paletteListStore } from './stores'
 import {
@@ -25,7 +24,7 @@ export const switchPalette = (id: number) => {
 export const switchColorSpace = action(
   paletteStore,
   'switchColorSpace',
-  (store, space: TSpaceName) => {
+  (store, space: spaceName) => {
     const palette = store.get()
     if (palette.mode === space) return
     store.set(convertToMode(palette, space))
@@ -81,7 +80,9 @@ export const toggleColorSpace = action(
   'toggleColorSpace',
   store => {
     const palette = store.get()
-    switchColorSpace(palette.mode === 'cielch' ? 'oklch' : 'cielch')
+    switchColorSpace(
+      palette.mode === spaceName.cielch ? spaceName.oklch : spaceName.cielch
+    )
   }
 )
 

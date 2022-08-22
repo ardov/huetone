@@ -1,15 +1,15 @@
 import React, { FC, useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
+import { useStore } from '@nanostores/react'
 import {
   exportToHexPalette,
   exportToTokens,
   parseHexPalette,
-} from '../store/palette'
+} from 'store/palette'
+import { exportToCSS } from 'store/palette/converters'
+import { paletteStore, setPalette } from 'store/palette'
 import { TextArea } from './inputs'
-import { useStore } from '@nanostores/react'
-import { paletteStore, setPalette } from '../store/palette'
 import { CopyButton } from './CopyButton'
-import { exportToCSS } from '../store/palette/converters'
 
 export const TokenExportButton: FC = () => {
   const palette = useStore(paletteStore)

@@ -1,6 +1,6 @@
-import { colorSpaces, TSpaceName } from '../../colorFuncs'
-import { reorder } from '../../utils'
-import { Palette, LCH, TColor } from '../../types'
+import { colorSpaces } from 'shared/colorFuncs'
+import { reorder } from 'shared/utils'
+import { Palette, LCH, TColor, spaceName } from 'shared/types'
 
 export function addHue(palette: Palette, hueName: string = 'Gray'): Palette {
   const { lch2color, ranges } = colorSpaces[palette.mode]
@@ -191,7 +191,7 @@ export function clampColorsToRgb(palette: Palette): Palette {
   }
 }
 
-export function convertToMode(palette: Palette, mode: TSpaceName): Palette {
+export function convertToMode(palette: Palette, mode: spaceName): Palette {
   const { hex2color } = colorSpaces[mode]
   return {
     ...palette,

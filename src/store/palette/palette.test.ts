@@ -1,4 +1,5 @@
-import { HexPalette } from '../../types'
+import { test, expect } from 'vitest'
+import { HexPalette, spaceName } from 'shared/types'
 import { exportToHexPalette, parseHexPalette } from './converters'
 
 const hexPalette: HexPalette = {
@@ -11,7 +12,7 @@ const hexPalette: HexPalette = {
 }
 
 test('Parsing hex palette', () => {
-  const palette = parseHexPalette(hexPalette, 'cielch')
+  const palette = parseHexPalette(hexPalette, spaceName.cielch)
   const hex = exportToHexPalette(palette)
   expect(hex).toEqual(hexPalette)
   expect(palette.colors.length).toEqual(hexPalette.hues.length)
