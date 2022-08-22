@@ -1,3 +1,4 @@
+import { test, expect } from 'vitest'
 import { HexPalette, spaceName } from 'shared/types'
 import { exportToHexPalette, parseHexPalette } from './converters'
 
