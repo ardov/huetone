@@ -1,0 +1,102 @@
+{
+  "name": "DRUIDS (Light Theme)",
+  "hues": [
+    {
+      "name": "gray",
+      "colors": [
+        "#b7bccb",
+        "#9da4b9",
+        "#828ba4",
+        "#6a7287",
+        "#585f70",
+        "#464b59",
+        "#373b46"
+      ]
+    },
+    {
+      "name": "blue",
+      "colors": [
+        "#f3f9fc",
+        "#eaf6fc",
+        "#71b8e7",
+        "#4e91d1",
+        "#006bc2",
+        "#0953bf",
+        "#0b0f8b"
+      ]
+    },
+    {
+      "name": "red",
+      "colors": [
+        "#fdebed",
+        "#fbd6db",
+        "#fc9da8",
+        "#f66f78",
+        "#eb364b",
+        "#bc2b3c",
+        "#922c35"
+      ]
+    },
+    {
+      "name": "amber",
+      "colors": [
+        "#fff6e3",
+        "#ffe6a2",
+        "#fecf60",
+        "#fcc028",
+        "#f99d02",
+        "#f27c00",
+        "#de5f0c"
+      ]
+    },
+    {
+      "name": "yellow",
+      "colors": [
+        "#fffbe5",
+        "#fff8d0",
+        "#fff5ba",
+        "#ffec8a",
+        "#ffdf52",
+        "#facc00",
+        "#cc9419"
+      ]
+    },
+    {
+      "name": "green",
+      "colors": [
+        "#ecf9ef",
+        "#d9f3e0",
+        "#96dda2",
+        "#70d182",
+        "#41c464",
+        "#39b15d",
+        "#2a7e41"
+      ]
+    },
+    {
+      "name": "purple",
+      "colors": [
+        "#f1edf6",
+        "#d6c9e3",
+        "#a87ad6",
+        "#965fcc",
+        "#774aa4",
+        "#623293",
+        "#4b1c7c"
+      ]
+    },
+    {
+      "name": "pink",
+      "colors": [
+        "#fff7fc",
+        "#fff2fa",
+        "#ffe6f5",
+        "#ffb3e0",
+        "#ff0099",
+        "#af0069",
+        "#630572"
+      ]
+    }
+  ],
+  "tones": ["100", "200", "300", "400", "500", "600", "700"]
+}
