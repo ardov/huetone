@@ -32,7 +32,7 @@
       ]
     },
     {
-      "name": "teal",
+      "name": "cyan",
       "colors": [
         "#eefdfe",
         "#cff3fb",
@@ -47,7 +47,7 @@
       ]
     },
     {
-      "name": "emerald",
+      "name": "green",
       "colors": [
         "#f2feee",
         "#cff7c9",
@@ -62,7 +62,7 @@
       ]
     },
     {
-      "name": "orange",
+      "name": "yellow",
       "colors": [
         "#fbf9ea",
         "#f6e4ba",
@@ -77,7 +77,7 @@
       ]
     },
     {
-      "name": "chestnut",
+      "name": "orange",
       "colors": [
         "#fefaee",
         "#fce2c0",
@@ -92,7 +92,7 @@
       ]
     },
     {
-      "name": "cerise",
+      "name": "red",
       "colors": [
         "#fef7f4",
         "#fbe0dd",
@@ -122,7 +122,7 @@
       ]
     },
     {
-      "name": "indigo",
+      "name": "violet",
       "colors": [
         "#f8f9fe",
         "#e7e5fc",
