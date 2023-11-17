@@ -18,9 +18,9 @@ export const cielch: TLchModel = {
   lch2xyz: (lch: LCH) => D50_to_D65(Lab_to_XYZ(LCH_to_Lab(lch))),
   xyz2lch: (xyz: XYZ) => Lab_to_LCH(XYZ_to_Lab(D65_to_D50(xyz))),
   ranges: {
-    l: { min: 0, max: 100, step: 0.5 },
-    c: { min: 0, max: 134, step: 0.5 },
-    h: { min: 0, max: 360, step: 0.5 },
+    l: { min: 0, max: 100, step: 0.5, precision: 2 },
+    c: { min: 0, max: 134, step: 0.5, precision: 2 },
+    h: { min: 0, max: 360, step: 0.5, precision: 2 },
   },
 }
 
@@ -30,9 +30,9 @@ export const oklch: TLchModel = {
     OKLab_to_XYZ(OKLCH_to_OKLab(fromDisplayOKLCH(lch))),
   xyz2lch: (xyz: XYZ): LCH => toDisplayOKLCH(OKLab_to_OKLCH(XYZ_to_OKLab(xyz))),
   ranges: {
-    l: { min: 0, max: 100, step: 0.5 },
-    c: { min: 0, max: 0.33, step: 0.005 },
-    h: { min: 0, max: 360, step: 0.5 },
+    l: { min: 0, max: 100, step: 0.5, precision: 2 },
+    c: { min: 0, max: 0.33, step: 0.005, precision: 3 },
+    h: { min: 0, max: 360, step: 0.5, precision: 2 },
   },
 }
 

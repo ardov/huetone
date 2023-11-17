@@ -28,8 +28,8 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
           type="number"
           min={ranges.l.min}
           max={ranges.l.max}
-          value={+l.toFixed(2)}
           step={ranges.l.step}
+          value={+l.toFixed(ranges.l.precision)}
           onChange={e => onChange(lch2color([+e.target.value, c, h]))}
         />
       </ChannelInputWrapper>
@@ -39,8 +39,8 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
           type="number"
           min={ranges.c.min}
           max={ranges.c.max}
-          value={+c.toFixed(2)}
           step={ranges.c.step}
+          value={+c.toFixed(ranges.c.precision)}
           onChange={e => onChange(lch2color([l, +e.target.value, h]))}
         />
       </ChannelInputWrapper>
@@ -50,8 +50,8 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
           type="number"
           min={ranges.h.min}
           max={ranges.h.max}
-          value={+h.toFixed(2)}
           step={ranges.h.step}
+          value={+h.toFixed(ranges.h.precision)}
           onChange={e => onChange(lch2color([l, c, +e.target.value]))}
         />
       </ChannelInputWrapper>
