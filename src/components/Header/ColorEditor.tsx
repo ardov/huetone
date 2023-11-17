@@ -48,7 +48,7 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
         <ChannelLabel>H</ChannelLabel>
         <ChannelInput
           type="number"
-          min={ranges.c.min}
+          min={ranges.h.min}
           max={ranges.h.max}
           step={0.5}
           value={+h.toFixed(2)}
