@@ -77,10 +77,9 @@ export function Scale({
               if (active instanceof HTMLInputElement) active.blur()
             }}
             onKeyDown={e => {
-              const el = e.currentTarget
-              if (e.key === 'Enter' || e.key === 'Escape') el.blur()
-              else if (e.key === 'ArrowUp') el.stepUp(ranges[channel].step)
-              else if (e.key === 'ArrowDown') el.stepDown(ranges[channel].step)
+              if (e.key === 'Enter' || e.key === 'Escape') {
+                e.currentTarget.blur()
+              }
             }}
             onFocus={e => {
               onSelect(i)
