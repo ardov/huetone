@@ -6,6 +6,7 @@ import { colorSpaceStore } from 'store/palette'
 import { chartSettingsStore } from 'store/chartSettings'
 import type { ChangeEvent } from 'react'
 import { Canvas } from './Chart/Canvas'
+import { clamp } from 'shared/utils'
 
 type ScaleProps = {
   colors: TColor[]
@@ -31,16 +32,12 @@ export function Scale({
   if (!colors?.length) return null
   const sectionWidth = width / colors.length
 
-  const onChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    color: TColor,
-    i: number
-  ) => {
+  const setColor = (color: TColor, idx: number, value: number) => {
     const { l, c, h } = color
-    const value = +e.target.value
-    if (channel === 'l') onColorChange(i, [value, c, h])
-    if (channel === 'c') onColorChange(i, [l, value, h])
-    if (channel === 'h') onColorChange(i, [l, c, value])
+    value = clamp(value, ranges[channel].min, ranges[channel].max)
+    if (channel === 'l') onColorChange(idx, [value, c, h])
+    if (channel === 'c') onColorChange(idx, [l, value, h])
+    if (channel === 'h') onColorChange(idx, [l, c, value])
   }
 
   return (
@@ -82,14 +79,14 @@ export function Scale({
             onKeyDown={e => {
               const el = e.currentTarget
               if (e.key === 'Enter' || e.key === 'Escape') el.blur()
-              if (e.key === 'ArrowUp') el.stepUp(ranges[channel].step)
-              if (e.key === 'ArrowDown') el.stepDown(ranges[channel].step)
+              else if (e.key === 'ArrowUp') el.stepUp(ranges[channel].step)
+              else if (e.key === 'ArrowDown') el.stepDown(ranges[channel].step)
             }}
             onFocus={e => {
               onSelect(i)
               setTimeout(() => e.target.select(), 0)
             }}
-            onChange={e => onChange(e, color, i)}
+            onChange={e => setColor(color, i, +e.target.value)}
           />
         ))}
       </div>
@@ -118,7 +115,7 @@ export function Scale({
               max={ranges[channel].max}
               step={ranges[channel].step}
               value={color[channel]}
-              onChange={e => onChange(e, color, i)}
+              onChange={e => setColor(color, i, +e.target.value)}
               onClick={() => onSelect(i)}
               isSelected={i === selected}
               style={{
