@@ -21,9 +21,9 @@ export const colorSpaces = {
 export type TLchModel = {
   name: spaceName
   ranges: {
-    l: { min: number; max: number; step: number }
-    c: { min: number; max: number; step: number }
-    h: { min: number; max: number; step: number }
+    l: { min: number; max: number; step: number; precision: number }
+    c: { min: number; max: number; step: number; precision: number }
+    h: { min: number; max: number; step: number; precision: number }
   }
   xyz2lch: (xyz: XYZ) => LCH
   lch2xyz: (lch: LCH) => XYZ

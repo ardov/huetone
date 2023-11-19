@@ -1,9 +1,10 @@
 import React, { FC, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { TColor } from 'shared/types'
+import { Channel, TColor } from 'shared/types'
 import { ControlGroup, Input } from '../inputs'
 import { useStore } from '@nanostores/react'
 import { colorSpaceStore } from 'store/palette'
+import { clamp } from 'shared/utils'
 
 type ColorEditorProps = {
   color: TColor
@@ -20,6 +21,13 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
     if (!isFocused) setColorInput(hex)
   }, [hex, isFocused])
 
+  const setColor = (channel: Channel, value: number) => {
+    value = clamp(value, ranges[channel].min, ranges[channel].max)
+    if (channel === 'l') onChange(lch2color([value, c, h]))
+    if (channel === 'c') onChange(lch2color([l, value, h]))
+    if (channel === 'h') onChange(lch2color([l, c, value]))
+  }
+
   return (
     <ControlGroup>
       <ChannelInputWrapper>
@@ -28,9 +36,9 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
           type="number"
           min={ranges.l.min}
           max={ranges.l.max}
-          step={0.5}
-          value={+l.toFixed(2)}
-          onChange={e => onChange(lch2color([+e.target.value, c, h]))}
+          step={ranges.l.step}
+          value={+l.toFixed(ranges.l.precision)}
+          onChange={e => setColor('l', +e.target.value)}
         />
       </ChannelInputWrapper>
       <ChannelInputWrapper>
@@ -39,20 +47,20 @@ export const ColorEditor: FC<ColorEditorProps> = ({ color, onChange }) => {
           type="number"
           min={ranges.c.min}
           max={ranges.c.max}
-          step={0.5}
-          value={+c.toFixed(2)}
-          onChange={e => onChange(lch2color([l, +e.target.value, h]))}
+          step={ranges.c.step}
+          value={+c.toFixed(ranges.c.precision)}
+          onChange={e => setColor('c', +e.target.value)}
         />
       </ChannelInputWrapper>
       <ChannelInputWrapper>
         <ChannelLabel>H</ChannelLabel>
         <ChannelInput
           type="number"
-          min={ranges.c.min}
+          min={ranges.h.min}
           max={ranges.h.max}
-          step={0.5}
-          value={+h.toFixed(2)}
-          onChange={e => onChange(lch2color([l, c, +e.target.value]))}
+          step={ranges.h.step}
+          value={+h.toFixed(ranges.h.precision)}
+          onChange={e => setColor('h', +e.target.value)}
         />
       </ChannelInputWrapper>
       <HexInput

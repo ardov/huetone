@@ -4,7 +4,9 @@ import { getMostContrast } from 'shared/color'
 import { Channel, LCH, TColor } from 'shared/types'
 import { colorSpaceStore } from 'store/palette'
 import { chartSettingsStore } from 'store/chartSettings'
+import type { ChangeEvent } from 'react'
 import { Canvas } from './Chart/Canvas'
+import { clamp } from 'shared/utils'
 
 type ScaleProps = {
   colors: TColor[]
@@ -29,6 +31,15 @@ export function Scale({
   const { ranges } = useStore(colorSpaceStore)
   if (!colors?.length) return null
   const sectionWidth = width / colors.length
+
+  const setColor = (color: TColor, idx: number, value: number) => {
+    const { l, c, h } = color
+    value = clamp(value, ranges[channel].min, ranges[channel].max)
+    if (channel === 'l') onColorChange(idx, [value, c, h])
+    if (channel === 'c') onColorChange(idx, [l, value, h])
+    if (channel === 'h') onColorChange(idx, [l, c, value])
+  }
+
   return (
     <div
       style={{
@@ -45,9 +56,37 @@ export function Scale({
         }}
       >
         {colors.map((color, i) => (
-          <Value key={i} color={color.hex} onClick={() => onSelect(i)}>
-            {+color[channel].toFixed(1)}
-          </Value>
+          <ValueInput
+            key={i}
+            type="number"
+            color={color.hex}
+            title={color[channel].toFixed(ranges[channel].precision)}
+            min={ranges[channel].min}
+            max={ranges[channel].max}
+            step={ranges[channel].step}
+            value={
+              +color[channel].toFixed(
+                i === selected ? ranges[channel].precision : 1
+              )
+            }
+            onMouseDown={e => {
+              if (i === selected || e.ctrlKey) return
+              e.preventDefault()
+              onSelect(i)
+              const active = document.activeElement
+              if (active instanceof HTMLInputElement) active.blur()
+            }}
+            onKeyDown={e => {
+              if (e.key === 'Enter' || e.key === 'Escape') {
+                e.currentTarget.blur()
+              }
+            }}
+            onFocus={e => {
+              onSelect(i)
+              setTimeout(() => e.target.select(), 0)
+            }}
+            onChange={e => setColor(color, i, +e.target.value)}
+          />
         ))}
       </div>
       <div
@@ -75,13 +114,7 @@ export function Scale({
               max={ranges[channel].max}
               step={ranges[channel].step}
               value={color[channel]}
-              onChange={e => {
-                const { l, c, h } = color
-                const value = +e.target.value
-                if (channel === 'l') onColorChange(i, [value, c, h])
-                if (channel === 'c') onColorChange(i, [l, value, h])
-                if (channel === 'h') onColorChange(i, [l, c, value])
-              }}
+              onChange={e => setColor(color, i, +e.target.value)}
               onClick={() => onSelect(i)}
               isSelected={i === selected}
               style={{
@@ -99,15 +132,38 @@ export function Scale({
   )
 }
 
-const Value = styled.div<{ color: string }>`
+const ValueInput = styled.input<{
+  color: string
+}>`
+  --c-contrasting: ${p => getMostContrast(p.color, ['black', 'white'])};
   background-color: ${p => p.color};
-  color: ${p => getMostContrast(p.color, ['black', 'white'])};
+  color: var(--c-contrasting);
   text-align: center;
   font-size: 12px;
-  line-height: 24px;
+  line-height: 20px;
   padding: 0;
   min-width: 0;
   flex: 1 0;
+  border: 2px solid transparent;
+
+  :first-child {
+    border-radius: 8px 0 0 0;
+  }
+  :last-child {
+    border-radius: 0 8px 0 0;
+  }
+
+  :focus {
+    outline: none;
+    border-color: var(--c-contrasting);
+  }
+
+  -moz-appearance: textfield;
+  ::-webkit-outer-spin-button,
+  ::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `
 
 const Knob = styled.input.attrs({ type: 'range' })<{
