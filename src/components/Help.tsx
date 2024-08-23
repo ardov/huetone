@@ -69,8 +69,8 @@ const Hotkeys = () => {
         </li>
         <li>
           <MetaKey /> + <Key>⇧</Key> + <Key>C</Key> — copy selected color in{' '}
-          <Code>lch()</Code> format. Note that it has limited{' '}
-          <Link href="https://caniuse.com/css-lch-lab">browser support</Link>.
+          <Code>oklch()</Code> format. Note that it has limited{' '}
+          <Link href="https://caniuse.com/mdn-css_types_color_oklch">browser support</Link>.
         </li>
         <li>
           <MetaKey /> + <Key>V</Key> — paste color. Just copy color in any
