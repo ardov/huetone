@@ -158,6 +158,22 @@ export function setToneLuminance(
   }
 }
 
+export function setToneChroma(
+  palette: Palette,
+  chroma: number,
+  tone: number
+): Palette {
+  const { lch2color } = colorSpaces[palette.mode]
+  return {
+    ...palette,
+    colors: palette.colors.map(colors =>
+      colors.map((color, toneId) =>
+        toneId === tone ? lch2color([color.l, chroma, color.h]) : color
+      )
+    ),
+  }
+}
+
 export function setHueHue(
   palette: Palette,
   hueValue: number,

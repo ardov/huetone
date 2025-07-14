@@ -7,6 +7,7 @@ import { Button } from '../inputs'
 import {
   currentHueToRow,
   currentLuminanceToColumn,
+  currentChromaToColumn,
   pushColorsIntoRgb,
 } from 'store/palette'
 
@@ -40,6 +41,12 @@ export const ColorActions = () => {
             <span style={{ display: 'flex', gap: 8 }}>
               <EqualizeL />
               Apply current luminance to column
+            </span>
+          </Menu.Item>
+          <Menu.Item onClick={currentChromaToColumn}>
+            <span style={{ display: 'flex', gap: 8 }}>
+              <EqualizeL />
+              Apply current chroma to column
             </span>
           </Menu.Item>
         </Menu.Content>

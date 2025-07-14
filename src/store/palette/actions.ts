@@ -6,6 +6,7 @@ import {
   clampColorsToRgb,
   setHueHue,
   setToneLuminance,
+  setToneChroma,
 } from './paletteReducers'
 import { parseHexPalette } from './converters'
 import { selectedStore } from '../currentPosition'
@@ -38,7 +39,9 @@ export const updateSavedPalette = action(
   'updateSavedPalette',
   (store, palette: HexPalette, idx: number) => {
     const paletteList = store.get()
-    store.set(paletteList.map((p, i) => (i === idx ? palette : p)))
+    store.set(
+      paletteList.map((p: HexPalette, i: number) => (i === idx ? palette : p))
+    )
   }
 )
 
@@ -47,7 +50,7 @@ const removeSavedPalette = action(
   'removeSavedPalette',
   (store, idx: number) => {
     const paletteList = store.get()
-    store.set(paletteList.filter((_, i) => i !== idx))
+    store.set(paletteList.filter((_: HexPalette, i: number) => i !== idx))
   }
 )
 
@@ -63,7 +66,7 @@ export const duplicatePalette = (idx: number) => {
   if (savedPalettes[idx]) {
     // Duplicating user palette
     savedPalettesStore.set(
-      savedPalettes.flatMap((palette, i) =>
+      savedPalettes.flatMap((palette: HexPalette, i: number) =>
         i === idx
           ? [palette, { ...palette, name: palette.name + ' copy' }]
           : palette
@@ -136,6 +139,15 @@ export const currentHueToRow = action(
   store => {
     const selected = selectedStore.get()
     setPalette(setHueHue(store.get(), selected.color.h, selected.hueId))
+  }
+)
+
+export const currentChromaToColumn = action(
+  paletteStore,
+  'currentChromaToColumn',
+  store => {
+    const selected = selectedStore.get()
+    setPalette(setToneChroma(store.get(), selected.color.c, selected.toneId))
   }
 )
 

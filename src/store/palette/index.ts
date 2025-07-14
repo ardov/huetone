@@ -21,6 +21,7 @@ export { setToneLuminance } from './paletteReducers'
 export { setHueHue } from './paletteReducers'
 export { clampColorsToRgb } from './paletteReducers'
 export { convertToMode } from './paletteReducers'
+export { setToneChroma } from './paletteReducers'
 
 export * from './stores'
 export * from './actions'
