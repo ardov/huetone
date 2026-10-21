@@ -1,0 +1,28 @@
+schema = 1
+name = "Huetone"
+
+[runtime]
+kind = "node"
+version = "24"
+package_manager = "yarn"
+
+[[setup.steps]]
+kind = "dependencies"
+locked = true
+
+[[setup.steps]]
+run = ["yarn", "run", "build"]
+
+[launch]
+command = ["yarn", "run", "preview", "--host", "{host}", "--port", "{port}", "--strictPort"]
+host = "127.0.0.1"
+port = 4173
+
+[health]
+type = "http"
+path = "/"
+timeout_seconds = 90
+
+# User data lives in browser storage, outside the managed checkout.
+[persistence]
+paths = []
