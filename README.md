@@ -4,6 +4,8 @@ The app helps you to create accessible color systems with predictable contrast r
 
 ## Run locally
 
+[![Launch on PicoRunner](https://picorunner.com/badges/launch.svg)](https://picorunner.com/launch/?repository=https%3A%2F%2Fgithub.com%2Fardov%2Fhuetone)
+
 1. Install [Yarn](https://yarnpkg.com/getting-started/install)
 2. Clone and open Huetone repo
 3. Run `yarn` to install dependencies
